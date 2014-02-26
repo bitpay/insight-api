@@ -1,9 +1,13 @@
 # *insight API*
 
-*insight* is an open-source bitcoin blockchain explorer with complete REST
-and websocket APIs. Insight runs in NodeJS and use LevelDB for storage.
+*insight API* is an open-source bitcoin blockchain  REST
+and websocket API. Insight API runs in NodeJS and use LevelDB for storage. 
 
-Check some screenshots and more details at [insight's project homepage](http://insight.bitcore.io).
+*Insight API* allows to develop bitcoin related applications such as wallets that 
+require certain information from the blockchain that bitcoind does not provide.
+
+A blockchain explorer front-end have been developed to top of *Insight API*, it can
+be downloaded at (Github Insight Repository)[https://github.com/bitpay/insight]
 
 
 ## Prerequisites
