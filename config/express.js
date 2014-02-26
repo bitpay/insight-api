@@ -37,8 +37,8 @@ module.exports = function(app, historicSync, peerSync) {
   app.use(express.methodOverride());
   app.use(express.compress());
 
-  if (process.env.INSIGHT_PUBLIC_PATH) {
-    var staticPath = path.normalize(config.rootPath + '/../../' + process.env.INSIGHT_PUBLIC_PATH);
+  if (config.publicPath) {
+    var staticPath = path.normalize(config.rootPath + '/../' + config.publicPath);
 
     //IMPORTANT: for html5mode, this line must to be before app.router
     app.use(express.static(staticPath));
