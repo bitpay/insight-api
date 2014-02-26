@@ -28,9 +28,9 @@ bitcoind must be running and must have finished downloading the blockchain **bef
 ## Quick Install
   Check the Prerequisites section above before installing.
 
-  To install Insight, clone the main repository:
+  To install Insight API, clone the main repository:
 
-    $ git clone git@github.com:bitpay/insight.git && cd insight
+    $ git clone git@github.com:bitpay/insight-api.git && cd insight-api
 
   Install dependencies:
 
