@@ -7,7 +7,7 @@ and websocket API. Insight API runs in NodeJS and use LevelDB for storage.
 require certain information from the blockchain that bitcoind does not provide.
 
 A blockchain explorer front-end have been developed to top of *Insight API*, it can
-be downloaded at (Github Insight Repository)[https://github.com/bitpay/insight]
+be downloaded at [Github Insight Repository](https://github.com/bitpay/insight).
 
 
 ## Prerequisites
