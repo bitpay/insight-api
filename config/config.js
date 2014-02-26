@@ -10,14 +10,14 @@ var path = require('path'),
 
 if (process.env.INSIGHT_NETWORK === 'livenet') {
   env = 'livenet';
-  db = './db';
+  db = rootPath + '/db';
   port = '3000';
   b_port = '8332';
   p2p_port = '8333';
 }
 else {
   env = 'testnet';
-  db = './db/testnet';
+  db = rootPath + '/db/testnet';
   port = '3001';
   b_port = '18332';
   p2p_port = '18333';
@@ -50,6 +50,7 @@ dataDir += network === 'testnet' ? 'testnet3' : '';
 
 module.exports = {
   root: rootPath,
+  publicPath: process.env.INSIGHT_PUBLIC_PATH || false,
   appName: 'Insight ' + env,
   apiPrefix: '/api',
   port: port,
@@ -68,11 +69,11 @@ module.exports = {
   network: network,
   disableP2pSync: false,
   disableHistoricSync: false,
-  poolMatchFile: './etc/minersPoolStrings.json',
+  poolMatchFile: rootPath + '/etc/minersPoolStrings.json',
 
   // Time to refresh the currency rate. In minutes
   currencyRefresh: 10,
   keys: {
-      segmentio: process.env.INSIGHT_SEGMENTIO_KEY
-    }
+    segmentio: process.env.INSIGHT_SEGMENTIO_KEY
+  }
 };
