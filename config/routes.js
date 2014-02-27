@@ -25,6 +25,7 @@ module.exports = function(app) {
   app.get(apiPrefix + '/tx/:txid', transactions.show);
   app.param('txid', transactions.transaction);
   app.get(apiPrefix + '/txs', transactions.list);
+  app.post(apiPrefix + '/tx/send', transactions.send);
 
   // Address routes
   var addresses = require('../app/controllers/addresses');
@@ -45,5 +46,5 @@ module.exports = function(app) {
   //Home route
   var index = require('../app/controllers/index');
   app.get(apiPrefix + '/version', index.version);
-  app.get('/', index.render);
+  app.get('*', index.render);
 };
