@@ -96,11 +96,11 @@ function spec() {
       async.eachLimit(txOut,CONCURRENCY,function (txItem, a_c) {
         db.fromIdInfoSimple(txItem.txid, function(err, info) {
 
-          var scriptPubKey = self._getScriptPubKey(info.hex, txItem.index);
-
           // we are filtering out even unconfirmed spents!
           // add || !txItem.spentIsConfirmed 
-          if (!txItem.spentTxId) {
+         
+          if (!txItem.spentTxId && info && info.hex) {
+            var scriptPubKey = self._getScriptPubKey(info.hex, txItem.index);
             ret.push({
               address: self.addrStr,
               txid: txItem.txid,
