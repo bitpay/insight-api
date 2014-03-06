@@ -11,7 +11,7 @@ var
   util            = require('util'),
   async           = require('async'),
   config          = require('../../config/config'),
-  TransactionDb   = require('../../lib/TransactionDb').class();
+  TransactionDb   = require('../../lib/TransactionDb').default();
 
 var spentValid   = JSON.parse(fs.readFileSync('test/integration/spent.json'));
 

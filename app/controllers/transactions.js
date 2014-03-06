@@ -7,9 +7,9 @@ var Address     = require('../models/Address');
 var async       = require('async');
 var common      = require('./common');
 
-var TransactionDb = require('../../lib/TransactionDb').class();
-var BlockDb       = require('../../lib/BlockDb').class();
-var Rpc           = require('../../lib/Rpc').class();
+var Rpc           = require('../../lib/Rpc');
+var TransactionDb = require('../../lib/TransactionDb').default();
+var BlockDb       = require('../../lib/BlockDb').default();
 
 var tDb = new TransactionDb();
 var bdb = new BlockDb();

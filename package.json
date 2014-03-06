@@ -57,7 +57,7 @@
     "leveldown": "*",
     "levelup": "*",
     "glob": "*",
-    "classtool": "*",
+    "soop": "git://github.com/gasteve/node-soop.git",
     "commander": "*",
     "bignum": "*",
     "express": "~3.4.7",
