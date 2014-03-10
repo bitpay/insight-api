@@ -11,7 +11,7 @@ var getAddr = function(req, res, next) {
   var a;
   try {
     var addr = req.param('addr');
-    a = Address.new(addr);
+    a = new Address(addr);
   } catch (e) {
     common.handleErrors({message: 'Invalid address:' + e.message, code: 1}, res, next);
     return null;
