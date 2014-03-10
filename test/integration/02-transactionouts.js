@@ -11,7 +11,7 @@ var
   util            = require('util'),
   async           = require('async'),
   config          = require('../../config/config'),
-  TransactionDb   = require('../../lib/TransactionDb').class();
+  TransactionDb   = require('../../lib/TransactionDb').default();
 
 var spentValid   = JSON.parse(fs.readFileSync('test/integration/spent.json'));
 
@@ -20,7 +20,7 @@ var txDb;
 describe('TransactionDb Expenses', function(){
 
   before(function(c) {
-    txDb = new TransactionDb();
+    txDb = TransactionDb;
 
     // lets spend!
     async.each(Object.keys(spentValid), 

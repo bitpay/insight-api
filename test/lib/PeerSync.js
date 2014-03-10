@@ -3,7 +3,7 @@ var chai = require('chai'),
   expect = chai.expect,
   sinon = require('sinon');
 
-var PeerSync = require('../../lib/PeerSync.js').class();
+var PeerSync = require('../../lib/PeerSync.js');
 describe('PeerSync', function() {
   var ps;
 

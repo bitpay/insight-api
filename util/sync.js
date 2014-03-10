@@ -7,7 +7,7 @@ process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
 var SYNC_VERSION = '0.1';
 var program = require('commander');
-var HistoricSync = require('../lib/HistoricSync').class();
+var HistoricSync = require('../lib/HistoricSync');
 var async = require('async');
 
 program

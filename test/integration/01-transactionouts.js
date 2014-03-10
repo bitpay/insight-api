@@ -8,7 +8,7 @@ process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 var assert          = require('assert'),
   fs              = require('fs'),
   util            = require('util'),
-  TransactionDb = require('../../lib/TransactionDb').class();
+  TransactionDb = require('../../lib/TransactionDb').default();
 
 var txItemsValid = JSON.parse(fs.readFileSync('test/integration/txitems.json'));
 var txDb;
@@ -16,7 +16,7 @@ var txDb;
 describe('TransactionDb fromIdWithInfo', function(){
 
   before(function(c) {
-    txDb = new TransactionDb();
+    txDb = TransactionDb;
     return c();
   });
 
@@ -118,7 +118,7 @@ describe('TransactionDb fromIdWithInfo', function(){
 describe('TransactionDb Outs', function(){
 
   before(function(c) {
-    txDb = new TransactionDb();
+    txDb = TransactionDb;
     return c();
   });
 

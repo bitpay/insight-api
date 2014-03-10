@@ -7,7 +7,7 @@ process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
 var assert        = require('assert'),
   config          = require('../../config/config'),
-  BlockExtractor  = require('../../lib/BlockExtractor').class(),
+  BlockExtractor  = require('../../lib/BlockExtractor'),
   networks        = require('bitcore/networks'),
   util            =  require('bitcore/util/util');
 

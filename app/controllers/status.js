@@ -17,7 +17,7 @@ exports.show = function(req, res) {
   }
   else {
     var option = req.query.q;
-    var statusObject = Status.new();
+    var statusObject = new Status();
 
     var returnJsonp = function (err) {
       if (err || ! statusObject)

@@ -2,7 +2,7 @@
 'use strict';
 
 var util = require('util');
-var T = require('../lib/TransactionDb').class();
+var T = require('../lib/TransactionDb');
 
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 

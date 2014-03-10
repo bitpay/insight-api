@@ -7,12 +7,10 @@ var Address     = require('../models/Address');
 var async       = require('async');
 var common      = require('./common');
 
-var TransactionDb = require('../../lib/TransactionDb').class();
-var BlockDb       = require('../../lib/BlockDb').class();
-var Rpc           = require('../../lib/Rpc').class();
+var Rpc           = require('../../lib/Rpc');
 
-var tDb = new TransactionDb();
-var bdb = new BlockDb();
+var tDb = require('../../lib/TransactionDb').default();
+var bdb = require('../../lib/BlockDb').default();
 
 exports.send = function(req, res) {
   Rpc.sendRawTransaction(req.body.rawtx, function(err, txid) {

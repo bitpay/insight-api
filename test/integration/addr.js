@@ -6,8 +6,8 @@ process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
 var assert = require('assert'),
   fs = require('fs'),
-  Address = require('../../app/models/Address').class(),
-  TransactionDb = require('../../lib/TransactionDb').class(),
+  Address = require('../../app/models/Address'),
+  TransactionDb = require('../../lib/TransactionDb').default(),
   addrValid = JSON.parse(fs.readFileSync('test/integration/addr.json')),
   utxoValid = JSON.parse(fs.readFileSync('test/integration/utxo.json'));
 
@@ -15,7 +15,7 @@ var txDb;
 describe('Address balances', function() {
 
   before(function(c) {
-    txDb = new TransactionDb();
+    txDb = TransactionDb;
     return c();
   });
 
