@@ -14,7 +14,7 @@ be downloaded at [Github Insight Repository](https://github.com/bitpay/insight).
 
 * **bitcoind** - Download and Install [Bitcoin](http://bitcoin.org/en/download)
 
-*insight* needs a *trusted* bitcoind node to run. *insight* will connect to the node
+*insight API* needs a *trusted* bitcoind node to run. *insight API* will connect to the node
 thru the RPC API, Peer-to-peer protocol and will even read its raw .dat files for syncing.
 
 Configure bitcoind to listen to RPC calls and set `txindex` to true.
@@ -22,7 +22,7 @@ The easiest way to do this is by copying `./etc/bitcoind/bitcoin.conf` to your
 bitcoin data directory (usually `"~/.bitcoin"` on Linux, `"%appdata%\Bitcoin\"` on Windows,
 or `"~/Library/Application Support/Bitcoin"` on Mac OS X).
 
-bitcoind must be running and must have finished downloading the blockchain **before** running *insight*.
+bitcoind must be running and must have finished downloading the blockchain **before** running *insight API*.
 
 
 * **Node.js v0.10.x** - Download and Install [Node.js](http://www.nodejs.org/download/).
@@ -114,12 +114,12 @@ To run the tests
 ```$ grunt test```
 
 
-Contributions and suggestions are welcomed at [insight github repository](https://github.com/bitpay/insight).
+Contributions and suggestions are welcomed at [insight-api github repository](https://github.com/bitpay/insight-api).
 
 
 ## API
 
-By default, insight provides a REST API at /api, but this prefix is configurable from the var `apiPrefix` in the `config.js` file.
+By default, insight provides a REST API at `/api`, but this prefix is configurable from the var `apiPrefix` in the `config.js` file.
 
 The end-points are:
 
