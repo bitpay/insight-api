@@ -110,7 +110,7 @@ exports.list = function(req, res, next) {
     });
   }
   else if (addrStr) {
-    var a = Address.new(addrStr);
+    var a = new Address(addrStr);
 
     a.update(function(err) {
       if (err && !a.totalReceivedSat) {
