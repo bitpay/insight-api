@@ -9,8 +9,8 @@ process.env.NODE_ENV = process.env.NODE_ENV || 'development';
  */
 var express = require('express'),
   fs = require('fs'),
-  PeerSync = require('./lib/PeerSync').class(),
-  HistoricSync = require('./lib/HistoricSync').class();
+  PeerSync = require('./lib/PeerSync'),
+  HistoricSync = require('./lib/HistoricSync');
 
 //Initializing system variables
 var config = require('./config/config');

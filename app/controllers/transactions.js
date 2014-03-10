@@ -8,11 +8,9 @@ var async       = require('async');
 var common      = require('./common');
 
 var Rpc           = require('../../lib/Rpc');
-var TransactionDb = require('../../lib/TransactionDb').default();
-var BlockDb       = require('../../lib/BlockDb').default();
 
-var tDb = new TransactionDb();
-var bdb = new BlockDb();
+var tDb = require('../../lib/TransactionDb').default();
+var bdb = require('../../lib/BlockDb').default();
 
 exports.send = function(req, res) {
   Rpc.sendRawTransaction(req.body.rawtx, function(err, txid) {

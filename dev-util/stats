@@ -41,7 +41,7 @@ first 10%
   => sacando los contenidos adentro de getblock from file de  => 4.5s!!
 
   => con base58 cpp => 21s
-  => toda la testnet => 17m
+  => toda la testnet => 17m !!
 
 10% de blk2
   => 50s con base58cpp
@@ -54,3 +54,7 @@ first 10%
   => 15s comentando desde b.getStandardizedObject()
   => 39s comentando dps b.getStandardizedObject()
 
+
+Mon Mar 10 11:59:25 ART 2014
+10% de blk 0 (testnet)
+  => 37s

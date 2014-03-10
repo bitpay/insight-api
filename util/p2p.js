@@ -3,7 +3,7 @@
 
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
-var PeerSync = require('../lib/PeerSync').class();
+var PeerSync = require('../lib/PeerSync');
 
 var PROGRAM_VERSION = '0.1';
 var program = require('commander');

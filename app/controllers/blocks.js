@@ -5,7 +5,7 @@
  */
 var common = require('./common'),
   async = require('async'),
-  BlockDb = require('../../lib/BlockDb').class();
+  BlockDb = require('../../lib/BlockDb');
 
 var bdb = new BlockDb();
 
