@@ -1,7 +1,7 @@
 {
   "name": "insight-bitcore-api",
   "description": "An open-source bitcoin blockchain API. The Insight API provides you with a convenient, powerful and simple way to query and broadcast data on the bitcoin network and build your own services with it.",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "author": {
     "name": "Ryan X Charles",
     "email": "ryan@bitpay.com"
@@ -36,13 +36,11 @@
   "license": "MIT",
   "keywords": [
     "insight",
-    "secret",
-    "enigma",
-    "riddle",
-    "mystification",
-    "puzzle",
-    "conundrum",
-    "api",
+    "insight api",
+    "blockchain",
+    "bitcoin api",
+    "blockchain api",
+    "json",
     "bitcore"
   ],
   "engines": {
@@ -52,6 +50,7 @@
     "start": "node node_modules/grunt-cli/bin/grunt"
   },
   "dependencies": {
+    "bitcore": "~0.1.6",
     "base58-native": "0.1.2",
     "async": "*",
     "leveldown": "*",
@@ -67,7 +66,6 @@
     "moment": "~2.5.0",
     "sinon": "~1.7.3",
     "chai": "~1.8.1",
-    "bitcore": "git://github.com/bitpay/bitcore.git",
     "bufferput": "git://github.com/bitpay/node-bufferput.git",
     "xmlhttprequest": "~1.6.0"
   },
