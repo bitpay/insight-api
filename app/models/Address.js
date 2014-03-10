@@ -1,13 +1,13 @@
 'use strict';
 
-//var imports       = require('soop').imports();
+var imports            = require('soop').imports();
 var async              = require('async');
 var BitcoreAddress     = require('bitcore/Address');
 var BitcoreTransaction = require('bitcore/Transaction');
 var BitcoreUtil        = require('bitcore/util/util');
 var Parser             = require('bitcore/util/BinaryParser');
 var Buffer             = require('buffer').Buffer;
-var TransactionDb      = require('../../lib/TransactionDb').default();
+var TransactionDb      = imports.TransactionDb || require('../../lib/TransactionDb').default();
 var CONCURRENCY        = 5;
 
 function Address(addrStr) {
@@ -84,7 +84,7 @@ Address.prototype.getUtxo = function(next) {
   if (!self.addrStr) return next();
 
   var ret  = [];
-  var db   = new TransactionDb();
+  var db   = TransactionDb;
 
   db.fromAddr(self.addrStr, function(err,txOut){
     if (err) return next(err);
@@ -121,7 +121,7 @@ Address.prototype.update = function(next) {
   if (!self.addrStr) return next();
 
   var txs  = [];
-  var db   = new TransactionDb();
+  var db   = TransactionDb;
   async.series([
     function (cb) {
       var seen={};

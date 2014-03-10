@@ -1,8 +1,8 @@
 'use strict';
 
-var BlockDb = require('../../lib/BlockDb').class();
+var BlockDb = require('../../lib/BlockDb').default();
 var height_needed = 180000;
-var bDb = new BlockDb();
+var bDb = BlockDb;
 
 var expect = require('chai').expect;
 

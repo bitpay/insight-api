@@ -20,7 +20,7 @@ var txDb;
 describe('TransactionDb Expenses', function(){
 
   before(function(c) {
-    txDb = new TransactionDb();
+    txDb = TransactionDb;
 
     // lets spend!
     async.each(Object.keys(spentValid), 

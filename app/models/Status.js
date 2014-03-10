@@ -3,12 +3,11 @@
 
 var async     = require('async');
 var RpcClient = require('bitcore/RpcClient');
-var BlockDb   = require('../../lib/BlockDb');
 var config    = require('../../config/config');
 var rpc       = new RpcClient(config.bitcoind);
 
 function Status() {
-  this.bDb = new BlockDb();
+  this.bDb = require('../../lib/BlockDb').default();
 }
 
 Status.prototype.getInfo = function(next) {
