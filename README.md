@@ -160,6 +160,19 @@ The end-points are:
   /api/peer
 ```
 
+### Status network
+```
+  /api/status?q=xxx
+```
+
+Where "xxx" can be:
+
+ * getInfo
+ * getDifficulty
+ * getTxOutSetInfo
+ * getBestBlockHash
+ * getLastBlockHash
+
 ## Web Socket API
 The web socket API is served using [socket.io](http://socket.io) at:
 ```
