@@ -5,10 +5,9 @@ var async     = require('async');
 var RpcClient = require('bitcore/RpcClient');
 var config    = require('../../config/config');
 var rpc       = new RpcClient(config.bitcoind);
+var bDb       = require('../../lib/BlockDb').default();
 
-function Status() {
-  this.bDb = require('../../lib/BlockDb').default();
-}
+function Status() {}
 
 Status.prototype.getInfo = function(next) {
   var that = this;
@@ -77,7 +76,7 @@ Status.prototype.getBestBlockHash = function(next) {
 
 Status.prototype.getLastBlockHash = function(next) {
   var that = this;
-  that.bDb.getTip(function(err,tip) {
+  bDb.getTip(function(err,tip) {
     that.syncTipHash = tip;
     async.waterfall(
       [
