@@ -116,7 +116,7 @@ Address.prototype.getUtxo = function(next) {
   });
 };
 
-Address.prototype.update = function(next) {
+Address.prototype.update = function(next, balance) {
   var self = this;
   if (!self.addrStr) return next();
 
@@ -132,13 +132,17 @@ Address.prototype.update = function(next) {
           var v = txItem.value_sat;
 
           if ( !seen[txItem.txid] ) {
-            txs.push({txid: txItem.txid, ts: txItem.ts});
+            if (!balance) { 
+              txs.push({txid: txItem.txid, ts: txItem.ts});
+            }
             seen[txItem.txid]=1;
             add=1;
           }
 
           if (txItem.spentTxId && !seen[txItem.spentTxId]  ) {
-            txs.push({txid: txItem.spentTxId, ts: txItem.spentTs});
+            if (!balance) {
+              txs.push({txid: txItem.spentTxId, ts: txItem.spentTs});
+            }
             seen[txItem.spentTxId]=1;
             addSpend=1;
           }
@@ -172,15 +176,17 @@ Address.prototype.update = function(next) {
     },
   ], function (err) {
 
-    // sort input and outputs togheter
-    txs.sort(
-      function compare(a,b) {
-        if (a.ts < b.ts) return 1;
-        if (a.ts > b.ts) return -1;
-        return 0;
-      });
+    if (!balance) {
+      // sort input and outputs togheter
+      txs.sort(
+        function compare(a,b) {
+          if (a.ts < b.ts) return 1;
+          if (a.ts > b.ts) return -1;
+          return 0;
+        });
 
-    self.transactions = txs.map(function(i) { return i.txid; } );
+      self.transactions = txs.map(function(i) { return i.txid; } );
+    }
     return next(err);
   });
 };
