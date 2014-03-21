@@ -116,7 +116,7 @@ Address.prototype.getUtxo = function(next) {
   });
 };
 
-Address.prototype.update = function(next, balance) {
+Address.prototype.update = function(next, notxlist) {
   var self = this;
   if (!self.addrStr) return next();
 
@@ -132,7 +132,7 @@ Address.prototype.update = function(next, balance) {
           var v = txItem.value_sat;
 
           if ( !seen[txItem.txid] ) {
-            if (!balance) { 
+            if (!notxlist) { 
               txs.push({txid: txItem.txid, ts: txItem.ts});
             }
             seen[txItem.txid]=1;
@@ -140,7 +140,7 @@ Address.prototype.update = function(next, balance) {
           }
 
           if (txItem.spentTxId && !seen[txItem.spentTxId]  ) {
-            if (!balance) {
+            if (!notxlist) {
               txs.push({txid: txItem.spentTxId, ts: txItem.spentTs});
             }
             seen[txItem.spentTxId]=1;
@@ -176,7 +176,7 @@ Address.prototype.update = function(next, balance) {
     },
   ], function (err) {
 
-    if (!balance) {
+    if (!notxlist) {
       // sort input and outputs togheter
       txs.sort(
         function compare(a,b) {
