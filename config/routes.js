@@ -37,6 +37,7 @@ module.exports = function(app) {
   app.get(apiPrefix + '/addr/:addr/balance', addressProperties.balance);
   app.get(apiPrefix + '/addr/:addr/totalReceived', addressProperties.totalReceived);
   app.get(apiPrefix + '/addr/:addr/totalSent', addressProperties.totalSent);
+  app.get(apiPrefix + '/addr/:addr/unconfirmedBalance', addressProperties.unconfirmedBalance);
 
   // Status route
   var st = require('../app/controllers/status');
