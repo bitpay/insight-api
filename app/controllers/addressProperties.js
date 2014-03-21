@@ -45,3 +45,16 @@ exports.totalReceived = function(req, res, next) {
       }
     });
 };
+
+exports.totalSent = function(req, res, next) {
+  var a = getAddr(req, res, next);
+  if (a)
+    a.update(function(err) {
+      if (err) {
+        return common.handleErrors(err, res);
+      }
+      else  {
+        return res.jsonp(a.totalSentSat);
+      }
+    });
+};
