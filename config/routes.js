@@ -35,6 +35,7 @@ module.exports = function(app) {
   // Address property routes
   var addressProperties = require('../app/controllers/addressProperties.js');
   app.get(apiPrefix + '/addr/:addr/balance', addressProperties.balance);
+  app.get(apiPrefix + '/addr/:addr/totalReceived', addressProperties.totalReceived);
 
   // Status route
   var st = require('../app/controllers/status');
