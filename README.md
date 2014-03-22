@@ -136,8 +136,8 @@ The end-points are:
 ```
 ### Address
 ```
-  /api/addr/[:addr]
-  /api/addr/mmvP3mTe53qxHdPqXEvdu8WdC7GfQ2vmx5
+  /api/addr/[:addr][?noTxList=1]
+  /api/addr/mmvP3mTe53qxHdPqXEvdu8WdC7GfQ2vmx5?noTxList=1
 ```
 ### Transactions by Block
 ```
