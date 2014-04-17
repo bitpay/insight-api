@@ -92,6 +92,7 @@ Address.prototype.getUtxo = function(next) {
     // Complete utxo info
     async.eachLimit(txOut,CONCURRENCY,function (txItem, a_c) {
       db.fromIdInfoSimple(txItem.txid, function(err, info) {
+        if (!info || !info.hex) return a_c(err);
 
         var scriptPubKey = self._getScriptPubKey(info.hex, txItem.index);
 

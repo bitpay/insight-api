@@ -42,10 +42,12 @@
     },
     { 
         "addr": "mzW2hdZN2um7WBvTDerdahKqRgj3md9C29",
-        "balance": 1199.74393853,
-        "totalReceived": 1199.74393853,
+        "balance": 1271.87752288,
+        "totalReceived": 1271.87752288,
         "totalSent": 0,
-        "txApperances": 6048
+        "txApperances": 6197,
+        "unconfirmedTxApperances": 3,
+        "unconfirmedBalanceSat": 149174913
     },
     {
         "addr": "mjRmkmYzvZN3cA3aBKJgYJ65epn3WCG84H",
