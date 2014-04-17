@@ -66,8 +66,8 @@
     "moment": "~2.5.0",
     "sinon": "~1.7.3",
     "chai": "~1.8.1",
-    "xmlhttprequest": "~1.6.0"
-    "bufferput": "git://github.com/bitpay/node-bufferput.git",
+    "xmlhttprequest": "~1.6.0",
+    "bufferput": "git://github.com/bitpay/node-bufferput.git"
   },
   "devDependencies": {
     "grunt": "~0.4.2",
