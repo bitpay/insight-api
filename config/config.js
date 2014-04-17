@@ -1,6 +1,7 @@
 'use strict';
 
 var path = require('path'),
+    fs = require('fs'),
     rootPath = path.normalize(__dirname + '/..'),
     env,
     db,
@@ -8,16 +9,23 @@ var path = require('path'),
     b_port,
     p2p_port;
 
+
+function getUserHome() {
+    return process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
+}
+
+var home = process.env.INSIGHT_DB || ( getUserHome()  + '/.insight' );
+
 if (process.env.INSIGHT_NETWORK === 'livenet') {
   env = 'livenet';
-  db = rootPath + '/db';
+  db = home;
   port = '3000';
   b_port = '8332';
   p2p_port = '8333';
 }
 else {
   env = 'testnet';
-  db = rootPath + '/db/testnet';
+  db = home + '/testnet';
   port = '3001';
   b_port = '18332';
   p2p_port = '18333';
@@ -47,6 +55,13 @@ if (!dataDir) {
   if (isLinux) dataDir = process.env.HOME + '/.bitcoin/';
 }
 dataDir += network === 'testnet' ? 'testnet3' : '';
+
+
+if (! fs.existsSync(db)){
+
+  console.log('## ERROR ##\n\tDB Directory "%s" not found. \n\tCreate it, move your old DB there or set the INSIGHT_DB environment variable.\n\tNOTE: In older insight-api versions, db was stored at <insight-root>/db', db);
+  process.exit(-1);
+}
 
 module.exports = {
   root: rootPath,
