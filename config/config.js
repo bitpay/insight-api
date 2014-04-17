@@ -14,7 +14,7 @@ function getUserHome() {
     return process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
 }
 
-var home = process.env.INSIGHT_DB || ( getUserHome()  + '/insight-api-db' );
+var home = process.env.INSIGHT_DB || ( getUserHome()  + '/.insight' );
 
 if (process.env.INSIGHT_NETWORK === 'livenet') {
   env = 'livenet';
