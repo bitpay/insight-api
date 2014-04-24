@@ -51,3 +51,54 @@ exports.utxo = function(req, res, next) {
 
 
 
+exports.balance = function(req, res, next) {
+  var a = getAddr(req, res, next);
+  if (a)
+    a.update(function(err) {
+      if (err) {
+        return common.handleErrors(err, res);
+      }
+      else  {
+        return res.jsonp(a.balanceSat);
+      }
+    });
+};
+
+exports.totalReceived = function(req, res, next) {
+  var a = getAddr(req, res, next);
+  if (a)
+    a.update(function(err) {
+      if (err) {
+        return common.handleErrors(err, res);
+      }
+      else  {
+        return res.jsonp(a.totalReceivedSat);
+      }
+    });
+};
+
+exports.totalSent = function(req, res, next) {
+  var a = getAddr(req, res, next);
+  if (a)
+    a.update(function(err) {
+      if (err) {
+        return common.handleErrors(err, res);
+      }
+      else  {
+        return res.jsonp(a.totalSentSat);
+      }
+    });
+};
+
+exports.unconfirmedBalance = function(req, res, next) {
+  var a = getAddr(req, res, next);
+  if (a)
+    a.update(function(err) {
+      if (err) {
+        return common.handleErrors(err, res);
+      }
+      else  {
+        return res.jsonp(a.unconfirmedBalanceSat);
+      }
+    });
+};

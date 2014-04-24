@@ -32,6 +32,12 @@ module.exports = function(app) {
   app.get(apiPrefix + '/addr/:addr', addresses.show);
   app.get(apiPrefix + '/addr/:addr/utxo', addresses.utxo);
 
+  // Address property routes
+  app.get(apiPrefix + '/addr/:addr/balance', addresses.balance);
+  app.get(apiPrefix + '/addr/:addr/totalReceived', addresses.totalReceived);
+  app.get(apiPrefix + '/addr/:addr/totalSent', addresses.totalSent);
+  app.get(apiPrefix + '/addr/:addr/unconfirmedBalance', addresses.unconfirmedBalance);
+
   // Status route
   var st = require('../app/controllers/status');
   app.get(apiPrefix + '/status', st.show);
