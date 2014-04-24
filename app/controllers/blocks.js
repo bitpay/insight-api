@@ -139,6 +139,14 @@ exports.list = function(req, res) {
             });
           });
         }, function(err, allblocks) {
+          // sort blocks by height
+          allblocks.sort(
+            function compare(a,b) {
+              if (a.height < b.height) return 1;
+              if (a.height > b.height) return -1;
+              return 0;
+            });
+          
           res.jsonp({
             blocks: allblocks,
             length: allblocks.length,
