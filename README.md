@@ -57,7 +57,7 @@ bitcoind must be running and must have finished downloading the blockchain **bef
 
 All configuration is specified in the [config](config/) folder, particularly the [config.js](config/config.js) file. There you can specify your application name and database name. Certain configuration values are pulled from environment variables if they are defined:
 
-### bitcoind connexion
+### bitcoind connection
 ```
 BITCOIND_HOST         # RPC bitcoind host
 BITCOIND_PORT         # RPC bitcoind Port
