@@ -140,6 +140,10 @@ The end-points are:
   /api/addr/[:addr][?noTxList=1]
   /api/addr/mmvP3mTe53qxHdPqXEvdu8WdC7GfQ2vmx5?noTxList=1
 ```
+### Unspent Output
+```
+  /api/addr/[:addr]/utxo
+```
 ### Transactions by Block
 ```
   /api/txs/?block=HASH
