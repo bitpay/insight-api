@@ -151,6 +151,12 @@ The end-points are:
   /api/txs/?address=mmhmMNfBiZZ37g1tgg2t8DDbNoEdqKVxAL
 ```
 
+### Unspent Transactions by Address
+```
+  /api/addr/ADDR/utxo
+  /api/addr/mmhmMNfBiZZ37g1tgg2t8DDbNoEdqKVxAL/utxo
+```
+
 ### Historic blockchain data sync status
 ```
   /api/sync
