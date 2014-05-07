@@ -2,11 +2,12 @@
 
 var imports            = require('soop').imports();
 var async              = require('async');
-var BitcoreAddress     = require('bitcore/Address');
-var BitcoreTransaction = require('bitcore/Transaction');
-var BitcoreUtil        = require('bitcore/util/util');
-var Parser             = require('bitcore/util/BinaryParser');
-var Buffer             = require('buffer').Buffer;
+var bitcore            = require('bitcore');
+var BitcoreAddress     = bitcore.Address;
+var BitcoreTransaction = bitcore.Transaction;
+var BitcoreUtil        = bitcore.util;
+var Parser             = bitcore.BinaryParser;
+var Buffer             = bitcore.Buffer;
 var TransactionDb      = imports.TransactionDb || require('../../lib/TransactionDb').default();
 var CONCURRENCY        = 5;
 
@@ -133,7 +134,7 @@ Address.prototype.update = function(next, notxlist) {
           var v = txItem.value_sat;
 
           if ( !seen[txItem.txid] ) {
-            if (!notxlist) { 
+            if (!notxlist) {
               txs.push({txid: txItem.txid, ts: txItem.ts});
             }
             seen[txItem.txid]=1;
