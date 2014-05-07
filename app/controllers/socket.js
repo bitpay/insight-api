@@ -3,7 +3,7 @@
 // server-side socket behaviour
 // io is a variable already taken in express
 var ios = null;
-var util = require('bitcore/util/util');
+var util = require('bitcore').util;
 
 module.exports.init = function(app, io_ext) {
   ios = io_ext;
