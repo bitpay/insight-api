@@ -5,7 +5,8 @@
  */
 
 var Address = require('../models/Address'),
-    common      = require('./common');
+  common = require('./common'),
+  async = require('async');
 
 var getAddr = function(req, res, next) {
   var a;
@@ -13,42 +14,80 @@ var getAddr = function(req, res, next) {
     var addr = req.param('addr');
     a = new Address(addr);
   } catch (e) {
-    common.handleErrors({message: 'Invalid address:' + e.message, code: 1}, res, next);
+    common.handleErrors({
+      message: 'Invalid address:' + e.message,
+      code: 1
+    }, res, next);
     return null;
   }
   return a;
 };
 
+var getAddrs = function(req, res, next) {
+  var as = [];
+  try {
+    var addrStrs = req.param('addrs');
+    var s = addrStrs.split(',');
+    if (s.length === 0) return as;
+    for (var i = 0; i < s.length; i++) {
+      var a = new Address(s[i]);
+      as.push(a);
+    }
+  } catch (e) {
+    common.handleErrors({
+      message: 'Invalid address:' + e.message,
+      code: 1
+    }, res, next);
+    return null;
+  }
+  return as;
+};
 
 exports.show = function(req, res, next) {
   var a = getAddr(req, res, next);
-  
-  if (a)
+
+  if (a) {
     a.update(function(err) {
       if (err) {
         return common.handleErrors(err, res);
-      }
-      else  {
+      } else {
         return res.jsonp(a);
       }
     }, req.query.noTxList);
+  }
 };
 
 
 
 exports.utxo = function(req, res, next) {
   var a = getAddr(req, res, next);
-  
-  if (a)
+  if (a) {
     a.getUtxo(function(err, utxo) {
       if (err)
         return common.handleErrors(err, res);
-      else  {
+      else {
         return res.jsonp(utxo);
       }
     });
+  }
 };
 
+exports.multiutxo = function(req, res, next) {
+  var as = getAddrs(req, res, next);
+  if (as) {
+    var utxos = [];
+    async.each(as, function(a, callback) {
+      a.getUtxo(function(err, utxo) {
+        if (err) callback(err);
+        utxos = utxos.concat(utxo);
+        callback();
+      });
+    }, function(err) { // finished callback
+      if (err) return common.handleErrors(err, res);
+      res.jsonp(utxos);
+    });
+  }
+};
 
 
 exports.balance = function(req, res, next) {
@@ -57,8 +96,7 @@ exports.balance = function(req, res, next) {
     a.update(function(err) {
       if (err) {
         return common.handleErrors(err, res);
-      }
-      else  {
+      } else {
         return res.jsonp(a.balanceSat);
       }
     });
@@ -70,8 +108,7 @@ exports.totalReceived = function(req, res, next) {
     a.update(function(err) {
       if (err) {
         return common.handleErrors(err, res);
-      }
-      else  {
+      } else {
         return res.jsonp(a.totalReceivedSat);
       }
     });
@@ -83,8 +120,7 @@ exports.totalSent = function(req, res, next) {
     a.update(function(err) {
       if (err) {
         return common.handleErrors(err, res);
-      }
-      else  {
+      } else {
         return res.jsonp(a.totalSentSat);
       }
     });
@@ -96,8 +132,7 @@ exports.unconfirmedBalance = function(req, res, next) {
     a.update(function(err) {
       if (err) {
         return common.handleErrors(err, res);
-      }
-      else  {
+      } else {
         return res.jsonp(a.unconfirmedBalanceSat);
       }
     });
