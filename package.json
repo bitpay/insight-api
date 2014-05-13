@@ -50,7 +50,7 @@
     "start": "node node_modules/grunt-cli/bin/grunt"
   },
   "dependencies": {
-    "bitcore": "=0.1.18",
+    "bitcore": "=0.1.19",
     "base58-native": "0.1.2",
     "async": "*",
     "leveldown": "*",
