@@ -43,7 +43,7 @@ describe('BlockExtractor', function(){
     });
   });
 
-  it('should read next testnet block ', function(done) {
+  it('should read next '+config.network+' block ', function(done) {
     be.getNextBlock(function(err,b) {
       assert(!err);
       assert(b.timestamp > lastTs, 'timestamp > genesis_ts');
