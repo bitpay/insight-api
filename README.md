@@ -57,7 +57,6 @@ bitcoind must be running and must have finished downloading the blockchain **bef
 
 All configuration is specified in the [config](config/) folder, particularly the [config.js](config/config.js) file. There you can specify your application name and database name. Certain configuration values are pulled from environment variables if they are defined:
 
-### bitcoind connection
 ```
 BITCOIND_HOST         # RPC bitcoind host
 BITCOIND_PORT         # RPC bitcoind Port
@@ -66,6 +65,7 @@ BITCOIND_USER         # RPC username
 BITCOIND_PASS         # RPC password
 BITCOIND_DATADIR      # bitcoind datadir for livenet, or datadir/testnet3 for testnet
 INSIGHT_NETWORK [= 'livenet' | 'testnet']
+INSIGHT_DB            # Path where to store insight's internal DB. (defaults to $HOME/.insight)
 ```
 
 Make sure that bitcoind is configured to [accept incoming connections using 'rpcallowip'](https://en.bitcoin.it/wiki/Running_Bitcoin).
