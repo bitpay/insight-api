@@ -31,7 +31,8 @@ describe('Address balances', function() {
         a.update(function(err) {
           if (err) done(err);
           assert.equal(v.addr, a.addrStr);
-          assert.equal(a.unconfirmedTxApperances ,v.unconfirmedTxApperances || 0, 'unconfirmedTxApperances');
+          assert.equal(a.unconfirmedTxApperances ,v.unconfirmedTxApperances || 0, 
+                       'unconfirmedTxApperances got:' + a.unconfirmedTxApperances );
           assert.equal(a.unconfirmedBalanceSat ,v.unconfirmedBalanceSat || 0, 'unconfirmedBalanceSat: ' + a.unconfirmedBalanceSat + ' vs.: ' + v.unconfirmedBalanceSat );
           if (v.txApperances)
             assert.equal(v.txApperances, a.txApperances, 'txApperances: ' + a.txApperances);
