@@ -145,10 +145,22 @@ The end-points are:
   /api/addr/[:addr]/utxo
 ```
 ### Unspent Outputs for multiple addresses
+GET method:
 ```
   /api/addrs/[:addrs]/utxo
   /api/addrs/2NF2baYuJAkCKo5onjUKEPdARQkZ6SYyKd5,2NAre8sX2povnjy4aeiHKeEh97Qhn97tB1f/utxo
 ```
+
+POST method:
+```
+  /api/addrs/utxo
+```
+
+POST params:
+```
+addrs: 2NF2baYuJAkCKo5onjUKEPdARQkZ6SYyKd5,2NAre8sX2povnjy4aeiHKeEh97Qhn97tB1f
+```
+
 ### Transactions by Block
 ```
   /api/txs/?block=HASH
