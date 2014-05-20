@@ -107,7 +107,7 @@ Address.prototype.getUtxo = function(next) {
             ts: txItem.ts,
             scriptPubKey: scriptPubKey,
             amount: txItem.value_sat / BitcoreUtil.COIN,
-            confirmations: txItem.isConfirmed ? info.confirmations : 0,
+            confirmations: txItem.height ? info.confirmations : 0,
           });
         }
         return a_c(err);
@@ -149,7 +149,7 @@ Address.prototype.update = function(next, notxlist) {
             addSpend=1;
           }
 
-          if (txItem.isConfirmed) {
+          if (txItem.height) {
             self.txApperances += add;
             self.totalReceivedSat += v;
             if (! txItem.spentTxId ) {

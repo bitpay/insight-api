@@ -66,6 +66,7 @@ describe('Address utxo', function() {
 
         var a = new Address(v.addr, txDb);
         a.getUtxo(function(err, utxo) {
+console.log('[addr.js.68:utxo:]',utxo); //TODO
           if (err) done(err);
           assert.equal(v.addr, a.addrStr);
           if (v.length) assert.equal(v.length, utxo.length, 'length: ' + utxo.length);
