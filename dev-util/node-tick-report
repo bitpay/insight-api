@@ -1,0 +1,1328 @@
+Code move event for unknown code: 0x278907110560
+Code move event for unknown code: 0x27890730a4e0
+Statistical profiling result from v8.log, (24141 ticks, 452 unaccounted, 0 excluded).
+
+ [Unknown]:
+   ticks  total  nonlib   name
+    452    1.9%
+
+ [Shared libraries]:
+   ticks  total  nonlib   name
+   9018   37.4%    0.0%  /usr/local/bin/node
+   8405   34.8%    0.0%  /usr/lib/system/libsystem_kernel.dylib
+    606    2.5%    0.0%  /usr/lib/system/libsystem_c.dylib
+    509    2.1%    0.0%  /usr/lib/system/libsystem_malloc.dylib
+    375    1.6%    0.0%  /usr/lib/system/libsystem_platform.dylib
+    187    0.8%    0.0%  /usr/lib/system/libsystem_pthread.dylib
+     75    0.3%    0.0%  /usr/lib/system/libsystem_m.dylib
+     73    0.3%    0.0%  /usr/lib/libc++abi.dylib
+     31    0.1%    0.0%  /usr/lib/libstdc++.6.dylib
+
+ [JavaScript]:
+   ticks  total  nonlib   name
+    133    0.6%    2.7%  LazyCompile: formatValue util.js:204
+    122    0.5%    2.5%  LazyCompile: *formatProperty util.js:353
+    113    0.5%    2.3%  Stub: CEntryStub
+     96    0.4%    2.0%  Builtin: A builtin from the snapshot {3}
+     95    0.4%    2.0%  Builtin: A builtin from the snapshot {2}
+     92    0.4%    1.9%  LazyCompile: *Batch /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/batch.js:13
+     87    0.4%    1.8%  LazyCompile: *ConvertDescriptorArrayToDescriptor native v8natives.js:581
+     84    0.3%    1.7%  LazyCompile: *map native array.js:1215
+     81    0.3%    1.7%  Stub: StringAddStub
+     72    0.3%    1.5%  LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:610
+     65    0.3%    1.3%  LazyCompile: *inspect buffer.js:283
+     64    0.3%    1.3%  LazyCompile: <anonymous> native messages.js:1157
+     60    0.2%    1.2%  LazyCompile: ToObject native runtime.js:567
+     58    0.2%    1.2%  Stub: FastNewClosureStub {1}
+     58    0.2%    1.2%  LazyCompile: *FromPropertyDescriptor native v8natives.js:373
+     51    0.2%    1.0%  Builtin: A builtin from the snapshot {1}
+     50    0.2%    1.0%  LazyCompile: stringify native json.js:308
+     50    0.2%    1.0%  LazyCompile: join native array.js:410
+     47    0.2%    1.0%  KeyedLoadIC: A keyed load IC from the snapshot
+     46    0.2%    0.9%  LazyCompile: *BuildResultFromMatchInfo native regexp.js:130
+     45    0.2%    0.9%  Stub: CallFunctionStub_Args0_Recording
+     43    0.2%    0.9%  Stub: CallConstructStub
+     42    0.2%    0.9%  LazyCompile: *ArraySlice native array.js:621
+     40    0.2%    0.8%  Stub: JSEntryStub
+     40    0.2%    0.8%  LazyCompile: *PropertyDescriptor native v8natives.js:482
+     39    0.2%    0.8%  Stub: KeyedStoreElementStub
+     39    0.2%    0.8%  Stub: CompareStub
+     39    0.2%    0.8%  Stub: CallConstructStub {1}
+     39    0.2%    0.8%  LazyCompile: Join native array.js:119
+     39    0.2%    0.8%  LazyCompile: *forEach native array.js:1087
+     37    0.2%    0.8%  Stub: CallFunctionStub {1}
+     36    0.1%    0.7%  RegExp: ^"([a-zA-Z_][a-zA-Z_0-9]*)"$
+     36    0.1%    0.7%  LazyCompile: Batch.put /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/batch.js:19
+     34    0.1%    0.7%  LazyCompile: *BasicJSONSerialize native json.js:274
+     34    0.1%    0.7%  Builtin: A builtin from the snapshot
+     33    0.1%    0.7%  Stub: RegExpExecStub
+     32    0.1%    0.7%  Stub: SubStringStub
+     32    0.1%    0.7%  LazyCompile: *substr native string.js:695
+     31    0.1%    0.6%  Stub: InstanceofStub
+     30    0.1%    0.6%  Stub: ToBooleanStub {2}
+     30    0.1%    0.6%  LazyCompile: ~LevelUP.batch /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/levelup.js:285
+     30    0.1%    0.6%  LazyCompile: *Buffer.slice buffer.js:539
+     28    0.1%    0.6%  LazyCompile: toString native v8natives.js:223
+     28    0.1%    0.6%  LazyCompile: IN native runtime.js:354
+     28    0.1%    0.6%  LazyCompile: *LevelUP.get /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/levelup.js:163
+     28    0.1%    0.6%  LazyCompile: *GetOwnProperty native v8natives.js:637
+     27    0.1%    0.6%  Stub: CompareICStub {4}
+     27    0.1%    0.6%  LazyCompile: <anonymous> native string.js:36
+     27    0.1%    0.6%  LazyCompile: *getOwnPropertyDescriptor native v8natives.js:946
+     25    0.1%    0.5%  LazyCompile: *toString native v8natives.js:1378
+     25    0.1%    0.5%  LazyCompile: *isCoinBase /Users/ematiu/devel/node/bitcore/lib/Transaction.js:49
+     25    0.1%    0.5%  LazyCompile: *formatPrimitive util.js:304
+     24    0.1%    0.5%  LazyCompile: ToString native runtime.js:550
+     23    0.1%    0.5%  Stub: CompareICStub
+     23    0.1%    0.5%  LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/BlockDb.js:58
+     23    0.1%    0.5%  LazyCompile: *indexOf native array.js:1261
+     23    0.1%    0.5%  LazyCompile: *LevelUP.put /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/levelup.js:210
+     23    0.1%    0.5%  LazyCompile: *Buffer.copy buffer.js:509
+     22    0.1%    0.5%  LazyCompile: captureStackTrace native messages.js:1113
+     22    0.1%    0.5%  LazyCompile: *split native string.js:554
+     21    0.1%    0.4%  Stub: KeyedLoadElementStub {1}
+     21    0.1%    0.4%  LazyCompile: *Buffer.write buffer.js:315
+     20    0.1%    0.4%  Stub: StringAddStub {1}
+     20    0.1%    0.4%  LazyCompile: *reduce native array.js:1381
+     20    0.1%    0.4%  LazyCompile: *BlockDb.add /Users/ematiu/devel/node/insight-api/lib/BlockDb.js:48
+     19    0.1%    0.4%  RegExp: ^"|"$
+     19    0.1%    0.4%  LazyCompile: <anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:229
+     19    0.1%    0.4%  LazyCompile: *match native string.js:182
+     18    0.1%    0.4%  LazyCompile: ~Logger.log /Users/ematiu/devel/node/insight-api/node_modules/winston/lib/winston/logger.js:123
+     18    0.1%    0.4%  LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/levelup.js:238
+     18    0.1%    0.4%  LazyCompile: *Script /Users/ematiu/devel/node/bitcore/lib/Script.js:25
+     18    0.1%    0.4%  Builtin: A builtin from the snapshot {5}
+     17    0.1%    0.3%  Stub: FastNewContextStub
+     17    0.1%    0.3%  Stub: FastCloneShallowObjectStub
+     17    0.1%    0.3%  LazyCompile: ~indexOf native array.js:1261
+     17    0.1%    0.3%  LazyCompile: ~Address.fromScriptPubKey /Users/ematiu/devel/node/bitcore/lib/Address.js:97
+     17    0.1%    0.3%  LazyCompile: APPLY_PREPARE native runtime.js:438
+     17    0.1%    0.3%  LazyCompile: *parse /Users/ematiu/devel/node/bitcore/lib/Block.js:51
+     17    0.1%    0.3%  LazyCompile: *getOptions /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/util.js:87
+     16    0.1%    0.3%  Stub: FastNewClosureStub
+     16    0.1%    0.3%  Stub: CallFunctionStub_Args1
+     16    0.1%    0.3%  LazyCompile: ~Script.capture /Users/ematiu/devel/node/bitcore/lib/Script.js:235
+     16    0.1%    0.3%  LazyCompile: hasOwnProperty native v8natives.js:249
+     16    0.1%    0.3%  LazyCompile: *indexOf native string.js:118
+     16    0.1%    0.3%  LazyCompile: *ceil native math.js:79
+     15    0.1%    0.3%  Stub: FastCloneShallowArrayStub {1}
+     15    0.1%    0.3%  Stub: BinaryOpStub
+     15    0.1%    0.3%  LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/batch.js:66
+     15    0.1%    0.3%  LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:249
+     15    0.1%    0.3%  LazyCompile: *extend /Users/ematiu/devel/node/insight-api/node_modules/levelup/node_modules/xtend/index.js:6
+     15    0.1%    0.3%  LazyCompile: *exports.twoSha256 /Users/ematiu/devel/node/bitcore/util/util.js:50
+     15    0.1%    0.3%  LazyCompile: *exports.formatHashFull /Users/ematiu/devel/node/bitcore/util/util.js:70
+     15    0.1%    0.3%  LazyCompile: *arrayToHash util.js:193
+     15    0.1%    0.3%  LazyCompile: *UseSparseVariant native array.js:111
+     15    0.1%    0.3%  LazyCompile: *IsDataDescriptor native v8natives.js:354
+     15    0.1%    0.3%  LazyCompile: *DefineObjectProperty native v8natives.js:695
+     14    0.1%    0.3%  Stub: ToBooleanStub {1}
+     14    0.1%    0.3%  LazyCompile: ~EventEmitter.emit events.js:53
+     14    0.1%    0.3%  LazyCompile: *inspect util.js:118
+     14    0.1%    0.3%  LazyCompile: *formatArray util.js:333
+     14    0.1%    0.3%  LazyCompile: *encodeKey /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/util.js:146
+     14    0.1%    0.3%  LazyCompile: *Hash crypto.js:185
+     14    0.1%    0.3%  LazyCompile: *<anonymous> util.js:293
+     13    0.1%    0.3%  Stub: RecordWriteStub {1}
+     13    0.1%    0.3%  Stub: CallFunctionStub
+     13    0.1%    0.3%  LazyCompile: VersionedData /Users/ematiu/devel/node/bitcore/util/VersionedData.js:6
+     13    0.1%    0.3%  LazyCompile: SimpleSlice native array.js:324
+     13    0.1%    0.3%  LazyCompile: *keys native v8natives.js:333
+     13    0.1%    0.3%  LazyCompile: *ToPropertyDescriptor native v8natives.js:420
+     13    0.1%    0.3%  LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/lib/HistoricSync.js:164
+     13    0.1%    0.3%  LazyCompile: *$Array.enumerable_ native v8natives.js:523
+     12    0.0%    0.2%  Stub: FastNewContextStub {1}
+     12    0.0%    0.2%  LazyCompile: ~exports.setImmediate timers.js:337
+     12    0.0%    0.2%  LazyCompile: *replace native string.js:221
+     12    0.0%    0.2%  LazyCompile: *Buffer.toString buffer.js:392
+     12    0.0%    0.2%  LazyCompile: *Buffer.concat buffer.js:476
+     12    0.0%    0.2%  Builtin: A builtin from the snapshot {7}
+     11    0.0%    0.2%  Stub: RegExpConstructResultStub
+     11    0.0%    0.2%  Stub: KeyedLoadElementStub
+     11    0.0%    0.2%  LazyCompile: ~prr /Users/ematiu/devel/node/insight-api/node_modules/levelup/node_modules/prr/prr.js:44
+     11    0.0%    0.2%  LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/HistoricSync.js:204
+     11    0.0%    0.2%  LazyCompile: *ToUint32 native runtime.js:586
+     11    0.0%    0.2%  LazyCompile: *BlockDb.has /Users/ematiu/devel/node/insight-api/lib/BlockDb.js:175
+     11    0.0%    0.2%  LazyCompile: *<anonymous> /Users/ematiu/devel/node/bitcore/util/BinaryParser.js:97
+     10    0.0%    0.2%  LazyCompile: ~exports.format util.js:23
+     10    0.0%    0.2%  LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:149
+     10    0.0%    0.2%  LazyCompile: NonNumberToNumber native runtime.js:538
+     10    0.0%    0.2%  LazyCompile: *iterate /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:148
+     10    0.0%    0.2%  LazyCompile: *isDate util.js:448
+     10    0.0%    0.2%  LazyCompile: *isArray native array.js:1488
+     10    0.0%    0.2%  LazyCompile: *exports.ripe160 /Users/ematiu/devel/node/bitcore/util/util.js:29
+     10    0.0%    0.2%  LazyCompile: *encodings.utf8.encodings.utf-8.encode /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/util.js:40
+     10    0.0%    0.2%  LazyCompile: *HistoricSync._fromBuffer /Users/ematiu/devel/node/insight-api/lib/HistoricSync.js:143
+     10    0.0%    0.2%  LazyCompile: *$Array.enumerable_ native v8natives.js:516
+      9    0.0%    0.2%  Stub: ToBooleanStub_UndefinedSpecObject
+      9    0.0%    0.2%  Stub: FastNewContextStub {2}
+      9    0.0%    0.2%  LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/levelup.js:345
+      9    0.0%    0.2%  LazyCompile: *serialize /Users/ematiu/devel/node/bitcore/lib/Transaction.js:152
+      9    0.0%    0.2%  LazyCompile: *reduceToSingleString util.js:412
+      9    0.0%    0.2%  LazyCompile: *isFinite native v8natives.js:103
+      9    0.0%    0.2%  LazyCompile: *isBuffer buffer.js:277
+      9    0.0%    0.2%  LazyCompile: *isArray util.js:435
+      9    0.0%    0.2%  LazyCompile: *buffer /Users/ematiu/devel/node/bitcore/util/BinaryParser.js:12
+      9    0.0%    0.2%  LazyCompile: *Hash.update crypto.js:205
+      9    0.0%    0.2%  LazyCompile: *<anonymous> util.js:414
+      9    0.0%    0.2%  LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:248
+      9    0.0%    0.2%  LazyCompile: *$Array.writable_ native v8natives.js:530
+      9    0.0%    0.2%  Builtin: A builtin from the snapshot {10}
+      8    0.0%    0.2%  Stub: ToBooleanStub
+      8    0.0%    0.2%  Stub: NumberToStringStub
+      8    0.0%    0.2%  Stub: BinaryOpStub_ADD_OverwriteLeft_BothStrings
+      8    0.0%    0.2%  LazyCompile: ~async.series.err /Users/ematiu/devel/node/insight-api/lib/Sync.js:155
+      8    0.0%    0.2%  LazyCompile: ~async.series.err /Users/ematiu/devel/node/insight-api/lib/Sync.js:146
+      8    0.0%    0.2%  LazyCompile: STRING_ADD_LEFT native runtime.js:183
+      8    0.0%    0.2%  LazyCompile: *varIntBuf /Users/ematiu/devel/node/bitcore/util/util.js:444
+      8    0.0%    0.2%  LazyCompile: *parseInt native v8natives.js:110
+      8    0.0%    0.2%  LazyCompile: *isError util.js:454
+      8    0.0%    0.2%  LazyCompile: *RegExpExecNoTests native regexp.js:157
+      8    0.0%    0.2%  LazyCompile: *<anonymous> util.js:196
+      7    0.0%    0.1%  Stub: ToBooleanStub_String
+      7    0.0%    0.1%  Stub: ToBooleanStub_SmiSpecObjectStringHeapNumber
+      7    0.0%    0.1%  Stub: CallFunctionStub {2}
+      7    0.0%    0.1%  Stub: ArgumentsAccessStub
+      7    0.0%    0.1%  LazyCompile: ~<anonymous> /Users/ematiu/devel/node/bitcore/util/VersionedData.js:23
+      7    0.0%    0.1%  LazyCompile: toString native messages.js:1248
+      7    0.0%    0.1%  LazyCompile: TransactionDb._addScript /Users/ematiu/devel/node/insight-api/lib/TransactionDb.js:462
+      7    0.0%    0.1%  LazyCompile: Address /Users/ematiu/devel/node/bitcore/lib/Address.js:39
+      7    0.0%    0.1%  LazyCompile: *stylizeNoColor util.js:188
+      7    0.0%    0.1%  LazyCompile: *isRegExp util.js:442
+      7    0.0%    0.1%  LazyCompile: *hasKeys /Users/ematiu/devel/node/insight-api/node_modules/levelup/node_modules/xtend/has-keys.js:3
+      7    0.0%    0.1%  LazyCompile: *getHash /Users/ematiu/devel/node/bitcore/lib/Block.js:85
+      7    0.0%    0.1%  LazyCompile: *exports.sha256ripe160 /Users/ematiu/devel/node/bitcore/util/util.js:54
+      7    0.0%    0.1%  LazyCompile: *decodeLEu /Users/ematiu/devel/node/bitcore/util/BinaryParser.js:61
+      7    0.0%    0.1%  LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/lib/HistoricSync.js:152
+      7    0.0%    0.1%  LazyCompile: *$Array.get_ native v8natives.js:546
+      7    0.0%    0.1%  LazyCompile: *$Array.configurable_ native v8natives.js:536
+      7    0.0%    0.1%  KeyedStoreIC: A keyed store IC from the snapshot
+      7    0.0%    0.1%  Builtin: A builtin from the snapshot {9}
+      7    0.0%    0.1%  Builtin: A builtin from the snapshot {6}
+      6    0.0%    0.1%  Stub: ToBooleanStub_UndefinedString
+      6    0.0%    0.1%  Stub: StringAddStub {2}
+      6    0.0%    0.1%  Stub: RecordWriteStub {9}
+      6    0.0%    0.1%  Stub: RecordWriteStub {4}
+      6    0.0%    0.1%  Stub: RecordWriteStub {2}
+      6    0.0%    0.1%  Stub: CompareICStub {1}
+      6    0.0%    0.1%  LazyCompile: ~GetPropertyWithoutInvokingMonkeyGetters native messages.js:1203
+      6    0.0%    0.1%  LazyCompile: *toLowerCase native string.js:739
+      6    0.0%    0.1%  LazyCompile: *serialize /Users/ematiu/devel/node/bitcore/lib/Transaction.js:56
+      6    0.0%    0.1%  LazyCompile: *isValueAsBuffer /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/util.js:162
+      6    0.0%    0.1%  LazyCompile: *_map /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:53
+      6    0.0%    0.1%  LazyCompile: *LevelUP._isOpening /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/levelup.js:155
+      6    0.0%    0.1%  LazyCompile: *Hash.digest crypto.js:214
+      6    0.0%    0.1%  LazyCompile: *$Array.writable_ native v8natives.js:526
+      6    0.0%    0.1%  LazyCompile: *$Array.configurable_ native v8natives.js:540
+      5    0.0%    0.1%  Stub: RecordWriteStub {16}
+      5    0.0%    0.1%  Stub: RecordWriteStub {11}
+      5    0.0%    0.1%  Stub: RecordWriteStub
+      5    0.0%    0.1%  Stub: KeyedStoreElementStub {2}
+      5    0.0%    0.1%  Stub: FastNewContextStub {4}
+      5    0.0%    0.1%  Stub: CompareStub_GE
+      5    0.0%    0.1%  Stub: CallFunctionStub_Args5_Recording
+      5    0.0%    0.1%  LazyCompile: ~async.series.self.bDb.getTip.oldTip /Users/ematiu/devel/node/insight-api/lib/Sync.js:92
+      5    0.0%    0.1%  LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/Sync.js:157
+      5    0.0%    0.1%  LazyCompile: ~<anonymous> /Users/ematiu/devel/node/bitcore/util/VersionedData.js:32
+      5    0.0%    0.1%  LazyCompile: NonStringToString native runtime.js:558
+      5    0.0%    0.1%  LazyCompile: INSTANCE_OF native runtime.js:367
+      5    0.0%    0.1%  LazyCompile: ErrorToStringDetectCycle native messages.js:1227
+      5    0.0%    0.1%  LazyCompile: DefaultString native runtime.js:645
+      5    0.0%    0.1%  LazyCompile: <anonymous> /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/levelup.js:189
+      5    0.0%    0.1%  LazyCompile: *global.setImmediate node.js:192
+      5    0.0%    0.1%  LazyCompile: *encodeValue /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/util.js:150
+      5    0.0%    0.1%  LazyCompile: *constructor.super /Users/ematiu/devel/node/bitcore/node_modules/soop/soop.js:22
+      5    0.0%    0.1%  LazyCompile: *TransactionDb.createFromBlock /Users/ematiu/devel/node/insight-api/lib/TransactionDb.js:582
+      5    0.0%    0.1%  LazyCompile: *Sync.storeTipBlock /Users/ematiu/devel/node/insight-api/lib/Sync.js:79
+      5    0.0%    0.1%  LazyCompile: *Script.isPubkey /Users/ematiu/devel/node/bitcore/lib/Script.js:89
+      5    0.0%    0.1%  LazyCompile: *LazyTransform crypto.js:153
+      5    0.0%    0.1%  LazyCompile: *IsAccessorDescriptor native v8natives.js:347
+      5    0.0%    0.1%  LazyCompile: *HistoricSync.getStandardizedBlock /Users/ematiu/devel/node/insight-api/lib/HistoricSync.js:184
+      5    0.0%    0.1%  LazyCompile: *EncodedData.doAsBinary /Users/ematiu/devel/node/bitcore/util/EncodedData.js:75
+      5    0.0%    0.1%  LazyCompile: *Buffer.writeUInt8 buffer.js:792
+      5    0.0%    0.1%  LazyCompile: *Block /Users/ematiu/devel/node/bitcore/lib/Block.js:20
+      5    0.0%    0.1%  LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:608
+      5    0.0%    0.1%  LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:237
+      5    0.0%    0.1%  KeyedLoadIC: args_count: 0 {5}
+      5    0.0%    0.1%  KeyedLoadIC: args_count: 0 {3}
+      5    0.0%    0.1%  KeyedLoadIC: A keyed load IC from the snapshot {1}
+      4    0.0%    0.1%  Stub: ToBooleanStub_UndefinedSmi
+      4    0.0%    0.1%  Stub: RecordWriteStub {8}
+      4    0.0%    0.1%  Stub: RecordWriteStub {7}
+      4    0.0%    0.1%  Stub: RecordWriteStub {3}
+      4    0.0%    0.1%  Stub: FastCloneShallowObjectStub {1}
+      4    0.0%    0.1%  Stub: CompareICStub {5}
+      4    0.0%    0.1%  Stub: CompareICStub {3}
+      4    0.0%    0.1%  RegExp: ^\\d+$
+      4    0.0%    0.1%  LazyCompile: ~err /Users/ematiu/devel/node/insight-api/node_modules/levelup/node_modules/errno/custom.js:25
+      4    0.0%    0.1%  LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/BlockExtractor.js:102
+      4    0.0%    0.1%  LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/BlockDb.js:177
+      4    0.0%    0.1%  LazyCompile: FILTER_KEY native runtime.js:398
+      4    0.0%    0.1%  LazyCompile: DefineOneShotAccessor native messages.js:767
+      4    0.0%    0.1%  LazyCompile: ConfigureTemplateInstance native apinatives.js:105
+      4    0.0%    0.1%  LazyCompile: *winston.(anonymous function) /Users/ematiu/devel/node/insight-api/node_modules/winston/lib/winston.js:84
+      4    0.0%    0.1%  LazyCompile: *init _linklist.js:22
+      4    0.0%    0.1%  LazyCompile: *hasOwnProperty util.js:577
+      4    0.0%    0.1%  LazyCompile: *VersionedData.payload /Users/ematiu/devel/node/bitcore/util/VersionedData.js:30
+      4    0.0%    0.1%  LazyCompile: *Transaction /Users/ematiu/devel/node/bitcore/lib/Transaction.js:108
+      4    0.0%    0.1%  LazyCompile: *BlockDb.setLastFileIndex /Users/ematiu/devel/node/insight-api/lib/BlockDb.js:112
+      4    0.0%    0.1%  LazyCompile: *BlockDb.getTip /Users/ematiu/devel/node/insight-api/lib/BlockDb.js:66
+      4    0.0%    0.1%  LazyCompile: *$Array.enumerable_ native v8natives.js:520
+      4    0.0%    0.1%  KeyedStoreIC: args_count: 0 {2}
+      3    0.0%    0.1%  Stub: StringAddStub {3}
+      3    0.0%    0.1%  Stub: RecordWriteStub {12}
+      3    0.0%    0.1%  Stub: RecordWriteStub {10}
+      3    0.0%    0.1%  Stub: JSEntryStub {1}
+      3    0.0%    0.1%  Stub: FastCloneShallowArrayStub
+      3    0.0%    0.1%  Stub: CompareStub_LT
+      3    0.0%    0.1%  Stub: CompareICStub {8}
+      3    0.0%    0.1%  Stub: ArgumentsAccessStub_NewStrict
+      3    0.0%    0.1%  LazyCompile: ~Buffer buffer.js:156
+      3    0.0%    0.1%  LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:678
+      3    0.0%    0.1%  LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/Sync.js:94
+      3    0.0%    0.1%  LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/HistoricSync.js:448
+      3    0.0%    0.1%  LazyCompile: *test native regexp.js:217
+      3    0.0%    0.1%  LazyCompile: *VersionedData.version /Users/ematiu/devel/node/bitcore/util/VersionedData.js:21
+      3    0.0%    0.1%  LazyCompile: *HistoricSync.getStandardizedTx /Users/ematiu/devel/node/insight-api/lib/HistoricSync.js:148
+      3    0.0%    0.1%  LazyCompile: *Buffer.writeUInt32LE buffer.js:839
+      3    0.0%    0.1%  LazyCompile: *$Array.get_ native v8natives.js:553
+      3    0.0%    0.1%  KeyedLoadIC: args_count: 0 {8}
+      3    0.0%    0.1%  KeyedLoadIC: A keyed load IC from the snapshot {2}
+      2    0.0%    0.0%  Stub: ToBooleanStub_UndefinedNull
+      2    0.0%    0.0%  Stub: ToBooleanStub_Smi
+      2    0.0%    0.0%  Stub: RecordWriteStub {6}
+      2    0.0%    0.0%  Stub: RecordWriteStub {15}
+      2    0.0%    0.0%  Stub: RecordWriteStub {14}
+      2    0.0%    0.0%  Stub: MathPowStub
+      2    0.0%    0.0%  Stub: FastNewContextStub {5}
+      2    0.0%    0.0%  Stub: FastNewContextStub {3}
+      2    0.0%    0.0%  Stub: FastCloneShallowArrayStub {2}
+      2    0.0%    0.0%  Stub: ConstructStub
+      2    0.0%    0.0%  Stub: CompareICStub {7}
+      2    0.0%    0.0%  Stub: CompareICStub {6}
+      2    0.0%    0.0%  Stub: CompareICStub {2}
+      2    0.0%    0.0%  Stub: BinaryOpStub_SHR_Alloc_SMI
+      2    0.0%    0.0%  Stub: BinaryOpStub_ADD_OverwriteLeft_Strings
+      2    0.0%    0.0%  Stub: BinaryOpStub {1}
+      2    0.0%    0.0%  RegExp: ^(\\/?|)([\\s\\S]*?)((?:\\.{1\,2}|[^\\/]+?|)(\\.[^.\\/]*|))(?:[\\/]*)$
+      2    0.0%    0.0%  LazyCompile: ~parseInt native v8natives.js:110
+      2    0.0%    0.0%  LazyCompile: ~parse /Users/ematiu/devel/node/bitcore/lib/Block.js:51
+      2    0.0%    0.0%  LazyCompile: ~formatValue util.js:204
+      2    0.0%    0.0%  LazyCompile: ~formatArray util.js:333
+      2    0.0%    0.0%  LazyCompile: ~exports.ripe160 /Users/ematiu/devel/node/bitcore/util/util.js:29
+      2    0.0%    0.0%  LazyCompile: ~charAt native string.js:66
+      2    0.0%    0.0%  LazyCompile: ~async.series.self.processReorg.height /Users/ematiu/devel/node/insight-api/lib/Sync.js:122
+      2    0.0%    0.0%  LazyCompile: ~async.series.self.bDb.getNext.oldNext /Users/ematiu/devel/node/insight-api/lib/Sync.js:108
+      2    0.0%    0.0%  LazyCompile: ~async.series.err /Users/ematiu/devel/node/insight-api/lib/Sync.js:161
+      2    0.0%    0.0%  LazyCompile: ~async.series.err /Users/ematiu/devel/node/insight-api/lib/Sync.js:150
+      2    0.0%    0.0%  LazyCompile: ~SimpleSlice native array.js:324
+      2    0.0%    0.0%  LazyCompile: ~LevelUP.get /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/levelup.js:163
+      2    0.0%    0.0%  LazyCompile: ~ArraySlice native array.js:621
+      2    0.0%    0.0%  LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/HistoricSync.js:440
+      2    0.0%    0.0%  LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/BlockExtractor.js:150
+      2    0.0%    0.0%  LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/BlockExtractor.js:129
+      2    0.0%    0.0%  LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/BlockDb.js:154
+      2    0.0%    0.0%  LazyCompile: defineProperty native v8natives.js:1050
+      2    0.0%    0.0%  LazyCompile: TransactionDb.createFromObjs /Users/ematiu/devel/node/insight-api/lib/TransactionDb.js:552
+      2    0.0%    0.0%  LazyCompile: ToPrimitive native runtime.js:506
+      2    0.0%    0.0%  LazyCompile: RegExpConstructor native regexp.js:86
+      2    0.0%    0.0%  LazyCompile: COMPARE native runtime.js:120
+      2    0.0%    0.0%  LazyCompile: *str util.js:383
+      2    0.0%    0.0%  LazyCompile: *makeOptions /Users/ematiu/devel/node/insight-api/node_modules/levelup/node_modules/prr/prr.js:25
+      2    0.0%    0.0%  LazyCompile: *getOutpointIndex /Users/ematiu/devel/node/bitcore/lib/Transaction.js:72
+      2    0.0%    0.0%  LazyCompile: *getOutpointHash /Users/ematiu/devel/node/bitcore/lib/Transaction.js:65
+      2    0.0%    0.0%  LazyCompile: *async.series /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:605
+      2    0.0%    0.0%  LazyCompile: *append _linklist.js:63
+      2    0.0%    0.0%  LazyCompile: *IsInconsistentDescriptor native v8natives.js:367
+      2    0.0%    0.0%  LazyCompile: *EncodedData.encoding /Users/ematiu/devel/node/bitcore/util/EncodedData.js:20
+      2    0.0%    0.0%  LazyCompile: *BlockExtractor.getNextBlock /Users/ematiu/devel/node/insight-api/lib/BlockExtractor.js:90
+      2    0.0%    0.0%  LazyCompile: *BlockDb.setTip /Users/ematiu/devel/node/insight-api/lib/BlockDb.js:82
+      2    0.0%    0.0%  KeyedStoreIC: hash
+      2    0.0%    0.0%  KeyedLoadMegamorphicIC: args_count: 0 {7}
+      2    0.0%    0.0%  KeyedLoadIC: name
+      2    0.0%    0.0%  KeyedLoadIC: args_count: 0 {4}
+      2    0.0%    0.0%  KeyedLoadIC: args_count: 0
+      2    0.0%    0.0%  CallMegamorphic: args_count: 2
+      2    0.0%    0.0%  Builtin: A builtin from the snapshot {4}
+      2    0.0%    0.0%  Builtin: A builtin from the snapshot {13}
+      1    0.0%    0.0%  Stub: ToBooleanStub_SmiHeapNumber
+      1    0.0%    0.0%  Stub: ToBooleanStub_Null
+      1    0.0%    0.0%  Stub: RecordWriteStub {5}
+      1    0.0%    0.0%  Stub: RecordWriteStub {20}
+      1    0.0%    0.0%  Stub: RecordWriteStub {19}
+      1    0.0%    0.0%  Stub: RecordWriteStub {18}
+      1    0.0%    0.0%  Stub: RecordWriteStub {17}
+      1    0.0%    0.0%  Stub: RecordWriteStub {13}
+      1    0.0%    0.0%  Stub: KeyedStoreElementStub {1}
+      1    0.0%    0.0%  Stub: FastNewContextStub {6}
+      1    0.0%    0.0%  Stub: FastCloneShallowObjectStub {2}
+      1    0.0%    0.0%  Stub: CompareICStub {9}
+      1    0.0%    0.0%  Stub: CallFunctionStub_Args3
+      1    0.0%    0.0%  Stub: CallFunctionStub_Args2
+      1    0.0%    0.0%  Stub: CallFunctionStub_Args0
+      1    0.0%    0.0%  Stub: BinaryOpStub_MUL_Alloc_SMI
+      1    0.0%    0.0%  Stub: BinaryOpStub_BIT_OR_Alloc_Oddball
+      1    0.0%    0.0%  RegExp: notfound {1}
+      1    0.0%    0.0%  RegExp: notfound
+      1    0.0%    0.0%  LazyCompile: ~tryPackage module.js:122
+      1    0.0%    0.0%  LazyCompile: ~reduce native array.js:1381
+      1    0.0%    0.0%  LazyCompile: ~parse native json.js:55
+      1    0.0%    0.0%  LazyCompile: ~onError /Users/ematiu/devel/node/insight-api/node_modules/winston/lib/winston/logger.js:140
+      1    0.0%    0.0%  LazyCompile: ~indexOf native string.js:118
+      1    0.0%    0.0%  LazyCompile: ~exports.resolve path.js:304
+      1    0.0%    0.0%  LazyCompile: ~async.series.self.cachedLastHash /Users/ematiu/devel/node/insight-api/lib/Sync.js:130
+      1    0.0%    0.0%  LazyCompile: ~async.series.self.bDb.getTip.oldTip /Users/ematiu/devel/node/insight-api/lib/Sync.js:99
+      1    0.0%    0.0%  LazyCompile: ~ToPropertyDescriptor native v8natives.js:420
+      1    0.0%    0.0%  LazyCompile: ~Script.parse /Users/ematiu/devel/node/bitcore/lib/Script.js:41
+      1    0.0%    0.0%  LazyCompile: ~Script.isMultiSig /Users/ematiu/devel/node/bitcore/lib/Script.js:110
+      1    0.0%    0.0%  LazyCompile: ~NativeModule.compile node.js:888
+      1    0.0%    0.0%  LazyCompile: ~Module._resolveFilename module.js:323
+      1    0.0%    0.0%  LazyCompile: ~HistoricSync.getStandardizedTx /Users/ematiu/devel/node/insight-api/lib/HistoricSync.js:148
+      1    0.0%    0.0%  LazyCompile: ~HistoricSync._fromBuffer /Users/ematiu/devel/node/insight-api/lib/HistoricSync.js:143
+      1    0.0%    0.0%  LazyCompile: ~FromPropertyDescriptor native v8natives.js:373
+      1    0.0%    0.0%  LazyCompile: ~Buffer.toString buffer.js:392
+      1    0.0%    0.0%  LazyCompile: ~BlockDb.getTip /Users/ematiu/devel/node/insight-api/lib/BlockDb.js:66
+      1    0.0%    0.0%  LazyCompile: ~Block /Users/ematiu/devel/node/bitcore/lib/Block.js:20
+      1    0.0%    0.0%  LazyCompile: ~Batch /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/batch.js:13
+      1    0.0%    0.0%  LazyCompile: ~BasicJSONSerialize native json.js:274
+      1    0.0%    0.0%  LazyCompile: ~ArrayConcat native array.js:471
+      1    0.0%    0.0%  LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:253
+      1    0.0%    0.0%  LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/Sync.js:168
+      1    0.0%    0.0%  LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/Sync.js:151
+      1    0.0%    0.0%  LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/Sync.js:110
+      1    0.0%    0.0%  LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/HistoricSync.js:446
+      1    0.0%    0.0%  LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/BlockExtractor.js:96
+      1    0.0%    0.0%  LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/BlockExtractor.js:142
+      1    0.0%    0.0%  LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/BlockDb.js:84
+      1    0.0%    0.0%  LazyCompile: statPath module.js:88
+      1    0.0%    0.0%  LazyCompile: fs.readFileSync fs.js:271
+      1    0.0%    0.0%  LazyCompile: ToBoolean native runtime.js:517
+      1    0.0%    0.0%  LazyCompile: *shift _linklist.js:38
+      1    0.0%    0.0%  LazyCompile: *processImmediate timers.js:320
+      1    0.0%    0.0%  LazyCompile: *init /Users/ematiu/devel/node/insight-api/node_modules/levelup/node_modules/errno/custom.js:3
+      1    0.0%    0.0%  LazyCompile: *getHash /Users/ematiu/devel/node/bitcore/lib/Transaction.js:194
+      1    0.0%    0.0%  LazyCompile: *getCallback /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/levelup.js:30
+      1    0.0%    0.0%  LazyCompile: *exports.dirname path.js:415
+      1    0.0%    0.0%  LazyCompile: *eof /Users/ematiu/devel/node/bitcore/util/BinaryParser.js:56
+      1    0.0%    0.0%  LazyCompile: *dispatchError /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/util.js:129
+      1    0.0%    0.0%  LazyCompile: *calcHash /Users/ematiu/devel/node/bitcore/lib/Transaction.js:183
+      1    0.0%    0.0%  LazyCompile: *async.whilst /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:676
+      1    0.0%    0.0%  LazyCompile: *Parser.varInt /Users/ematiu/devel/node/bitcore/util/BinaryParser.js:123
+      1    0.0%    0.0%  LazyCompile: *LevelUP.isOpen /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/levelup.js:151
+      1    0.0%    0.0%  LazyCompile: *DefineOwnProperty native v8natives.js:924
+      1    0.0%    0.0%  LazyCompile: *BlockExtractor.readCurrentFileSync /Users/ematiu/devel/node/insight-api/lib/BlockExtractor.js:59
+      1    0.0%    0.0%  LazyCompile: *BlockDb.setNext /Users/ematiu/devel/node/insight-api/lib/BlockDb.js:153
+      1    0.0%    0.0%  LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/levelup.js:316
+      1    0.0%    0.0%  LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/lib/HistoricSync.js:192
+      1    0.0%    0.0%  LazyCompile: *<anonymous> /Users/ematiu/devel/node/bitcore/lib/Transaction.js:160
+      1    0.0%    0.0%  KeyedStoreIC: createIfMissing {1}
+      1    0.0%    0.0%  KeyedStoreIC: args_count: 0 {11}
+      1    0.0%    0.0%  KeyedStoreIC: args_count: 0 {10}
+      1    0.0%    0.0%  KeyedLoadMegamorphicIC: args_count: 0 {9}
+      1    0.0%    0.0%  KeyedLoadIC: log
+      1    0.0%    0.0%  KeyedLoadIC: info
+      1    0.0%    0.0%  KeyedLoadIC: errorIfExists {1}
+      1    0.0%    0.0%  KeyedLoadIC: cause
+      1    0.0%    0.0%  KeyedLoadIC: args_count: 0 {6}
+      1    0.0%    0.0%  KeyedLoadIC: args_count: 0 {1}
+      1    0.0%    0.0%  Function: <anonymous> /Users/ematiu/devel/node/bitcore/node_modules/bignum/index.js:1
+      1    0.0%    0.0%  CallMegamorphic: args_count: 1
+      1    0.0%    0.0%  Builtin: A builtin from the snapshot {8}
+      1    0.0%    0.0%  Builtin: A builtin from the snapshot {14}
+      1    0.0%    0.0%  Builtin: A builtin from the snapshot {11}
+
+ [C++]:
+   ticks  total  nonlib   name
+
+ [GC]:
+   ticks  total  nonlib   name
+    880    3.6%
+
+ [Bottom up (heavy) profile]:
+  Note: percentage shows a share of a particular caller in the total
+  amount of its parent calls.
+  Callers occupying less than 2.0% are not shown.
+
+   ticks parent  name
+   9018   37.4%  /usr/local/bin/node
+    452    5.0%    LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/BlockDb.js:58
+    452  100.0%      LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/batch.js:66
+    333    3.7%    LazyCompile: *keys native v8natives.js:333
+    196   58.9%      LazyCompile: formatValue util.js:204
+    183   93.4%        LazyCompile: *formatProperty util.js:353
+    146   79.8%          LazyCompile: *<anonymous> util.js:293
+    146  100.0%            LazyCompile: *map native array.js:1215
+     33   18.0%          LazyCompile: *formatArray util.js:333
+     33  100.0%            LazyCompile: formatValue util.js:204
+      4    2.2%          LazyCompile: ~formatArray util.js:333
+      4  100.0%            LazyCompile: formatValue util.js:204
+     13    6.6%        LazyCompile: *inspect util.js:118
+     13  100.0%          LazyCompile: ~exports.format util.js:23
+     13  100.0%            LazyCompile: ~Logger.log /Users/ematiu/devel/node/insight-api/node_modules/winston/lib/winston/logger.js:123
+    133   39.9%      LazyCompile: *extend /Users/ematiu/devel/node/insight-api/node_modules/levelup/node_modules/xtend/index.js:6
+    133  100.0%        LazyCompile: *getOptions /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/util.js:87
+     47   35.3%          LazyCompile: Batch.put /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/batch.js:19
+     46   97.9%            LazyCompile: *BlockDb.add /Users/ematiu/devel/node/insight-api/lib/BlockDb.js:48
+      1    2.1%            LazyCompile: ~BlockDb.add /Users/ematiu/devel/node/insight-api/lib/BlockDb.js:48
+     38   28.6%          LazyCompile: *LevelUP.put /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/levelup.js:210
+     19   50.0%            LazyCompile: *BlockDb.setTip /Users/ematiu/devel/node/insight-api/lib/BlockDb.js:82
+     19   50.0%            LazyCompile: *BlockDb.setNext /Users/ematiu/devel/node/insight-api/lib/BlockDb.js:153
+     34   25.6%          LazyCompile: *LevelUP.get /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/levelup.js:163
+     34  100.0%            LazyCompile: *BlockDb.has /Users/ematiu/devel/node/insight-api/lib/BlockDb.js:175
+     11    8.3%          LazyCompile: ~LevelUP.batch /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/levelup.js:285
+     11  100.0%            LazyCompile: TransactionDb.createFromObjs /Users/ematiu/devel/node/insight-api/lib/TransactionDb.js:552
+    260    2.9%    LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:610
+    113   43.5%      LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/Sync.js:151
+    113  100.0%        LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/levelup.js:345
+     45   17.3%      LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/Sync.js:162
+     45  100.0%        LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/BlockDb.js:154
+     45  100.0%          LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/levelup.js:238
+     43   16.5%      LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/Sync.js:157
+     43  100.0%        LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/BlockDb.js:84
+     43  100.0%          LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/levelup.js:238
+     19    7.3%      LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/Sync.js:94
+     19  100.0%        LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/BlockDb.js:177
+     19  100.0%          LazyCompile: *dispatchError /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/util.js:129
+     19  100.0%            LazyCompile: <anonymous> /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/levelup.js:189
+     16    6.2%      LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/BlockDb.js:58
+     16  100.0%        LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/batch.js:66
+      6    2.3%      LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/BlockExtractor.js:142
+      6  100.0%        LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:608
+      6  100.0%          LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:248
+      6  100.0%            LazyCompile: *iterate /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:148
+    250    2.8%    LazyCompile: *GetOwnProperty native v8natives.js:637
+    250  100.0%      LazyCompile: *getOwnPropertyDescriptor native v8natives.js:946
+    250  100.0%        LazyCompile: *formatProperty util.js:353
+    230   92.0%          LazyCompile: *<anonymous> util.js:293
+    228   99.1%            LazyCompile: *map native array.js:1215
+     19    7.6%          LazyCompile: *formatArray util.js:333
+     19  100.0%            LazyCompile: formatValue util.js:204
+    249    2.8%    LazyCompile: *<anonymous> util.js:196
+    248   99.6%      LazyCompile: *forEach native array.js:1087
+    248  100.0%        LazyCompile: *arrayToHash util.js:193
+    247   99.6%          LazyCompile: formatValue util.js:204
+    209   84.6%            LazyCompile: *formatProperty util.js:353
+     38   15.4%            LazyCompile: *inspect util.js:118
+    225    2.5%    LazyCompile: captureStackTrace native messages.js:1113
+    213   94.7%      LazyCompile: <anonymous> native messages.js:1157
+    107   50.2%        LazyCompile: <anonymous> native messages.js:1157
+     18   16.8%          LazyCompile: ~err /Users/ematiu/devel/node/insight-api/node_modules/levelup/node_modules/errno/custom.js:25
+     18  100.0%            LazyCompile: <anonymous> /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/levelup.js:189
+    106   49.8%        LazyCompile: ~Logger.log /Users/ematiu/devel/node/insight-api/node_modules/winston/lib/winston/logger.js:123
+    106  100.0%          LazyCompile: *winston.(anonymous function) /Users/ematiu/devel/node/insight-api/node_modules/winston/lib/winston.js:84
+    104   98.1%            LazyCompile: *BlockDb.add /Users/ematiu/devel/node/insight-api/lib/BlockDb.js:48
+     11    4.9%      LazyCompile: ~err /Users/ematiu/devel/node/insight-api/node_modules/levelup/node_modules/errno/custom.js:25
+     11  100.0%        LazyCompile: <anonymous> /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/levelup.js:189
+    224    2.5%    LazyCompile: *extend /Users/ematiu/devel/node/insight-api/node_modules/levelup/node_modules/xtend/index.js:6
+    224  100.0%      LazyCompile: *getOptions /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/util.js:87
+    129   57.6%        LazyCompile: Batch.put /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/batch.js:19
+    127   98.4%          LazyCompile: *BlockDb.add /Users/ematiu/devel/node/insight-api/lib/BlockDb.js:48
+    127  100.0%            LazyCompile: ~async.series.err /Users/ematiu/devel/node/insight-api/lib/Sync.js:146
+     44   19.6%        LazyCompile: *LevelUP.get /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/levelup.js:163
+     44  100.0%          LazyCompile: *BlockDb.has /Users/ematiu/devel/node/insight-api/lib/BlockDb.js:175
+     44  100.0%            LazyCompile: ~async.series.self.bDb.getTip.oldTip /Users/ematiu/devel/node/insight-api/lib/Sync.js:92
+     37   16.5%        LazyCompile: *LevelUP.put /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/levelup.js:210
+     21   56.8%          LazyCompile: *BlockDb.setTip /Users/ematiu/devel/node/insight-api/lib/BlockDb.js:82
+     21  100.0%            LazyCompile: ~async.series.err /Users/ematiu/devel/node/insight-api/lib/Sync.js:155
+     16   43.2%          LazyCompile: *BlockDb.setNext /Users/ematiu/devel/node/insight-api/lib/BlockDb.js:153
+     16  100.0%            LazyCompile: ~async.series.err /Users/ematiu/devel/node/insight-api/lib/Sync.js:161
+     11    4.9%        LazyCompile: ~LevelUP.batch /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/levelup.js:285
+     10   90.9%          LazyCompile: TransactionDb.createFromObjs /Users/ematiu/devel/node/insight-api/lib/TransactionDb.js:552
+     10  100.0%            LazyCompile: *TransactionDb.createFromBlock /Users/ematiu/devel/node/insight-api/lib/TransactionDb.js:582
+      1    9.1%          LazyCompile: ~TransactionDb.createFromObjs /Users/ematiu/devel/node/insight-api/lib/TransactionDb.js:552
+      1  100.0%            LazyCompile: *TransactionDb.createFromBlock /Users/ematiu/devel/node/insight-api/lib/TransactionDb.js:582
+    220    2.4%    LazyCompile: <anonymous> native messages.js:1157
+    205   93.2%      LazyCompile: <anonymous> native messages.js:1157
+     15    6.8%      LazyCompile: ~Logger.log /Users/ematiu/devel/node/insight-api/node_modules/winston/lib/winston/logger.js:123
+     15  100.0%        LazyCompile: *winston.(anonymous function) /Users/ematiu/devel/node/insight-api/node_modules/winston/lib/winston.js:84
+     15  100.0%          LazyCompile: *BlockDb.add /Users/ematiu/devel/node/insight-api/lib/BlockDb.js:48
+     15  100.0%            LazyCompile: ~async.series.err /Users/ematiu/devel/node/insight-api/lib/Sync.js:146
+    212    2.4%    LazyCompile: Join native array.js:119
+    211   99.5%      LazyCompile: join native array.js:410
+     94   44.5%        LazyCompile: *reduceToSingleString util.js:412
+     92   97.9%          LazyCompile: formatValue util.js:204
+     71   77.2%            LazyCompile: *formatProperty util.js:353
+     21   22.8%            LazyCompile: *inspect util.js:118
+      2    2.1%          LazyCompile: ~formatValue util.js:204
+      2  100.0%            LazyCompile: *formatProperty util.js:353
+     88   41.7%        LazyCompile: *formatProperty util.js:353
+     51   58.0%          LazyCompile: *formatArray util.js:333
+     51  100.0%            LazyCompile: formatValue util.js:204
+     35   39.8%          LazyCompile: *<anonymous> util.js:293
+     35  100.0%            LazyCompile: *map native array.js:1215
+      2    2.3%          LazyCompile: ~formatArray util.js:333
+      2  100.0%            LazyCompile: formatValue util.js:204
+     25   11.8%        LazyCompile: ~exports.format util.js:23
+     25  100.0%          LazyCompile: ~Logger.log /Users/ematiu/devel/node/insight-api/node_modules/winston/lib/winston/logger.js:123
+     25  100.0%            LazyCompile: *winston.(anonymous function) /Users/ematiu/devel/node/insight-api/node_modules/winston/lib/winston.js:84
+    210    2.3%    LazyCompile: DefineOneShotAccessor native messages.js:767
+    210  100.0%      LazyCompile: captureStackTrace native messages.js:1113
+    180   85.7%        LazyCompile: <anonymous> native messages.js:1157
+     97   53.9%          LazyCompile: ~Logger.log /Users/ematiu/devel/node/insight-api/node_modules/winston/lib/winston/logger.js:123
+     96   99.0%            LazyCompile: *winston.(anonymous function) /Users/ematiu/devel/node/insight-api/node_modules/winston/lib/winston.js:84
+     83   46.1%          LazyCompile: <anonymous> native messages.js:1157
+     30   36.1%            LazyCompile: ~err /Users/ematiu/devel/node/insight-api/node_modules/levelup/node_modules/errno/custom.js:25
+      4    4.8%            LazyCompile: *fs.statSync fs.js:682
+      2    2.4%            LazyCompile: ~fs.statSync fs.js:682
+     30   14.3%        LazyCompile: ~err /Users/ematiu/devel/node/insight-api/node_modules/levelup/node_modules/errno/custom.js:25
+     30  100.0%          LazyCompile: <anonymous> /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/levelup.js:189
+    209    2.3%    LazyCompile: ~LevelUP.batch /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/levelup.js:285
+    196   93.8%      LazyCompile: TransactionDb.createFromObjs /Users/ematiu/devel/node/insight-api/lib/TransactionDb.js:552
+    196  100.0%        LazyCompile: *TransactionDb.createFromBlock /Users/ematiu/devel/node/insight-api/lib/TransactionDb.js:582
+    196  100.0%          LazyCompile: ~async.series.err /Users/ematiu/devel/node/insight-api/lib/Sync.js:150
+    196  100.0%            LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:608
+     10    4.8%      LazyCompile: ~TransactionDb.createFromObjs /Users/ematiu/devel/node/insight-api/lib/TransactionDb.js:552
+     10  100.0%        LazyCompile: *TransactionDb.createFromBlock /Users/ematiu/devel/node/insight-api/lib/TransactionDb.js:582
+     10  100.0%          LazyCompile: ~async.series.err /Users/ematiu/devel/node/insight-api/lib/Sync.js:150
+     10  100.0%            LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:608
+    209    2.3%    LazyCompile: *LevelUP.get /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/levelup.js:163
+    209  100.0%      LazyCompile: *BlockDb.has /Users/ematiu/devel/node/insight-api/lib/BlockDb.js:175
+    209  100.0%        LazyCompile: ~async.series.self.bDb.getTip.oldTip /Users/ematiu/devel/node/insight-api/lib/Sync.js:92
+    209  100.0%          LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:608
+    209  100.0%            LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:248
+    189    2.1%    LazyCompile: *Hash crypto.js:185
+    187   98.9%      LazyCompile: *Hash crypto.js:185
+    112   59.9%        LazyCompile: *exports.twoSha256 /Users/ematiu/devel/node/bitcore/util/util.js:50
+     83   74.1%          LazyCompile: *parse /Users/ematiu/devel/node/bitcore/lib/Block.js:51
+     83  100.0%            LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/BlockExtractor.js:142
+     20   17.9%          LazyCompile: *getHash /Users/ematiu/devel/node/bitcore/lib/Block.js:85
+     20  100.0%            LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/BlockExtractor.js:142
+      7    6.3%          LazyCompile: *calcHash /Users/ematiu/devel/node/bitcore/lib/Transaction.js:183
+      7  100.0%            LazyCompile: ~Transaction.parse /Users/ematiu/devel/node/bitcore/lib/Transaction.js:532
+     41   21.9%        LazyCompile: *exports.ripe160 /Users/ematiu/devel/node/bitcore/util/util.js:29
+     41  100.0%          LazyCompile: *exports.sha256ripe160 /Users/ematiu/devel/node/bitcore/util/util.js:54
+     41  100.0%            LazyCompile: ~Address.fromScriptPubKey /Users/ematiu/devel/node/bitcore/lib/Address.js:97
+     29   15.5%        LazyCompile: *exports.sha256ripe160 /Users/ematiu/devel/node/bitcore/util/util.js:54
+     29  100.0%          LazyCompile: ~Address.fromScriptPubKey /Users/ematiu/devel/node/bitcore/lib/Address.js:97
+     29  100.0%            LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/lib/HistoricSync.js:164
+
+   8405   34.8%  /usr/lib/system/libsystem_kernel.dylib
+
+    606    2.5%  /usr/lib/system/libsystem_c.dylib
+     38    6.3%    LazyCompile: DefaultString native runtime.js:645
+     38  100.0%      LazyCompile: NonStringToString native runtime.js:558
+     38  100.0%        LazyCompile: *test native regexp.js:217
+     38  100.0%          LazyCompile: <anonymous> /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/levelup.js:189
+     25    4.1%    LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/BlockDb.js:177
+     25  100.0%      LazyCompile: *dispatchError /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/util.js:129
+     25  100.0%        LazyCompile: <anonymous> /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/levelup.js:189
+     20    3.3%    LazyCompile: *Hash.digest crypto.js:214
+     12   60.0%      LazyCompile: *exports.twoSha256 /Users/ematiu/devel/node/bitcore/util/util.js:50
+     10   83.3%        LazyCompile: *parse /Users/ematiu/devel/node/bitcore/lib/Block.js:51
+     10  100.0%          LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/BlockExtractor.js:142
+     10  100.0%            LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:608
+      1    8.3%        LazyCompile: *getHash /Users/ematiu/devel/node/bitcore/lib/Block.js:85
+      1  100.0%          LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/BlockExtractor.js:142
+      1  100.0%            LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:608
+      1    8.3%        LazyCompile: *calcHash /Users/ematiu/devel/node/bitcore/lib/Transaction.js:183
+      1  100.0%          LazyCompile: ~Transaction.parse /Users/ematiu/devel/node/bitcore/lib/Transaction.js:532
+      1  100.0%            LazyCompile: ~parse /Users/ematiu/devel/node/bitcore/lib/Block.js:51
+      5   25.0%      LazyCompile: *exports.sha256ripe160 /Users/ematiu/devel/node/bitcore/util/util.js:54
+      5  100.0%        LazyCompile: ~Address.fromScriptPubKey /Users/ematiu/devel/node/bitcore/lib/Address.js:97
+      5  100.0%          LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/lib/HistoricSync.js:164
+      5  100.0%            LazyCompile: *map native array.js:1215
+      3   15.0%      LazyCompile: *exports.ripe160 /Users/ematiu/devel/node/bitcore/util/util.js:29
+      3  100.0%        LazyCompile: *exports.sha256ripe160 /Users/ematiu/devel/node/bitcore/util/util.js:54
+      3  100.0%          LazyCompile: ~Address.fromScriptPubKey /Users/ematiu/devel/node/bitcore/lib/Address.js:97
+      3  100.0%            LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/lib/HistoricSync.js:164
+     15    2.5%    LazyCompile: *extend /Users/ematiu/devel/node/insight-api/node_modules/levelup/node_modules/xtend/index.js:6
+     15  100.0%      LazyCompile: *getOptions /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/util.js:87
+     12   80.0%        LazyCompile: Batch.put /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/batch.js:19
+     12  100.0%          LazyCompile: *BlockDb.add /Users/ematiu/devel/node/insight-api/lib/BlockDb.js:48
+     12  100.0%            LazyCompile: ~async.series.err /Users/ematiu/devel/node/insight-api/lib/Sync.js:146
+      2   13.3%        LazyCompile: ~LevelUP.batch /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/levelup.js:285
+      2  100.0%          LazyCompile: TransactionDb.createFromObjs /Users/ematiu/devel/node/insight-api/lib/TransactionDb.js:552
+      2  100.0%            LazyCompile: *TransactionDb.createFromBlock /Users/ematiu/devel/node/insight-api/lib/TransactionDb.js:582
+      1    6.7%        LazyCompile: *LevelUP.put /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/levelup.js:210
+      1  100.0%          LazyCompile: *BlockDb.setTip /Users/ematiu/devel/node/insight-api/lib/BlockDb.js:82
+      1  100.0%            LazyCompile: ~async.series.err /Users/ematiu/devel/node/insight-api/lib/Sync.js:155
+
+    509    2.1%  /usr/lib/system/libsystem_malloc.dylib
+     98   19.3%    LazyCompile: *toString native v8natives.js:1378
+     98  100.0%      LazyCompile: *inspect buffer.js:283
+     98  100.0%        LazyCompile: formatValue util.js:204
+     98  100.0%          LazyCompile: *formatProperty util.js:353
+     98  100.0%            LazyCompile: *<anonymous> util.js:293
+     73   14.3%    LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:610
+     45   61.6%      LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/Sync.js:151
+     45  100.0%        LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/levelup.js:345
+     14   19.2%      LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/Sync.js:162
+     14  100.0%        LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/BlockDb.js:154
+     14  100.0%          LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/levelup.js:238
+      6    8.2%      LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/BlockDb.js:58
+      6  100.0%        LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/batch.js:66
+      5    6.8%      LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/Sync.js:157
+      5  100.0%        LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/BlockDb.js:84
+      5  100.0%          LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/levelup.js:238
+      3    4.1%      LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/Sync.js:94
+      3  100.0%        LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/BlockDb.js:177
+      3  100.0%          LazyCompile: *dispatchError /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/util.js:129
+      3  100.0%            LazyCompile: <anonymous> /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/levelup.js:189
+     43    8.4%    LazyCompile: Batch.put /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/batch.js:19
+     41   95.3%      LazyCompile: *BlockDb.add /Users/ematiu/devel/node/insight-api/lib/BlockDb.js:48
+     41  100.0%        LazyCompile: ~async.series.err /Users/ematiu/devel/node/insight-api/lib/Sync.js:146
+     41  100.0%          LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:608
+     41  100.0%            LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:248
+      2    4.7%      LazyCompile: ~BlockDb.add /Users/ematiu/devel/node/insight-api/lib/BlockDb.js:48
+      2  100.0%        LazyCompile: ~async.series.err /Users/ematiu/devel/node/insight-api/lib/Sync.js:146
+      2  100.0%          LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:608
+      2  100.0%            LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:248
+     35    6.9%    LazyCompile: captureStackTrace native messages.js:1113
+     35  100.0%      LazyCompile: <anonymous> native messages.js:1157
+     25   71.4%        LazyCompile: ~Logger.log /Users/ematiu/devel/node/insight-api/node_modules/winston/lib/winston/logger.js:123
+     25  100.0%          LazyCompile: *winston.(anonymous function) /Users/ematiu/devel/node/insight-api/node_modules/winston/lib/winston.js:84
+     25  100.0%            LazyCompile: *BlockDb.add /Users/ematiu/devel/node/insight-api/lib/BlockDb.js:48
+     10   28.6%        LazyCompile: <anonymous> native messages.js:1157
+      9   90.0%          LazyCompile: ~err /Users/ematiu/devel/node/insight-api/node_modules/levelup/node_modules/errno/custom.js:25
+      9  100.0%            LazyCompile: <anonymous> /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/levelup.js:189
+      1   10.0%          LazyCompile: *fs.statSync fs.js:682
+      1  100.0%            LazyCompile: statPath module.js:88
+     34    6.7%    LazyCompile: *Hash.digest crypto.js:214
+     19   55.9%      LazyCompile: *exports.twoSha256 /Users/ematiu/devel/node/bitcore/util/util.js:50
+     10   52.6%        LazyCompile: *parse /Users/ematiu/devel/node/bitcore/lib/Block.js:51
+     10  100.0%          LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/BlockExtractor.js:142
+     10  100.0%            LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:608
+      7   36.8%        LazyCompile: *getHash /Users/ematiu/devel/node/bitcore/lib/Block.js:85
+      7  100.0%          LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/BlockExtractor.js:142
+      7  100.0%            LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:608
+      1    5.3%        LazyCompile: ~parse /Users/ematiu/devel/node/bitcore/lib/Block.js:51
+      1  100.0%          LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/BlockExtractor.js:142
+      1  100.0%            LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:608
+      1    5.3%        LazyCompile: *calcHash /Users/ematiu/devel/node/bitcore/lib/Transaction.js:183
+      1  100.0%          LazyCompile: ~Transaction.parse /Users/ematiu/devel/node/bitcore/lib/Transaction.js:532
+      1  100.0%            LazyCompile: ~parse /Users/ematiu/devel/node/bitcore/lib/Block.js:51
+      7   20.6%      LazyCompile: *exports.sha256ripe160 /Users/ematiu/devel/node/bitcore/util/util.js:54
+      7  100.0%        LazyCompile: ~Address.fromScriptPubKey /Users/ematiu/devel/node/bitcore/lib/Address.js:97
+      7  100.0%          LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/lib/HistoricSync.js:164
+      7  100.0%            LazyCompile: *map native array.js:1215
+      7   20.6%      LazyCompile: *exports.ripe160 /Users/ematiu/devel/node/bitcore/util/util.js:29
+      7  100.0%        LazyCompile: *exports.sha256ripe160 /Users/ematiu/devel/node/bitcore/util/util.js:54
+      7  100.0%          LazyCompile: ~Address.fromScriptPubKey /Users/ematiu/devel/node/bitcore/lib/Address.js:97
+      7  100.0%            LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/lib/HistoricSync.js:164
+      1    2.9%      LazyCompile: ~exports.ripe160 /Users/ematiu/devel/node/bitcore/util/util.js:29
+      1  100.0%        LazyCompile: *exports.sha256ripe160 /Users/ematiu/devel/node/bitcore/util/util.js:54
+      1  100.0%          LazyCompile: ~Address.fromScriptPubKey /Users/ematiu/devel/node/bitcore/lib/Address.js:97
+      1  100.0%            LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/lib/HistoricSync.js:164
+     33    6.5%    LazyCompile: ~LevelUP.batch /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/levelup.js:285
+     30   90.9%      LazyCompile: TransactionDb.createFromObjs /Users/ematiu/devel/node/insight-api/lib/TransactionDb.js:552
+     30  100.0%        LazyCompile: *TransactionDb.createFromBlock /Users/ematiu/devel/node/insight-api/lib/TransactionDb.js:582
+     30  100.0%          LazyCompile: ~async.series.err /Users/ematiu/devel/node/insight-api/lib/Sync.js:150
+     30  100.0%            LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:608
+      3    9.1%      LazyCompile: ~TransactionDb.createFromObjs /Users/ematiu/devel/node/insight-api/lib/TransactionDb.js:552
+      3  100.0%        LazyCompile: *TransactionDb.createFromBlock /Users/ematiu/devel/node/insight-api/lib/TransactionDb.js:582
+      3  100.0%          LazyCompile: ~async.series.err /Users/ematiu/devel/node/insight-api/lib/Sync.js:150
+      3  100.0%            LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:608
+     23    4.5%    LazyCompile: *Buffer.toString buffer.js:392
+     19   82.6%      LazyCompile: *HistoricSync._fromBuffer /Users/ematiu/devel/node/insight-api/lib/HistoricSync.js:143
+     19  100.0%        LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/lib/HistoricSync.js:164
+     19  100.0%          LazyCompile: *map native array.js:1215
+     19  100.0%            LazyCompile: *HistoricSync.getStandardizedTx /Users/ematiu/devel/node/insight-api/lib/HistoricSync.js:148
+      4   17.4%      LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/lib/HistoricSync.js:152
+      4  100.0%        LazyCompile: *map native array.js:1215
+      4  100.0%          LazyCompile: *HistoricSync.getStandardizedTx /Users/ematiu/devel/node/insight-api/lib/HistoricSync.js:148
+      4  100.0%            LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/lib/HistoricSync.js:192
+     22    4.3%    LazyCompile: *Buffer.write buffer.js:315
+     12   54.5%      LazyCompile: *exports.twoSha256 /Users/ematiu/devel/node/bitcore/util/util.js:50
+      8   66.7%        LazyCompile: *parse /Users/ematiu/devel/node/bitcore/lib/Block.js:51
+      8  100.0%          LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/BlockExtractor.js:142
+      8  100.0%            LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:608
+      3   25.0%        LazyCompile: *getHash /Users/ematiu/devel/node/bitcore/lib/Block.js:85
+      3  100.0%          LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/BlockExtractor.js:142
+      3  100.0%            LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:608
+      1    8.3%        LazyCompile: ~parse /Users/ematiu/devel/node/bitcore/lib/Block.js:51
+      1  100.0%          LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/BlockExtractor.js:142
+      1  100.0%            LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:608
+      6   27.3%      LazyCompile: *exports.sha256ripe160 /Users/ematiu/devel/node/bitcore/util/util.js:54
+      6  100.0%        LazyCompile: ~Address.fromScriptPubKey /Users/ematiu/devel/node/bitcore/lib/Address.js:97
+      6  100.0%          LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/lib/HistoricSync.js:164
+      6  100.0%            LazyCompile: *map native array.js:1215
+      4   18.2%      LazyCompile: *exports.ripe160 /Users/ematiu/devel/node/bitcore/util/util.js:29
+      4  100.0%        LazyCompile: *exports.sha256ripe160 /Users/ematiu/devel/node/bitcore/util/util.js:54
+      4  100.0%          LazyCompile: ~Address.fromScriptPubKey /Users/ematiu/devel/node/bitcore/lib/Address.js:97
+      4  100.0%            LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/lib/HistoricSync.js:164
+
+
+ [Top down (heavy) profile]:
+  Note: callees occupying less than 0.1% are not shown.
+
+  inclusive      self           name
+  ticks   total  ticks   total
+   7965   33.0%   7965   33.0%  /usr/lib/system/libsystem_kernel.dylib
+
+   7124   29.5%      5    0.0%  LazyCompile: <anonymous> /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/levelup.js:189
+   6450   26.7%      1    0.0%    LazyCompile: *dispatchError /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/util.js:129
+   6445   26.7%      4    0.0%      LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/BlockDb.js:177
+   6306   26.1%      3    0.0%        LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/Sync.js:94
+   6301   26.1%      5    0.0%          LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:610
+   6262   25.9%      3    0.0%            LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:249
+   6258   25.9%      0    0.0%              LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:149
+   6255   25.9%      1    0.0%                LazyCompile: *iterate /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:148
+   6251   25.9%      0    0.0%                  LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:248
+   6250   25.9%      0    0.0%                    LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:608
+   6248   25.9%      1    0.0%                      LazyCompile: ~async.series.self.bDb.getTip.oldTip /Users/ematiu/devel/node/insight-api/lib/Sync.js:99
+   6243   25.9%      1    0.0%                        LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:610
+   6238   25.8%      0    0.0%                          LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:249
+   6236   25.8%      0    0.0%                            LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:149
+   6235   25.8%      0    0.0%                              LazyCompile: *iterate /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:148
+   6234   25.8%      0    0.0%                                LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:248
+   6233   25.8%      0    0.0%                                  LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:608
+   6230   25.8%      2    0.0%                                    LazyCompile: ~async.series.self.bDb.getNext.oldNext /Users/ematiu/devel/node/insight-api/lib/Sync.js:108
+   6223   25.8%      4    0.0%                                      LazyCompile: *BlockDb.getTip /Users/ematiu/devel/node/insight-api/lib/BlockDb.js:66
+   6159   25.5%      1    0.0%                                        LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/Sync.js:110
+   6150   25.5%      2    0.0%                                          LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:610
+   6145   25.5%      0    0.0%                                            LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:249
+   6145   25.5%      0    0.0%                                              LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:149
+   6143   25.4%      0    0.0%                                                LazyCompile: *iterate /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:148
+   6143   25.4%      0    0.0%                                                  LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:248
+   6141   25.4%      1    0.0%                                                    LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:608
+   6135   25.4%      2    0.0%                                                      LazyCompile: ~async.series.self.processReorg.height /Users/ematiu/devel/node/insight-api/lib/Sync.js:122
+   6131   25.4%      0    0.0%                                                        LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:610
+   6128   25.4%      0    0.0%                                                          LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:249
+   6127   25.4%      0    0.0%                                                            LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:149
+   6127   25.4%      0    0.0%                                                              LazyCompile: *iterate /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:148
+   6127   25.4%      1    0.0%                                                                LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:248
+   6120   25.4%      0    0.0%                                                                  LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:608
+   6119   25.3%      1    0.0%                                                                    LazyCompile: ~async.series.self.cachedLastHash /Users/ematiu/devel/node/insight-api/lib/Sync.js:130
+   6115   25.3%      1    0.0%                                                                      LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:610
+   6112   25.3%      2    0.0%                                                                        LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:249
+   6089   25.2%      1    0.0%                                                                          LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:149
+   6087   25.2%      1    0.0%                                                                            LazyCompile: *iterate /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:148
+   6085   25.2%      3    0.0%                                                                              LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:248
+   6082   25.2%      0    0.0%                                                                                LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:608
+   6079   25.2%      8    0.0%                                                                                  LazyCompile: ~async.series.err /Users/ematiu/devel/node/insight-api/lib/Sync.js:146
+   5986   24.8%     20    0.1%                                                                                    LazyCompile: *BlockDb.add /Users/ematiu/devel/node/insight-api/lib/BlockDb.js:48
+   5212   21.6%      4    0.0%                                                                                      LazyCompile: *winston.(anonymous function) /Users/ematiu/devel/node/insight-api/node_modules/winston/lib/winston.js:84
+   5205   21.6%     18    0.1%                                                                                        LazyCompile: ~Logger.log /Users/ematiu/devel/node/insight-api/node_modules/winston/lib/winston/logger.js:123
+   4869   20.2%      9    0.0%                                                                                          LazyCompile: ~exports.format util.js:23
+   4809   19.9%     14    0.1%                                                                                            LazyCompile: *inspect util.js:118
+   4776   19.8%     23    0.1%                                                                                              LazyCompile: formatValue util.js:204
+   4479   18.6%      9    0.0%                                                                                                LazyCompile: *map native array.js:1215
+   4449   18.4%      2    0.0%                                                                                                  LazyCompile: *<anonymous> util.js:293
+   4445   18.4%     27    0.1%                                                                                                    LazyCompile: *formatProperty util.js:353
+   3938   16.3%     18    0.1%                                                                                                      LazyCompile: formatValue util.js:204
+   3214   13.3%     12    0.0%                                                                                                        LazyCompile: *formatArray util.js:333
+   3125   12.9%     12    0.0%                                                                                                          LazyCompile: *formatProperty util.js:353
+   2828   11.7%     15    0.1%                                                                                                            LazyCompile: formatValue util.js:204
+   2342    9.7%     24    0.1%                                                                                                              LazyCompile: *map native array.js:1215
+   2248    9.3%     10    0.0%                                                                                                                LazyCompile: *<anonymous> util.js:293
+   2232    9.2%     70    0.3%                                                                                                                  LazyCompile: *formatProperty util.js:353
+   1268    5.3%     70    0.3%                                                                                                                    LazyCompile: formatValue util.js:204
+    558    2.3%     63    0.3%                                                                                                                      LazyCompile: *inspect buffer.js:283
+    318    1.3%     23    0.1%                                                                                                                        LazyCompile: *toString native v8natives.js:1378
+    114    0.5%    114    0.5%                                                                                                                          /usr/local/bin/node
+     86    0.4%     86    0.4%                                                                                                                          /usr/lib/system/libsystem_malloc.dylib
+     35    0.1%     35    0.1%                                                                                                                          /usr/lib/system/libsystem_m.dylib
+     33    0.1%     33    0.1%                                                                                                                          /usr/lib/system/libsystem_platform.dylib
+     95    0.4%     95    0.4%                                                                                                                        /usr/local/bin/node
+     29    0.1%     25    0.1%                                                                                                                        LazyCompile: join native array.js:410
+     27    0.1%     27    0.1%                                                                                                                        Stub: KeyedStoreElementStub
+    149    0.6%      8    0.0%                                                                                                                      LazyCompile: *arrayToHash util.js:193
+    131    0.5%     11    0.0%                                                                                                                        LazyCompile: *forEach native array.js:1087
+     62    0.3%      3    0.0%                                                                                                                          LazyCompile: *<anonymous> util.js:196
+     56    0.2%     56    0.2%                                                                                                                            /usr/local/bin/node
+    145    0.6%      5    0.0%                                                                                                                      LazyCompile: *formatPrimitive util.js:304
+     62    0.3%      4    0.0%                                                                                                                        LazyCompile: STRING_ADD_LEFT native runtime.js:183
+     33    0.1%     33    0.1%                                                                                                                          /usr/local/bin/node
+     41    0.2%      2    0.0%                                                                                                                        LazyCompile: *replace native string.js:221
+     32    0.1%     32    0.1%                                                                                                                          /usr/local/bin/node
+    119    0.5%      2    0.0%                                                                                                                      LazyCompile: *keys native v8natives.js:333
+    114    0.5%    114    0.5%                                                                                                                        /usr/local/bin/node
+     56    0.2%     56    0.2%                                                                                                                      /usr/local/bin/node
+     42    0.2%      5    0.0%                                                                                                                      LazyCompile: *isRegExp util.js:442
+     40    0.2%      7    0.0%                                                                                                                      LazyCompile: *isError util.js:454
+    445    1.8%     20    0.1%                                                                                                                    LazyCompile: *getOwnPropertyDescriptor native v8natives.js:946
+    348    1.4%     15    0.1%                                                                                                                      LazyCompile: *GetOwnProperty native v8natives.js:637
+    168    0.7%    168    0.7%                                                                                                                        /usr/local/bin/node
+    129    0.5%     53    0.2%                                                                                                                        LazyCompile: *ConvertDescriptorArrayToDescriptor native v8natives.js:581
+     76    0.3%     41    0.2%                                                                                                                      LazyCompile: *FromPropertyDescriptor native v8natives.js:373
+    124    0.5%     27    0.1%                                                                                                                    LazyCompile: stringify native json.js:308
+     74    0.3%     14    0.1%                                                                                                                      LazyCompile: *BasicJSONSerialize native json.js:274
+     57    0.2%     57    0.2%                                                                                                                        /usr/local/bin/node
+    103    0.4%      6    0.0%                                                                                                                    LazyCompile: *match native string.js:182
+     96    0.4%      4    0.0%                                                                                                                      LazyCompile: *RegExpExecNoTests native regexp.js:157
+     50    0.2%     21    0.1%                                                                                                                        LazyCompile: *BuildResultFromMatchInfo native regexp.js:130
+     64    0.3%      7    0.0%                                                                                                                    LazyCompile: *indexOf native string.js:118
+     50    0.2%     50    0.2%                                                                                                                      /usr/local/bin/node
+     46    0.2%      9    0.0%                                                                                                                    LazyCompile: hasOwnProperty native v8natives.js:249
+     36    0.1%     36    0.1%                                                                                                                      /usr/local/bin/node
+     30    0.1%     15    0.1%                                                                                                                    LazyCompile: *indexOf native array.js:1261
+     29    0.1%     29    0.1%                                                                                                                /usr/local/bin/node
+     25    0.1%      4    0.0%                                                                                                                LazyCompile: IN native runtime.js:354
+    204    0.8%      3    0.0%                                                                                                              LazyCompile: *reduceToSingleString util.js:412
+     96    0.4%     12    0.0%                                                                                                                LazyCompile: *reduce native array.js:1381
+     48    0.2%      8    0.0%                                                                                                                  LazyCompile: *<anonymous> util.js:414
+     40    0.2%      1    0.0%                                                                                                                    LazyCompile: *indexOf native string.js:118
+     34    0.1%     34    0.1%                                                                                                                      /usr/local/bin/node
+     95    0.4%      3    0.0%                                                                                                                LazyCompile: join native array.js:410
+     92    0.4%     20    0.1%                                                                                                                  LazyCompile: Join native array.js:119
+     59    0.2%     59    0.2%                                                                                                                    /usr/local/bin/node
+    159    0.7%      0    0.0%                                                                                                              LazyCompile: *arrayToHash util.js:193
+    156    0.6%      5    0.0%                                                                                                                LazyCompile: *forEach native array.js:1087
+    121    0.5%      1    0.0%                                                                                                                  LazyCompile: *<anonymous> util.js:196
+    116    0.5%    116    0.5%                                                                                                                    /usr/local/bin/node
+     35    0.1%      0    0.0%                                                                                                              LazyCompile: *keys native v8natives.js:333
+     33    0.1%     33    0.1%                                                                                                                /usr/local/bin/node
+     70    0.3%      2    0.0%                                                                                                            LazyCompile: join native array.js:410
+     65    0.3%      6    0.0%                                                                                                              LazyCompile: Join native array.js:119
+     51    0.2%     51    0.2%                                                                                                                /usr/local/bin/node
+     51    0.2%      6    0.0%                                                                                                            LazyCompile: *split native string.js:554
+     45    0.2%     45    0.2%                                                                                                              /usr/local/bin/node
+     48    0.2%      1    0.0%                                                                                                            LazyCompile: *getOwnPropertyDescriptor native v8natives.js:946
+     42    0.2%      6    0.0%                                                                                                              LazyCompile: *GetOwnProperty native v8natives.js:637
+     46    0.2%      9    0.0%                                                                                                            LazyCompile: *map native array.js:1215
+    332    1.4%      2    0.0%                                                                                                        LazyCompile: ~formatArray util.js:333
+    321    1.3%      0    0.0%                                                                                                          LazyCompile: *formatProperty util.js:353
+    287    1.2%      0    0.0%                                                                                                            LazyCompile: formatValue util.js:204
+    239    1.0%      0    0.0%                                                                                                              LazyCompile: *map native array.js:1215
+    230    1.0%      2    0.0%                                                                                                                LazyCompile: *<anonymous> util.js:293
+    226    0.9%      7    0.0%                                                                                                                  LazyCompile: *formatProperty util.js:353
+    123    0.5%      4    0.0%                                                                                                                    LazyCompile: formatValue util.js:204
+     52    0.2%      2    0.0%                                                                                                                      LazyCompile: *inspect buffer.js:283
+     28    0.1%      1    0.0%                                                                                                                        LazyCompile: *toString native v8natives.js:1378
+     37    0.2%      0    0.0%                                                                                                                    LazyCompile: *getOwnPropertyDescriptor native v8natives.js:946
+     31    0.1%      3    0.0%                                                                                                                      LazyCompile: *GetOwnProperty native v8natives.js:637
+    200    0.8%     15    0.1%                                                                                                        LazyCompile: *formatPrimitive util.js:304
+     95    0.4%     10    0.0%                                                                                                          LazyCompile: *replace native string.js:221
+     69    0.3%     69    0.3%                                                                                                            /usr/local/bin/node
+     43    0.2%      9    0.0%                                                                                                          LazyCompile: stringify native json.js:308
+     29    0.1%      6    0.0%                                                                                                            LazyCompile: *BasicJSONSerialize native json.js:274
+     30    0.1%      3    0.0%                                                                                                          LazyCompile: STRING_ADD_LEFT native runtime.js:183
+     44    0.2%     44    0.2%                                                                                                        /usr/local/bin/node
+     41    0.2%      4    0.0%                                                                                                        LazyCompile: *reduceToSingleString util.js:412
+     31    0.1%      0    0.0%                                                                                                        LazyCompile: *arrayToHash util.js:193
+     28    0.1%      0    0.0%                                                                                                          LazyCompile: *forEach native array.js:1087
+    142    0.6%      6    0.0%                                                                                                      LazyCompile: *getOwnPropertyDescriptor native v8natives.js:946
+    115    0.5%      4    0.0%                                                                                                        LazyCompile: *GetOwnProperty native v8natives.js:637
+     54    0.2%     18    0.1%                                                                                                          LazyCompile: *ConvertDescriptorArrayToDescriptor native v8natives.js:581
+     47    0.2%     47    0.2%                                                                                                          /usr/local/bin/node
+     60    0.2%      9    0.0%                                                                                                      LazyCompile: *map native array.js:1215
+     25    0.1%     25    0.1%                                                                                                        /usr/local/bin/node
+     50    0.2%      4    0.0%                                                                                                      LazyCompile: *split native string.js:554
+     45    0.2%     45    0.2%                                                                                                        /usr/local/bin/node
+     49    0.2%      7    0.0%                                                                                                      LazyCompile: *match native string.js:182
+     42    0.2%      1    0.0%                                                                                                        LazyCompile: *RegExpExecNoTests native regexp.js:157
+     46    0.2%      3    0.0%                                                                                                      LazyCompile: join native array.js:410
+     42    0.2%      2    0.0%                                                                                                        LazyCompile: Join native array.js:119
+     35    0.1%     35    0.1%                                                                                                          /usr/local/bin/node
+     45    0.2%      3    0.0%                                                                                                      LazyCompile: *indexOf native string.js:118
+     33    0.1%     33    0.1%                                                                                                        /usr/local/bin/node
+     33    0.1%      6    0.0%                                                                                                      LazyCompile: stringify native json.js:308
+     94    0.4%      0    0.0%                                                                                                LazyCompile: *reduceToSingleString util.js:412
+     55    0.2%      5    0.0%                                                                                                  LazyCompile: *reduce native array.js:1381
+     37    0.2%      1    0.0%                                                                                                    LazyCompile: *<anonymous> util.js:414
+     36    0.1%      0    0.0%                                                                                                      LazyCompile: *indexOf native string.js:118
+     27    0.1%     27    0.1%                                                                                                        /usr/local/bin/node
+     36    0.1%      5    0.0%                                                                                                  LazyCompile: join native array.js:410
+     31    0.1%      3    0.0%                                                                                                    LazyCompile: Join native array.js:119
+     75    0.3%      2    0.0%                                                                                                LazyCompile: *arrayToHash util.js:193
+     68    0.3%      3    0.0%                                                                                                  LazyCompile: *forEach native array.js:1087
+     52    0.2%      2    0.0%                                                                                                    LazyCompile: *<anonymous> util.js:196
+     38    0.2%     38    0.2%                                                                                                      /usr/local/bin/node
+     41    0.2%      1    0.0%                                                                                            LazyCompile: join native array.js:410
+     39    0.2%      2    0.0%                                                                                              LazyCompile: Join native array.js:119
+    259    1.1%      2    0.0%                                                                                          LazyCompile: <anonymous> native messages.js:1157
+    239    1.0%      2    0.0%                                                                                            LazyCompile: captureStackTrace native messages.js:1113
+    104    0.4%    104    0.4%                                                                                              /usr/local/bin/node
+     98    0.4%      1    0.0%                                                                                              LazyCompile: DefineOneShotAccessor native messages.js:767
+     94    0.4%     94    0.4%                                                                                                /usr/local/bin/node
+     25    0.1%     25    0.1%                                                                                              /usr/lib/system/libsystem_malloc.dylib
+     29    0.1%     29    0.1%                                                                                          /usr/local/bin/node
+    439    1.8%     35    0.1%                                                                                      LazyCompile: Batch.put /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/batch.js:19
+    242    1.0%      6    0.0%                                                                                        LazyCompile: *getOptions /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/util.js:87
+    230    1.0%      5    0.0%                                                                                          LazyCompile: *extend /Users/ematiu/devel/node/insight-api/node_modules/levelup/node_modules/xtend/index.js:6
+    127    0.5%    127    0.5%                                                                                            /usr/local/bin/node
+     48    0.2%      2    0.0%                                                                                            LazyCompile: *keys native v8natives.js:333
+     46    0.2%     46    0.2%                                                                                              /usr/local/bin/node
+     50    0.2%     50    0.2%                                                                                        /usr/local/bin/node
+     41    0.2%     41    0.2%                                                                                        /usr/lib/system/libsystem_malloc.dylib
+    176    0.7%      4    0.0%                                                                                      LazyCompile: ~LevelUP.batch /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/levelup.js:285
+    155    0.6%     92    0.4%                                                                                        LazyCompile: *Batch /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/batch.js:13
+     55    0.2%     55    0.2%                                                                                          /usr/local/bin/node
+     63    0.3%     63    0.3%                                                                                      /usr/local/bin/node
+     56    0.2%     56    0.2%                                                                                      /usr/lib/system/libsystem_kernel.dylib
+     83    0.3%      0    0.0%                                                                                    LazyCompile: ~BlockDb.add /Users/ematiu/devel/node/insight-api/lib/BlockDb.js:48
+     65    0.3%      0    0.0%                                                                                      LazyCompile: *winston.(anonymous function) /Users/ematiu/devel/node/insight-api/node_modules/winston/lib/winston.js:84
+     65    0.3%      0    0.0%                                                                                        LazyCompile: ~Logger.log /Users/ematiu/devel/node/insight-api/node_modules/winston/lib/winston/logger.js:123
+     60    0.2%      1    0.0%                                                                                          LazyCompile: ~exports.format util.js:23
+     51    0.2%      0    0.0%                                                                                            LazyCompile: ~inspect util.js:118
+     42    0.2%      0    0.0%                                                                                              LazyCompile: ~formatValue util.js:204
+     38    0.2%      0    0.0%                                                                                                LazyCompile: *map native array.js:1215
+     38    0.2%      0    0.0%                                                                                                  LazyCompile: *<anonymous> util.js:293
+     38    0.2%      0    0.0%                                                                                                    LazyCompile: *formatProperty util.js:353
+     28    0.1%      1    0.0%                                                                                                      LazyCompile: ~formatValue util.js:204
+     43    0.2%     12    0.0%                                        LazyCompile: *split native string.js:554
+     30    0.1%     30    0.1%                                          /usr/local/bin/node
+     48    0.2%     48    0.2%        /usr/local/bin/node
+     48    0.2%     48    0.2%        /usr/lib/system/libsystem_kernel.dylib
+     25    0.1%     25    0.1%        /usr/lib/system/libsystem_c.dylib
+    303    1.3%      3    0.0%    LazyCompile: *test native regexp.js:217
+    290    1.2%      3    0.0%      LazyCompile: NonStringToString native runtime.js:558
+    280    1.2%      5    0.0%        LazyCompile: DefaultString native runtime.js:645
+    114    0.5%    114    0.5%          /usr/lib/system/libsystem_kernel.dylib
+     56    0.2%     56    0.2%          /usr/local/bin/node
+     55    0.2%      7    0.0%          LazyCompile: toString native messages.js:1248
+     48    0.2%      5    0.0%            LazyCompile: ErrorToStringDetectCycle native messages.js:1227
+     27    0.1%      6    0.0%              LazyCompile: ~GetPropertyWithoutInvokingMonkeyGetters native messages.js:1203
+     38    0.2%     38    0.2%          /usr/lib/system/libsystem_c.dylib
+    273    1.1%      4    0.0%    LazyCompile: ~err /Users/ematiu/devel/node/insight-api/node_modules/levelup/node_modules/errno/custom.js:25
+    144    0.6%      1    0.0%      LazyCompile: *init /Users/ematiu/devel/node/insight-api/node_modules/levelup/node_modules/errno/custom.js:3
+    143    0.6%     11    0.0%        LazyCompile: ~prr /Users/ematiu/devel/node/insight-api/node_modules/levelup/node_modules/prr/prr.js:44
+    109    0.5%      0    0.0%          LazyCompile: *Object.defineProperty.function.obj.(anonymous function) /Users/ematiu/devel/node/insight-api/node_modules/levelup/node_modules/prr/prr.js:16
+    105    0.4%      2    0.0%            LazyCompile: defineProperty native v8natives.js:1050
+     63    0.3%     13    0.1%              LazyCompile: *ToPropertyDescriptor native v8natives.js:420
+     39    0.2%      1    0.0%              LazyCompile: *DefineOwnProperty native v8natives.js:924
+     38    0.2%     13    0.1%                LazyCompile: *DefineObjectProperty native v8natives.js:695
+     66    0.3%      0    0.0%      LazyCompile: <anonymous> native messages.js:1157
+     66    0.3%      0    0.0%        LazyCompile: <anonymous> native messages.js:1157
+     64    0.3%      0    0.0%          LazyCompile: captureStackTrace native messages.js:1113
+     35    0.1%      2    0.0%            LazyCompile: DefineOneShotAccessor native messages.js:767
+     30    0.1%     30    0.1%              /usr/local/bin/node
+     43    0.2%      0    0.0%      LazyCompile: captureStackTrace native messages.js:1113
+     32    0.1%      0    0.0%        LazyCompile: DefineOneShotAccessor native messages.js:767
+     30    0.1%     30    0.1%          /usr/local/bin/node
+     67    0.3%      0    0.0%    LazyCompile: ~dispatchError /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/util.js:129
+     51    0.2%      0    0.0%      LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/BlockDb.js:177
+     48    0.2%      0    0.0%        LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/Sync.js:94
+     48    0.2%      0    0.0%          LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:610
+     47    0.2%      0    0.0%            LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:249
+     47    0.2%      0    0.0%              LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:149
+     41    0.2%      0    0.0%                LazyCompile: *iterate /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:148
+     41    0.2%      0    0.0%                  LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:248
+     41    0.2%      0    0.0%                    LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:608
+     41    0.2%      0    0.0%                      LazyCompile: ~async.series.self.bDb.getTip.oldTip /Users/ematiu/devel/node/insight-api/lib/Sync.js:99
+     41    0.2%      0    0.0%                        LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:610
+     41    0.2%      0    0.0%                          LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:249
+     41    0.2%      0    0.0%                            LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:149
+     41    0.2%      0    0.0%                              LazyCompile: *iterate /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:148
+     41    0.2%      0    0.0%                                LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:248
+     41    0.2%      0    0.0%                                  LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:608
+     41    0.2%      0    0.0%                                    LazyCompile: ~async.series.self.bDb.getNext.oldNext /Users/ematiu/devel/node/insight-api/lib/Sync.js:108
+     41    0.2%      0    0.0%                                      LazyCompile: ~BlockDb.getTip /Users/ematiu/devel/node/insight-api/lib/BlockDb.js:66
+     40    0.2%      0    0.0%                                        LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/Sync.js:110
+     40    0.2%      0    0.0%                                          LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:610
+     40    0.2%      0    0.0%                                            LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:249
+     40    0.2%      0    0.0%                                              LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:149
+     40    0.2%      0    0.0%                                                LazyCompile: *iterate /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:148
+     40    0.2%      0    0.0%                                                  LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:248
+     40    0.2%      0    0.0%                                                    LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:608
+     40    0.2%      0    0.0%                                                      LazyCompile: ~async.series.self.processReorg.height /Users/ematiu/devel/node/insight-api/lib/Sync.js:122
+     40    0.2%      0    0.0%                                                        LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:610
+     40    0.2%      0    0.0%                                                          LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:249
+     40    0.2%      0    0.0%                                                            LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:149
+     40    0.2%      0    0.0%                                                              LazyCompile: *iterate /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:148
+     40    0.2%      0    0.0%                                                                LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:248
+     40    0.2%      0    0.0%                                                                  LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:608
+     40    0.2%      0    0.0%                                                                    LazyCompile: ~async.series.self.cachedLastHash /Users/ematiu/devel/node/insight-api/lib/Sync.js:130
+     40    0.2%      0    0.0%                                                                      LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:610
+     40    0.2%      0    0.0%                                                                        LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:249
+     40    0.2%      0    0.0%                                                                          LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:149
+     40    0.2%      0    0.0%                                                                            LazyCompile: *iterate /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:148
+     40    0.2%      0    0.0%                                                                              LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:248
+     40    0.2%      0    0.0%                                                                                LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:608
+     40    0.2%      0    0.0%                                                                                  LazyCompile: ~async.series.err /Users/ematiu/devel/node/insight-api/lib/Sync.js:146
+     40    0.2%      0    0.0%                                                                                    LazyCompile: ~BlockDb.add /Users/ematiu/devel/node/insight-api/lib/BlockDb.js:48
+     34    0.1%      0    0.0%                                                                                      LazyCompile: ~winston.(anonymous function) /Users/ematiu/devel/node/insight-api/node_modules/winston/lib/winston.js:84
+     34    0.1%      0    0.0%                                                                                        LazyCompile: ~Logger.log /Users/ematiu/devel/node/insight-api/node_modules/winston/lib/winston/logger.js:123
+     33    0.1%      0    0.0%                                                                                          LazyCompile: ~exports.format util.js:23
+     33    0.1%      0    0.0%                                                                                            LazyCompile: ~inspect util.js:118
+     29    0.1%      0    0.0%                                                                                              LazyCompile: ~formatValue util.js:204
+     27    0.1%      0    0.0%                                                                                                LazyCompile: ~map native array.js:1215
+     27    0.1%      0    0.0%                                                                                                  LazyCompile: *<anonymous> util.js:293
+
+   3215   13.3%      1    0.0%  LazyCompile: *processImmediate timers.js:320
+   3213   13.3%      3    0.0%    LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/HistoricSync.js:448
+   3210   13.3%      3    0.0%      LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:678
+   3207   13.3%      0    0.0%        LazyCompile: *async.whilst /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:676
+   3202   13.3%      0    0.0%          LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/lib/HistoricSync.js:439
+   3202   13.3%      0    0.0%            LazyCompile: *HistoricSync.getBlockFromFile /Users/ematiu/devel/node/insight-api/lib/HistoricSync.js:198
+   3200   13.3%      2    0.0%              LazyCompile: *BlockExtractor.getNextBlock /Users/ematiu/devel/node/insight-api/lib/BlockExtractor.js:90
+   3198   13.2%      0    0.0%                LazyCompile: *async.series /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:605
+   3196   13.2%      2    0.0%                  LazyCompile: <anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:229
+   3161   13.1%      1    0.0%                    LazyCompile: *iterate /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:148
+   3160   13.1%      0    0.0%                      LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:248
+   3158   13.1%      0    0.0%                        LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:608
+   3157   13.1%      1    0.0%                          LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/BlockExtractor.js:96
+   3155   13.1%      1    0.0%                            LazyCompile: *async.whilst /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:676
+   3152   13.1%      4    0.0%                              LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/BlockExtractor.js:102
+   3106   12.9%      0    0.0%                                LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:678
+   3106   12.9%      0    0.0%                                  LazyCompile: *async.whilst /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:676
+   3104   12.9%      2    0.0%                                    LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:610
+   3097   12.8%      0    0.0%                                      LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:249
+   3097   12.8%      0    0.0%                                        LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:149
+   3097   12.8%      0    0.0%                                          LazyCompile: *iterate /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:148
+   3097   12.8%      2    0.0%                                            LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:248
+   3095   12.8%      0    0.0%                                              LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:608
+   3094   12.8%      2    0.0%                                                LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/BlockExtractor.js:129
+   3080   12.8%      0    0.0%                                                  LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:610
+   3078   12.8%      1    0.0%                                                    LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:249
+   3075   12.7%      0    0.0%                                                      LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:149
+   3075   12.7%      0    0.0%                                                        LazyCompile: *iterate /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:148
+   3075   12.7%      0    0.0%                                                          LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:248
+   3075   12.7%      0    0.0%                                                            LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:608
+   3074   12.7%      1    0.0%                                                              LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/BlockExtractor.js:142
+   2130    8.8%      3    0.0%                                                                LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:610
+   2117    8.8%      2    0.0%                                                                  LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:249
+   2114    8.8%      4    0.0%                                                                    LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:149
+   2109    8.7%      0    0.0%                                                                      LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:253
+   2106    8.7%      2    0.0%                                                                        LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/BlockExtractor.js:150
+   2102    8.7%     11    0.0%                                                                          LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/HistoricSync.js:204
+   1388    5.7%      5    0.0%                                                                            LazyCompile: *HistoricSync.getStandardizedBlock /Users/ematiu/devel/node/insight-api/lib/HistoricSync.js:184
+   1317    5.5%      6    0.0%                                                                              LazyCompile: *map native array.js:1215
+   1272    5.3%      1    0.0%                                                                                LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/lib/HistoricSync.js:192
+   1270    5.3%      3    0.0%                                                                                  LazyCompile: *HistoricSync.getStandardizedTx /Users/ematiu/devel/node/insight-api/lib/HistoricSync.js:148
+   1178    4.9%     10    0.0%                                                                                    LazyCompile: *map native array.js:1215
+    975    4.0%     13    0.1%                                                                                      LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/lib/HistoricSync.js:164
+    711    2.9%     17    0.1%                                                                                        LazyCompile: ~Address.fromScriptPubKey /Users/ematiu/devel/node/bitcore/lib/Address.js:97
+    352    1.5%      7    0.0%                                                                                          LazyCompile: *exports.sha256ripe160 /Users/ematiu/devel/node/bitcore/util/util.js:54
+    166    0.7%      6    0.0%                                                                                            LazyCompile: *exports.ripe160 /Users/ematiu/devel/node/bitcore/util/util.js:29
+     50    0.2%      0    0.0%                                                                                              LazyCompile: *Hash crypto.js:185
+     50    0.2%      2    0.0%                                                                                                LazyCompile: *Hash crypto.js:185
+     41    0.2%     41    0.2%                                                                                                  /usr/local/bin/node
+     45    0.2%      1    0.0%                                                                                              LazyCompile: *Hash.digest crypto.js:214
+     32    0.1%     32    0.1%                                                                                                /usr/local/bin/node
+     37    0.2%      3    0.0%                                                                                              LazyCompile: *Buffer.write buffer.js:315
+     47    0.2%      7    0.0%                                                                                            LazyCompile: *Buffer.write buffer.js:315
+     41    0.2%      0    0.0%                                                                                            LazyCompile: *Hash crypto.js:185
+     36    0.1%      4    0.0%                                                                                              LazyCompile: *Hash crypto.js:185
+     29    0.1%     29    0.1%                                                                                                /usr/local/bin/node
+     34    0.1%      0    0.0%                                                                                            LazyCompile: *Hash.digest crypto.js:214
+     26    0.1%      1    0.0%                                                                                            LazyCompile: ~exports.ripe160 /Users/ematiu/devel/node/bitcore/util/util.js:29
+    222    0.9%      6    0.0%                                                                                          LazyCompile: Address /Users/ematiu/devel/node/bitcore/lib/Address.js:39
+    211    0.9%      5    0.0%                                                                                            LazyCompile: *constructor.super /Users/ematiu/devel/node/bitcore/node_modules/soop/soop.js:22
+    171    0.7%     13    0.1%                                                                                              LazyCompile: VersionedData /Users/ematiu/devel/node/bitcore/util/VersionedData.js:6
+     68    0.3%     68    0.3%                                                                                                /usr/local/bin/node
+     46    0.2%      4    0.0%                                                                                                LazyCompile: *VersionedData.payload /Users/ematiu/devel/node/bitcore/util/VersionedData.js:30
+     37    0.2%      2    0.0%                                                                                                  LazyCompile: *EncodedData.doAsBinary /Users/ematiu/devel/node/bitcore/util/EncodedData.js:75
+     30    0.1%      5    0.0%                                                                                                    LazyCompile: ~<anonymous> /Users/ematiu/devel/node/bitcore/util/VersionedData.js:32
+     25    0.1%      6    0.0%                                                                                                      LazyCompile: *Buffer.copy buffer.js:509
+     28    0.1%      2    0.0%                                                                                                LazyCompile: *VersionedData.version /Users/ematiu/devel/node/bitcore/util/VersionedData.js:21
+     49    0.2%     49    0.2%                                                                                          /usr/local/bin/node
+     42    0.2%     16    0.1%                                                                                          LazyCompile: ~Script.capture /Users/ematiu/devel/node/bitcore/lib/Script.js:235
+    122    0.5%     10    0.0%                                                                                        LazyCompile: *HistoricSync._fromBuffer /Users/ematiu/devel/node/insight-api/lib/HistoricSync.js:143
+     64    0.3%      5    0.0%                                                                                          LazyCompile: *Buffer.toString buffer.js:392
+    117    0.5%     16    0.1%                                                                                        LazyCompile: *Script /Users/ematiu/devel/node/bitcore/lib/Script.js:25
+     66    0.3%      3    0.0%                                                                                          LazyCompile: *<anonymous> /Users/ematiu/devel/node/bitcore/util/BinaryParser.js:97
+     60    0.2%      0    0.0%                                                                                            LazyCompile: *buffer /Users/ematiu/devel/node/bitcore/util/BinaryParser.js:12
+     60    0.2%      8    0.0%                                                                                              LazyCompile: *Buffer.slice buffer.js:539
+     31    0.1%     31    0.1%                                                                                                /usr/local/bin/node
+    126    0.5%      7    0.0%                                                                                      LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/lib/HistoricSync.js:152
+     53    0.2%     23    0.1%                                                                                        LazyCompile: *isCoinBase /Users/ematiu/devel/node/bitcore/lib/Transaction.js:49
+     27    0.1%      2    0.0%                                                                                        LazyCompile: *Buffer.toString buffer.js:392
+     48    0.2%     48    0.2%                                                                                      /usr/local/bin/node
+     62    0.3%      6    0.0%                                                                                    LazyCompile: *exports.formatHashFull /Users/ematiu/devel/node/bitcore/util/util.js:70
+     25    0.1%      0    0.0%                                                                                LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/HistoricSync.js:192
+     50    0.2%      7    0.0%                                                                              LazyCompile: *exports.formatHashFull /Users/ematiu/devel/node/bitcore/util/util.js:70
+    694    2.9%      1    0.0%                                                                            LazyCompile: *BlockDb.setLastFileIndex /Users/ematiu/devel/node/insight-api/lib/BlockDb.js:112
+    690    2.9%      0    0.0%                                                                              LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/HistoricSync.js:207
+    690    2.9%      2    0.0%                                                                                LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/HistoricSync.js:440
+    666    2.8%      5    0.0%                                                                                  LazyCompile: *Sync.storeTipBlock /Users/ematiu/devel/node/insight-api/lib/Sync.js:79
+    626    2.6%      1    0.0%                                                                                    LazyCompile: *async.series /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:605
+    620    2.6%     17    0.1%                                                                                      LazyCompile: <anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:229
+    510    2.1%      4    0.0%                                                                                        LazyCompile: *iterate /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:148
+    506    2.1%      1    0.0%                                                                                          LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:248
+    504    2.1%      2    0.0%                                                                                            LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:608
+    499    2.1%      4    0.0%                                                                                              LazyCompile: ~async.series.self.bDb.getTip.oldTip /Users/ematiu/devel/node/insight-api/lib/Sync.js:92
+    492    2.0%     10    0.0%                                                                                                LazyCompile: *BlockDb.has /Users/ematiu/devel/node/insight-api/lib/BlockDb.js:175
+    477    2.0%     28    0.1%                                                                                                  LazyCompile: *LevelUP.get /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/levelup.js:163
+    209    0.9%    209    0.9%                                                                                                    /usr/local/bin/node
+    100    0.4%      3    0.0%                                                                                                    LazyCompile: *getOptions /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/util.js:87
+     95    0.4%      3    0.0%                                                                                                      LazyCompile: *extend /Users/ematiu/devel/node/insight-api/node_modules/levelup/node_modules/xtend/index.js:6
+     44    0.2%     44    0.2%                                                                                                        /usr/local/bin/node
+     35    0.1%      0    0.0%                                                                                                        LazyCompile: *keys native v8natives.js:333
+     34    0.1%     34    0.1%                                                                                                          /usr/local/bin/node
+     78    0.3%     78    0.3%                                                                                                    /usr/lib/system/libsystem_kernel.dylib
+     55    0.2%      2    0.0%                                                                                        LazyCompile: *_map /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:53
+     52    0.2%      9    0.0%                                                                                          LazyCompile: *map native array.js:1215
+     27    0.1%     27    0.1%                                                                                        /usr/local/bin/node
+     31    0.1%     31    0.1%                                                                                    /usr/local/bin/node
+    715    3.0%     17    0.1%                                                                LazyCompile: *parse /Users/ematiu/devel/node/bitcore/lib/Block.js:51
+    372    1.5%      7    0.0%                                                                  LazyCompile: *exports.twoSha256 /Users/ematiu/devel/node/bitcore/util/util.js:50
+    119    0.5%      0    0.0%                                                                    LazyCompile: *Hash crypto.js:185
+    110    0.5%      7    0.0%                                                                      LazyCompile: *Hash crypto.js:185
+     83    0.3%     83    0.3%                                                                        /usr/local/bin/node
+     84    0.3%      5    0.0%                                                                    LazyCompile: *Buffer.write buffer.js:315
+     44    0.2%     44    0.2%                                                                      /usr/local/bin/node
+     67    0.3%      2    0.0%                                                                    LazyCompile: *Hash.digest crypto.js:214
+     38    0.2%     38    0.2%                                                                      /usr/local/bin/node
+     51    0.2%      6    0.0%                                                                    LazyCompile: *Hash.update crypto.js:205
+     42    0.2%     42    0.2%                                                                      /usr/local/bin/node
+    197    0.8%      8    0.0%                                                                  LazyCompile: *serialize /Users/ematiu/devel/node/bitcore/lib/Transaction.js:152
+    126    0.5%      8    0.0%                                                                    LazyCompile: *forEach native array.js:1087
+     63    0.3%      1    0.0%                                                                      LazyCompile: *<anonymous> /Users/ematiu/devel/node/bitcore/lib/Transaction.js:160
+     62    0.3%      5    0.0%                                                                        LazyCompile: *serialize /Users/ematiu/devel/node/bitcore/lib/Transaction.js:56
+     38    0.2%      5    0.0%                                                                          LazyCompile: *Buffer.concat buffer.js:476
+     43    0.2%      0    0.0%                                                                      LazyCompile: *serialize /Users/ematiu/devel/node/bitcore/lib/Transaction.js:103
+     26    0.1%      5    0.0%                                                                        LazyCompile: *Buffer.concat buffer.js:476
+     27    0.1%      2    0.0%                                                                    LazyCompile: *Buffer.concat buffer.js:476
+     45    0.2%      2    0.0%                                                                  LazyCompile: *buffer /Users/ematiu/devel/node/bitcore/util/BinaryParser.js:12
+     43    0.2%      8    0.0%                                                                    LazyCompile: *Buffer.slice buffer.js:539
+     36    0.1%      1    0.0%                                                                  LazyCompile: *<anonymous> /Users/ematiu/devel/node/bitcore/util/BinaryParser.js:97
+     28    0.1%      1    0.0%                                                                    LazyCompile: *buffer /Users/ematiu/devel/node/bitcore/util/BinaryParser.js:12
+     27    0.1%      4    0.0%                                                                      LazyCompile: *Buffer.slice buffer.js:539
+     26    0.1%      1    0.0%                                                                  LazyCompile: *Parser.varInt /Users/ematiu/devel/node/bitcore/util/BinaryParser.js:123
+     25    0.1%      1    0.0%                                                                    LazyCompile: *<anonymous> /Users/ematiu/devel/node/bitcore/util/BinaryParser.js:97
+    137    0.6%      5    0.0%                                                                LazyCompile: *getHash /Users/ematiu/devel/node/bitcore/lib/Block.js:85
+    119    0.5%      5    0.0%                                                                  LazyCompile: *exports.twoSha256 /Users/ematiu/devel/node/bitcore/util/util.js:50
+     29    0.1%      1    0.0%                                                                    LazyCompile: *Hash.digest crypto.js:214
+     26    0.1%      5    0.0%                                                                    LazyCompile: *Buffer.write buffer.js:315
+     78    0.3%      2    0.0%                                                                LazyCompile: ~parse /Users/ematiu/devel/node/bitcore/lib/Block.js:51
+     55    0.2%      0    0.0%                                                                  LazyCompile: ~Transaction.parse /Users/ematiu/devel/node/bitcore/lib/Transaction.js:532
+     46    0.2%      1    0.0%                                                                    LazyCompile: *calcHash /Users/ematiu/devel/node/bitcore/lib/Transaction.js:183
+     25    0.1%      0    0.0%                                                                      LazyCompile: *serialize /Users/ematiu/devel/node/bitcore/lib/Transaction.js:152
+
+   1930    8.0%   1930    8.0%  /usr/local/bin/node
+
+   1282    5.3%     15    0.1%  LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/batch.js:66
+   1098    4.5%     23    0.1%    LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/BlockDb.js:58
+    596    2.5%      7    0.0%      LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:610
+    546    2.3%      0    0.0%        LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:249
+    543    2.2%      2    0.0%          LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:149
+    540    2.2%      0    0.0%            LazyCompile: *iterate /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:148
+    539    2.2%      1    0.0%              LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:248
+    538    2.2%      0    0.0%                LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:608
+    537    2.2%      2    0.0%                  LazyCompile: ~async.series.err /Users/ematiu/devel/node/insight-api/lib/Sync.js:150
+    532    2.2%      5    0.0%                    LazyCompile: *TransactionDb.createFromBlock /Users/ematiu/devel/node/insight-api/lib/TransactionDb.js:582
+    491    2.0%      2    0.0%                      LazyCompile: TransactionDb.createFromObjs /Users/ematiu/devel/node/insight-api/lib/TransactionDb.js:552
+    371    1.5%     25    0.1%                        LazyCompile: ~LevelUP.batch /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/levelup.js:285
+    196    0.8%    196    0.8%                          /usr/local/bin/node
+     31    0.1%      1    0.0%                          LazyCompile: *getOptions /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/util.js:87
+     30    0.1%      2    0.0%                            LazyCompile: *extend /Users/ematiu/devel/node/insight-api/node_modules/levelup/node_modules/xtend/index.js:6
+     30    0.1%     30    0.1%                          /usr/lib/system/libsystem_malloc.dylib
+     54    0.2%      6    0.0%                        LazyCompile: TransactionDb._addScript /Users/ematiu/devel/node/insight-api/lib/TransactionDb.js:462
+     44    0.2%     44    0.2%                        /usr/local/bin/node
+     29    0.1%      0    0.0%                      LazyCompile: ~TransactionDb.createFromObjs /Users/ematiu/devel/node/insight-api/lib/TransactionDb.js:552
+    452    1.9%    452    1.9%      /usr/local/bin/node
+     64    0.3%     64    0.3%    /usr/local/bin/node
+     40    0.2%      8    0.0%    LazyCompile: ~EventEmitter.emit events.js:53
+     26    0.1%     26    0.1%      /usr/local/bin/node
+
+    514    2.1%     37    0.2%  LazyCompile: <anonymous> native messages.js:1157
+    429    1.8%     25    0.1%    LazyCompile: <anonymous> native messages.js:1157
+    204    0.8%    204    0.8%      /usr/local/bin/node
+    173    0.7%     19    0.1%      LazyCompile: captureStackTrace native messages.js:1113
+     87    0.4%     87    0.4%        /usr/local/bin/node
+     48    0.2%      1    0.0%        LazyCompile: DefineOneShotAccessor native messages.js:767
+     46    0.2%     46    0.2%          /usr/local/bin/node
+
+    478    2.0%      9    0.0%  LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/levelup.js:345
+    444    1.8%      1    0.0%    LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/Sync.js:151
+    440    1.8%     16    0.1%      LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:610
+    175    0.7%      6    0.0%        LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:249
+    168    0.7%      1    0.0%          LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:149
+    165    0.7%      1    0.0%            LazyCompile: *iterate /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:148
+    162    0.7%      1    0.0%              LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:248
+    160    0.7%      0    0.0%                LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:608
+    160    0.7%      8    0.0%                  LazyCompile: ~async.series.err /Users/ematiu/devel/node/insight-api/lib/Sync.js:155
+    146    0.6%      2    0.0%                    LazyCompile: *BlockDb.setTip /Users/ematiu/devel/node/insight-api/lib/BlockDb.js:82
+    138    0.6%     17    0.1%                      LazyCompile: *LevelUP.put /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/levelup.js:210
+     56    0.2%      3    0.0%                        LazyCompile: *getOptions /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/util.js:87
+     51    0.2%      2    0.0%                          LazyCompile: *extend /Users/ematiu/devel/node/insight-api/node_modules/levelup/node_modules/xtend/index.js:6
+     32    0.1%     32    0.1%                        /usr/local/bin/node
+    113    0.5%    113    0.5%        /usr/local/bin/node
+     45    0.2%     45    0.2%        /usr/lib/system/libsystem_malloc.dylib
+     31    0.1%     31    0.1%        /usr/lib/libc++abi.dylib
+
+    475    2.0%     18    0.1%  LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/levelup.js:238
+    217    0.9%      1    0.0%    LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/BlockDb.js:84
+    213    0.9%      5    0.0%      LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/Sync.js:157
+    203    0.8%     19    0.1%        LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:610
+    115    0.5%      1    0.0%          LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:249
+    113    0.5%      1    0.0%            LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:149
+    112    0.5%      1    0.0%              LazyCompile: *iterate /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:148
+    111    0.5%      0    0.0%                LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:248
+    111    0.5%      1    0.0%                  LazyCompile: *<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:608
+    108    0.4%      2    0.0%                    LazyCompile: ~async.series.err /Users/ematiu/devel/node/insight-api/lib/Sync.js:161
+    101    0.4%      1    0.0%                      LazyCompile: *BlockDb.setNext /Users/ematiu/devel/node/insight-api/lib/BlockDb.js:153
+     99    0.4%      6    0.0%                        LazyCompile: *LevelUP.put /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/levelup.js:210
+     46    0.2%      1    0.0%                          LazyCompile: *getOptions /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/util.js:87
+     44    0.2%      3    0.0%                            LazyCompile: *extend /Users/ematiu/devel/node/insight-api/node_modules/levelup/node_modules/xtend/index.js:6
+     25    0.1%     25    0.1%                          /usr/local/bin/node
+     43    0.2%     43    0.2%          /usr/local/bin/node
+    162    0.7%      2    0.0%    LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/BlockDb.js:154
+    156    0.6%      0    0.0%      LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/Sync.js:162
+    155    0.6%     12    0.0%        LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:610
+     66    0.3%      0    0.0%          LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:249
+     65    0.3%      1    0.0%            LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:149
+     63    0.3%      1    0.0%              LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:253
+     60    0.2%      1    0.0%                LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/Sync.js:168
+     57    0.2%      1    0.0%                  LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/HistoricSync.js:446
+     54    0.2%      5    0.0%                    LazyCompile: *global.setImmediate node.js:192
+     46    0.2%     11    0.0%                      LazyCompile: ~exports.setImmediate timers.js:337
+     45    0.2%     45    0.2%          /usr/local/bin/node
+     29    0.1%     29    0.1%    /usr/local/bin/node
+
+    415    1.7%    415    1.7%  /usr/lib/system/libsystem_c.dylib
+
+    244    1.0%      0    0.0%  Function: ~<anonymous> node.js:27
+    243    1.0%      0    0.0%    LazyCompile: ~startup node.js:30
+    227    0.9%      0    0.0%      LazyCompile: ~Module.runMain module.js:495
+    227    0.9%      0    0.0%        LazyCompile: Module._load module.js:275
+    216    0.9%      0    0.0%          LazyCompile: ~Module.load module.js:346
+    214    0.9%      0    0.0%            LazyCompile: ~Module._extensions..js module.js:472
+    213    0.9%      0    0.0%              LazyCompile: ~Module._compile module.js:374
+    212    0.9%      0    0.0%                Function: ~<anonymous> /Users/ematiu/devel/node/insight-api/util/sync.js:1
+    146    0.6%      0    0.0%                  LazyCompile: ~require module.js:379
+    146    0.6%      0    0.0%                    LazyCompile: ~Module.require module.js:361
+    146    0.6%      0    0.0%                      LazyCompile: Module._load module.js:275
+    143    0.6%      0    0.0%                        LazyCompile: ~Module.load module.js:346
+    143    0.6%      0    0.0%                          LazyCompile: ~Module._extensions..js module.js:472
+    142    0.6%      0    0.0%                            LazyCompile: ~Module._compile module.js:374
+    134    0.6%      0    0.0%                              Function: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/HistoricSync.js:1
+     82    0.3%      0    0.0%                                LazyCompile: ~require module.js:379
+     82    0.3%      0    0.0%                                  LazyCompile: ~Module.require module.js:361
+     82    0.3%      0    0.0%                                    LazyCompile: Module._load module.js:275
+     75    0.3%      0    0.0%                                      LazyCompile: ~Module.load module.js:346
+     75    0.3%      0    0.0%                                        LazyCompile: ~Module._extensions..js module.js:472
+     74    0.3%      0    0.0%                                          LazyCompile: ~Module._compile module.js:374
+     31    0.1%      0    0.0%                                            Function: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/BlockExtractor.js:1
+     29    0.1%      0    0.0%                                            Function: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/Sync.js:1
+     29    0.1%      0    0.0%                                              LazyCompile: ~require module.js:379
+     29    0.1%      0    0.0%                                                LazyCompile: ~Module.require module.js:361
+     29    0.1%      0    0.0%                                                  LazyCompile: Module._load module.js:275
+     28    0.1%      0    0.0%                                                    LazyCompile: ~Module.load module.js:346
+     28    0.1%      0    0.0%                                                      LazyCompile: ~Module._extensions..js module.js:472
+     28    0.1%      0    0.0%                                                        LazyCompile: ~Module._compile module.js:374
+     28    0.1%      0    0.0%                                                          Function: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/logger.js:1
+     49    0.2%      0    0.0%                                LazyCompile: ~Object.defineProperty.get /Users/ematiu/devel/node/bitcore/bitcore.js:10
+     49    0.2%      0    0.0%                                  LazyCompile: ~require module.js:379
+     49    0.2%      0    0.0%                                    LazyCompile: ~Module.require module.js:361
+     49    0.2%      0    0.0%                                      LazyCompile: Module._load module.js:275
+     47    0.2%      0    0.0%                                        LazyCompile: ~Module.load module.js:346
+     47    0.2%      0    0.0%                                          LazyCompile: ~Module._extensions..js module.js:472
+     47    0.2%      0    0.0%                                            LazyCompile: ~Module._compile module.js:374
+     29    0.1%      0    0.0%                                              Function: ~<anonymous> /Users/ematiu/devel/node/bitcore/lib/Script.js:1
+     29    0.1%      0    0.0%                                                LazyCompile: ~require module.js:379
+     29    0.1%      0    0.0%                                                  LazyCompile: ~Module.require module.js:361
+     29    0.1%      0    0.0%                                                    LazyCompile: Module._load module.js:275
+     62    0.3%      0    0.0%                  LazyCompile: ~HistoricSync /Users/ematiu/devel/node/insight-api/lib/HistoricSync.js:42
+     62    0.3%      0    0.0%                    LazyCompile: ~Sync /Users/ematiu/devel/node/insight-api/lib/Sync.js:18
+     61    0.3%      0    0.0%                      LazyCompile: ~require module.js:379
+     61    0.3%      0    0.0%                        LazyCompile: ~Module.require module.js:361
+     61    0.3%      0    0.0%                          LazyCompile: Module._load module.js:275
+     59    0.2%      0    0.0%                            LazyCompile: ~Module.load module.js:346
+     59    0.2%      0    0.0%                              LazyCompile: ~Module._extensions..js module.js:472
+     59    0.2%      0    0.0%                                LazyCompile: ~Module._compile module.js:374
+     56    0.2%      0    0.0%                                  Function: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/BlockDb.js:1
+     41    0.2%      0    0.0%                                    LazyCompile: ~require module.js:379
+     41    0.2%      0    0.0%                                      LazyCompile: ~Module.require module.js:361
+     41    0.2%      0    0.0%                                        LazyCompile: Module._load module.js:275
+     39    0.2%      0    0.0%                                          LazyCompile: ~Module.load module.js:346
+     39    0.2%      0    0.0%                                            LazyCompile: ~Module._extensions..js module.js:472
+     39    0.2%      0    0.0%                                              LazyCompile: ~Module._compile module.js:374
+     38    0.2%      0    0.0%                                                Function: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/levelup/lib/levelup.js:1
+
+     66    0.3%     66    0.3%  /usr/lib/system/libsystem_malloc.dylib
+
+     65    0.3%     65    0.3%  /usr/lib/system/libsystem_platform.dylib
+
+     45    0.2%     41    0.2%  LazyCompile: *ArraySlice native array.js:621
+
+     42    0.2%      0    0.0%  LazyCompile: ~processImmediate timers.js:320
+     42    0.2%      0    0.0%    LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/lib/HistoricSync.js:448
+     42    0.2%      0    0.0%      LazyCompile: ~<anonymous> /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:678
+     25    0.1%      0    0.0%        LazyCompile: *async.whilst /Users/ematiu/devel/node/insight-api/node_modules/async/lib/async.js:676
+
+     33    0.1%     33    0.1%  Builtin: A builtin from the snapshot
+
+     26    0.1%     26    0.1%  Stub: JSEntryStub
+

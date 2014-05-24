@@ -58,3 +58,13 @@ first 10%
 Mon Mar 10 11:59:25 ART 2014
 10% de blk 0 (testnet)
   => 37s
+
+Thu May 22 13:42:50 ART 2014 (base58check + toString opts + custom getStandardizedObject)
+10% testnet
+  => 29s
+
+
+100% testnet
+  => 17m6s (user time)
+
+

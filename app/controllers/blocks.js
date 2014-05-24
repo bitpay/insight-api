@@ -5,9 +5,11 @@
  */
 var common = require('./common'),
   async = require('async'),
-  BlockDb = require('../../lib/BlockDb');
+  BlockDb = require('../../lib/BlockDb'),
+  TransactionDb = require('../../lib/TransactionDb');
 
 var bdb = new BlockDb();
+var tdb = new TransactionDb();
 
 /**
  * Find block by hash ...
@@ -17,7 +19,7 @@ exports.block = function(req, res, next, hash) {
     if (err || !block)
       return common.handleErrors(err, res, next);
     else {
-      bdb.getPoolInfo(block.info.tx[0], function(info) {
+      tdb.getPoolInfo(block.info.tx[0], function(info) {
         block.info.poolInfo = info;
         req.block = block.info;
         return next();
@@ -67,7 +69,7 @@ var getBlock = function(blockhash, cb) {
       };
     }
 
-    bdb.getPoolInfo(block.info.tx[0], function(info) {
+    tdb.getPoolInfo(block.info.tx[0], function(info) {
       block.info.poolInfo = info;
       return cb(err, block.info);
     });
