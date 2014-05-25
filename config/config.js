@@ -91,5 +91,6 @@ module.exports = {
   currencyRefresh: 10,
   keys: {
     segmentio: process.env.INSIGHT_SEGMENTIO_KEY
-  }
+  },
+  safeConfirmations: 6, // PLEASE NOTE THAT *FULL RESYNC* IS NEEDED TO CHANGE safeConfirmations
 };

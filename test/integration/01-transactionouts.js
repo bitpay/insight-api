@@ -5,6 +5,7 @@ process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
 
 
+var should = require('chai');
 var assert          = require('assert'),
   fs              = require('fs'),
   util            = require('util'),
@@ -33,10 +34,9 @@ describe('TransactionDb fromIdWithInfo', function(){
         assert(parseFloat(tx.info.vin[i].value) === parseFloat(50), 'input '+i);
       }
 
-console.log('[01-transactionouts.js.34:tx:]',tx.info.vin[0]); //TODO
 
-      assert(tx.info.vin[0].addr === 'msGKGCy2i8wbKS5Fo1LbWUTJnf1GoFFG59', 'addr 0');
-      assert(tx.info.vin[1].addr === 'mfye7oHsdrHbydtj4coPXCasKad2eYSv5P', 'addr 1');
+      tx.info.vin[0].addr.should.equal('msGKGCy2i8wbKS5Fo1LbWUTJnf1GoFFG59');
+      tx.info.vin[1].addr.should.equal('mfye7oHsdrHbydtj4coPXCasKad2eYSv5P');
       done();
     });
   });

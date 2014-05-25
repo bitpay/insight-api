@@ -41,11 +41,12 @@
         "totalReceived": 54.81284116
     },
     { 
+      "disabled": 1,
         "addr": "mzW2hdZN2um7WBvTDerdahKqRgj3md9C29",
         "balance": 1363.14677867,
         "totalReceived": 1363.14677867,
         "totalSent": 0,
-        "txApperances": 7943,
+        "txApperances": 7947,
         "unconfirmedTxApperances": 5,
         "unconfirmedBalanceSat": 149174913 
     },
