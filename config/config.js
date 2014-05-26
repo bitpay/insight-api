@@ -58,8 +58,6 @@ if (!dataDir) {
   if (isMac) dataDir = process.env.HOME + '/Library/Application Support/Bitcoin/';
   if (isLinux) dataDir = process.env.HOME + '/.bitcoin/';
 }
-var odataDir = dataDir;
-
 dataDir += network === 'testnet' ? 'testnet3' : '';
 
 var safeConfirmations = process.env.SAFE_CONFIRMATIONS || 6;
@@ -103,7 +101,7 @@ bitcoindConf.protocol,
 bitcoindConf.host,
 bitcoindConf.port,
 bitcoindConf.p2p_port,
-odataDir
+dataDir+(network==='testnet'?'(/testnet is added automatically)':'')
 );
 
 
