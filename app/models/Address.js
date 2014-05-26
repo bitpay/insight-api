@@ -151,6 +151,7 @@ Address.prototype._addTxItem = function(txItem, notxlist) {
     this.unconfirmedBalanceSat += v;
     this.unconfirmedTxApperances += add;
   }
+
   return txs;
 };
 
