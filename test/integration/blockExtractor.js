@@ -11,6 +11,7 @@ var assert        = require('assert'),
   networks        = require('bitcore/networks'),
   util            =  require('bitcore/util/util');
 
+var should = require('chai');
 //var txItemsValid = JSON.parse(fs.readFileSync('test/model/txitems.json'));
 
 describe('BlockExtractor', function(){
@@ -46,6 +47,8 @@ describe('BlockExtractor', function(){
   it('should read next '+config.network+' block ', function(done) {
     be.getNextBlock(function(err,b) {
       assert(!err);
+      // 2nd block of testnet3
+      util.formatHashFull(b.hash).should.equal('00000000b873e79784647a6c82962c70d228557d24a747ea4d1b8bbe878e1206');
       assert(b.timestamp > lastTs, 'timestamp > genesis_ts');
       done();
     });
