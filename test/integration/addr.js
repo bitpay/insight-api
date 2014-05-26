@@ -31,8 +31,11 @@ describe('Address balances', function() {
         a.update(function(err) {
           if (err) done(err);
           v.addr.should.equal(a.addrStr);
-          a.unconfirmedTxApperances.should.equal(v.unconfirmedTxApperances || 0, 'unconfirmedTxApperances'); 
-          a.unconfirmedBalanceSat.should.equal(v.unconfirmedBalanceSat || 0, 'unconfirmedBalanceSat');
+
+          if (v.unconfirmedTxApperances)
+            a.unconfirmedTxApperances.should.equal(v.unconfirmedTxApperances || 0, 'unconfirmedTxApperances'); 
+          if (v.unconfirmedBalanceSat)
+            a.unconfirmedBalanceSat.should.equal(v.unconfirmedBalanceSat || 0, 'unconfirmedBalanceSat');
           if (v.txApperances)
             a.txApperances.should.equal(v.txApperances, 'txApperances');
 
