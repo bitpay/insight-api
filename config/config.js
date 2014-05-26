@@ -77,8 +77,15 @@ var bitcoindConf = {
 
 /*jshint multistr: true */
 console.log(
-'\n Insight API v%s\n\
-\n # Configuration:\n\
+'\n\
+    ____           _       __    __     ___          _ \n\
+   /  _/___  _____(_)___ _/ /_  / /_   /   |  ____  (_)\n\
+   / // __ \\/ ___/ / __ `/ __ \\/ __/  / /\| \| / __ \\/ / \n\
+ _/ // / / (__  ) / /_/ / / / / /_   / ___ |/ /_/ / /  \n\
+/___/_/ /_/____/_/\\__, /_/ /_/\\__/  /_/  |_/ .___/_/   \n\
+                 /____/                   /_/           \n\
+\n\t\t\t\t\t\tv%s\n\
+  # Configuration:\n\
 \t\tNetwork: %s\tINSIGHT_NETWORK\n\
 \t\tDatabase Path:  %s\tINSIGHT_DB\n\
 \t\tSafe Confirmations:  %s\tSAFE_CONFIRMATIONS\n\
@@ -90,6 +97,7 @@ console.log(
 \t\tRPC Port: %s\tBITCOIND_PORT\n\
 \t\tP2P Port: %s\tBITCOIND_P2P_PORT\n\
 \t\tData Dir: %s\tBITCOIND_DATADIR\n\
+\t\t%s\n\
 \nChange setting by assigning the enviroment variables in the last column. Example:\n\
  $ INSIGHT_NETWORK="testnet" BITCOIND_HOST="123.123.123.123" ./insight.js\
 \n\n',
@@ -101,7 +109,8 @@ bitcoindConf.protocol,
 bitcoindConf.host,
 bitcoindConf.port,
 bitcoindConf.p2p_port,
-dataDir+(network==='testnet'?'(/testnet is added automatically)':'')
+dataDir+(network==='testnet'?'*':''),
+(network==='testnet'?'* (/testnet3 is added automatically)':'')
 );
 
 
