@@ -32,10 +32,10 @@ module.exports.broadcastTx = function(tx) {
       // Outputs
       var valueOut = 0;
       tx.vout.forEach(function(o) {
-        valueOut += o.value * util.COIN;
+        valueOut += o.valueSat;
       });
 
-      t.valueOut = parseInt(valueOut) / util.COIN;
+      t.valueOut = (valueOut/util.COIN).toFixed(0);
     }
     ios.sockets.in('inv').emit('tx', t);
   }

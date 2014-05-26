@@ -9,6 +9,8 @@ var BitcoreUtil        = bitcore.util;
 var Parser             = bitcore.BinaryParser;
 var Buffer             = bitcore.Buffer;
 var TransactionDb      = imports.TransactionDb || require('../../lib/TransactionDb').default();
+var BlockDb            = imports.BlockDb || require('../../lib/BlockDb').default();
+var config              = require('../../config/config');
 var CONCURRENCY        = 5;
 
 function Address(addrStr) {
@@ -20,6 +22,7 @@ function Address(addrStr) {
 
   this.txApperances           = 0;
   this.unconfirmedTxApperances= 0;
+  this.seen                   = {};
 
   // TODO store only txids? +index? +all?
   this.transactions   = [];
@@ -71,51 +74,97 @@ function Address(addrStr) {
 
 }
 
-Address.prototype._getScriptPubKey = function(hex,n) {
-  // ScriptPubKey is not provided by bitcoind RPC, so we parse it from tx hex.
-
-  var parser = new Parser(new Buffer(hex,'hex'));
-  var tx = new BitcoreTransaction();
-  tx.parse(parser);
-  return (tx.outs[n].s.toString('hex'));
-};
-
 Address.prototype.getUtxo = function(next) {
   var self = this;
-  if (!self.addrStr) return next();
+  var tDb   = TransactionDb;
+  var bDb   = BlockDb;
+  var ret;
+  if (!self.addrStr) return next(new Error('no error'));
 
-  var ret  = [];
-  var db   = TransactionDb;
-
-  db.fromAddr(self.addrStr, function(err,txOut){
+  tDb.fromAddr(self.addrStr, function(err,txOut){
     if (err) return next(err);
+    var unspent = txOut.filter(function(x){
+      return !x.spentTxId;
+    });
 
-    // Complete utxo info
-    async.eachLimit(txOut,CONCURRENCY,function (txItem, a_c) {
-      db.fromIdInfoSimple(txItem.txid, function(err, info) {
-        if (!info || !info.hex) return a_c(err);
-
-        var scriptPubKey = self._getScriptPubKey(info.hex, txItem.index);
-
-        // we are filtering out even unconfirmed spents!
-        // add || !txItem.spentIsConfirmed 
-        if (!txItem.spentTxId) {
-          ret.push({
+    bDb.fillConfirmations(unspent, function() {
+      tDb.fillScriptPubKey(unspent, function() {
+        ret = unspent.map(function(x){
+          return {
             address: self.addrStr,
-            txid: txItem.txid,
-            vout: txItem.index,
-            ts: txItem.ts,
-            scriptPubKey: scriptPubKey,
-            amount: txItem.value_sat / BitcoreUtil.COIN,
-            confirmations: txItem.isConfirmed ? info.confirmations : 0,
-          });
-        }
-        return a_c(err);
+            txid: x.txid,
+            vout: x.index,
+            ts: x.ts,
+            scriptPubKey: x.scriptPubKey,
+            amount: x.value_sat / BitcoreUtil.COIN,
+            confirmations: x.isConfirmedCached ? (config.safeConfirmations+'+') : x.confirmations,
+          };
+        });
+        return next(null, ret);
       });
-    }, function(err) {
-      return next(err,ret);
     });
   });
+};
+
+
+Address.prototype._addTxItem = function(txItem, notxlist) {
+  var add=0, addSpend=0;
+  var v = txItem.value_sat;
+  var seen = this.seen;
+  var txs = [];
+
+  if ( !seen[txItem.txid] ) {
+    if (!notxlist) {
+      txs.push({txid: txItem.txid, ts: txItem.ts});
+    }
+    seen[txItem.txid]=1;
+    add=1;
+  }
+
+  if (txItem.spentTxId && !seen[txItem.spentTxId]  ) {
+    if (!notxlist) {
+      txs.push({txid: txItem.spentTxId, ts: txItem.spentTs});
+    }
+    seen[txItem.spentTxId]=1;
+    addSpend=1;
+  }
+  if (txItem.isConfirmed) {
+    this.txApperances += add;
+    this.totalReceivedSat += v;
+    if (! txItem.spentTxId ) {
+      //unspent
+      this.balanceSat   += v;
+    }
+    else if(!txItem.spentIsConfirmed) {
+      // unspent
+      this.balanceSat   += v;
+      this.unconfirmedBalanceSat -= v;
+      this.unconfirmedTxApperances += addSpend;
+    }
+    else {
+      // spent
+      this.totalSentSat += v;
+      this.txApperances += addSpend;
+    }
+  }
+  else {
+    this.unconfirmedBalanceSat += v;
+    this.unconfirmedTxApperances += add;
+  }
+  return txs;
+};
+
+Address.prototype._setTxs = function(txs) {
+
+  // sort input and outputs togheter
+  txs.sort(
+    function compare(a,b) {
+    if (a.ts < b.ts) return 1;
+    if (a.ts > b.ts) return -1;
+    return 0;
+  });
+
+  this.transactions = txs.map(function(i) { return i.txid; } );
 };
 
 Address.prototype.update = function(next, notxlist) {
@@ -123,73 +172,25 @@ Address.prototype.update = function(next, notxlist) {
   if (!self.addrStr) return next();
 
   var txs  = [];
-  var db   = TransactionDb;
-  async.series([
-    function (cb) {
-      var seen={};
-      db.fromAddr(self.addrStr, function(err,txOut){
-        if (err) return cb(err);
+  var tDb   = TransactionDb;
+  var bDb   = BlockDb;
+  tDb.fromAddr(self.addrStr, function(err,txOut){
+    if (err) return next(err);
+
+    bDb.fillConfirmations(txOut, function(err) {
+      if (err) return next(err);
+      tDb.cacheConfirmations(txOut, function(err) {
+        if (err) return next(err);
+
         txOut.forEach(function(txItem){
-          var add=0, addSpend=0;
-          var v = txItem.value_sat;
-
-          if ( !seen[txItem.txid] ) {
-            if (!notxlist) {
-              txs.push({txid: txItem.txid, ts: txItem.ts});
-            }
-            seen[txItem.txid]=1;
-            add=1;
-          }
-
-          if (txItem.spentTxId && !seen[txItem.spentTxId]  ) {
-            if (!notxlist) {
-              txs.push({txid: txItem.spentTxId, ts: txItem.spentTs});
-            }
-            seen[txItem.spentTxId]=1;
-            addSpend=1;
-          }
-
-          if (txItem.isConfirmed) {
-            self.txApperances += add;
-            self.totalReceivedSat += v;
-            if (! txItem.spentTxId ) {
-              //unspent
-              self.balanceSat   += v;
-            }
-            else if(!txItem.spentIsConfirmed) {
-              // unspent
-              self.balanceSat   += v;
-              self.unconfirmedBalanceSat -= v;
-              self.unconfirmedTxApperances += addSpend;
-            }
-            else {
-              // spent
-              self.totalSentSat += v;
-              self.txApperances += addSpend;
-            }
-          }
-          else {
-            self.unconfirmedBalanceSat += v;
-            self.unconfirmedTxApperances += add;
-          }
+          txs=txs.concat(self._addTxItem(txItem, notxlist));
         });
-        return cb();
+
+        if (!notxlist)
+          self._setTxs(txs);
+        return next();
       });
-    },
-  ], function (err) {
-
-    if (!notxlist) {
-      // sort input and outputs togheter
-      txs.sort(
-        function compare(a,b) {
-          if (a.ts < b.ts) return 1;
-          if (a.ts > b.ts) return -1;
-          return 0;
-        });
-
-      self.transactions = txs.map(function(i) { return i.txid; } );
-    }
-    return next(err);
+    });
   });
 };
 

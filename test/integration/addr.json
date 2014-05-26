@@ -41,35 +41,36 @@
         "totalReceived": 54.81284116
     },
     { 
+      "disabled": 1,
         "addr": "mzW2hdZN2um7WBvTDerdahKqRgj3md9C29",
-        "balance": 1271.87752288,
-        "totalReceived": 1271.87752288,
+        "balance": 1363.14677867,
+        "totalReceived": 1363.14677867,
         "totalSent": 0,
-        "txApperances": 6197,
-        "unconfirmedTxApperances": 3,
-        "unconfirmedBalanceSat": 149174913
+        "txApperances": 7947,
+        "unconfirmedTxApperances": 5,
+        "unconfirmedBalanceSat": 149174913 
     },
     {
         "addr": "mjRmkmYzvZN3cA3aBKJgYJ65epn3WCG84H",
-        "txApperances": 7164,
-        "balance": 46413.0,
+        "txApperances": 7166,
+        "balance": 6513,
         "totalReceived": 357130.17644359,
-        "totalSent": 310717.17644359
+        "totalSent": 350617.17644359
     },
     { 
         "addr": "mgKY35SXqxFpcKK3Dq9mW9919N7wYXvcFM",
-        "txApperances": 1,
-        "balance": 0.01979459,
-        "totalReceived": 0.01979459,
+        "txApperances": 2,
+        "balance": 0,
+        "totalReceived":  0.01979459,
         "totalSent": 0,
         "transactions": [ "91800d80bb4c69b238c9bfd94eb5155ab821e6b25cae5c79903d12853bbb4ed5" ]
     },
     { 
         "addr": "mmvP3mTe53qxHdPqXEvdu8WdC7GfQ2vmx5",
-        "balance": 10580.50027254,
+        "balance":  5524.61806422,
         "totalReceived": 12157.65075053,
-        "totalSent": 1577.15047799,
-        "txApperances": 441,
+        "totalSent": 6633.03268631,
+        "txApperances": 443,
         "transactions": [
             "91800d80bb4c69b238c9bfd94eb5155ab821e6b25cae5c79903d12853bbb4ed5",
             "f6e80d4fd1a2377406856c67d0cee5ac7e5120993ff97e617ca9aac33b4c6b1e",

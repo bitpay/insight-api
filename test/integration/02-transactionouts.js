@@ -27,7 +27,7 @@ describe('TransactionDb Expenses', function(){
       function(txid,c_out) {
         async.each(spentValid[txid], 
                   function(i,c_in) {
-                    txDb.createFromArray([i.txid], null, function(err) {
+                    txDb.addMany([i.txid], function(err) {
                       return c_in();
                     });
                   }, 
