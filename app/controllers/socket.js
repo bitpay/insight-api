@@ -35,7 +35,7 @@ module.exports.broadcastTx = function(tx) {
         valueOut += o.valueSat;
       });
 
-      t.valueOut = (valueOut/util.COIN).toFixed(0);
+      t.valueOut = (valueOut.toFixed(8)/util.COIN);
     }
     ios.sockets.in('inv').emit('tx', t);
   }
