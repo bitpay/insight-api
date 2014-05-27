@@ -74,6 +74,24 @@ function Address(addrStr) {
 
 }
 
+Address.prototype.getObj = function() {
+  // Normalize json address
+  return {
+    'addrStr':                  this.addrStr,
+    'balance':                  this.balance,
+    'balanceSat':               this.balanceSat,
+    'totalReceived':            this.totalReceived,
+    'totalReceivedSat':         this.totalReceivedSat,
+    'totalSent':                this.totalSent,
+    'totalSentSat':             this.totalSentSat,
+    'unconfirmedBalance':       this.unconfirmedBalance,
+    'unconfirmedBalanceSat':    this.unconfirmedBalanceSat,
+    'unconfirmedTxApperances':  this.unconfirmedTxApperances,
+    'txApperances':             this.txApperances,
+    'transactions':             this.transactions
+  };
+};
+
 Address.prototype.getUtxo = function(next) {
   var self = this;
   var tDb   = TransactionDb;

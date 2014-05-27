@@ -51,7 +51,7 @@ exports.show = function(req, res, next) {
       if (err) {
         return common.handleErrors(err, res);
       } else {
-        return res.jsonp(a);
+        return res.jsonp(a.getObj());
       }
     }, req.query.noTxList);
   }
