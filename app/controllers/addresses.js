@@ -43,24 +43,6 @@ var getAddrs = function(req, res, next) {
   return as;
 };
 
-var normalizeAddr = function(a) {
-  // Normalize json address
-  return {
-    'addrStr':                  a.addrStr,
-    'balance':                  a.balance,
-    'balanceSat':               a.balanceSat,
-    'totalReceived':            a.totalReceived,
-    'totalReceivedSat':         a.totalReceivedSat,
-    'totalSent':                a.totalSent,
-    'totalSentSat':             a.totalSentSat,
-    'unconfirmedBalance':       a.unconfirmedBalance,
-    'unconfirmedBalanceSat':    a.unconfirmedBalanceSat,
-    'unconfirmedTxApperances':  a.unconfirmedTxApperances,
-    'txApperances':             a.txApperances,
-    'transactions':             a.transactions
-  };
-};
-
 exports.show = function(req, res, next) {
   var a = getAddr(req, res, next);
 
@@ -69,7 +51,7 @@ exports.show = function(req, res, next) {
       if (err) {
         return common.handleErrors(err, res);
       } else {
-        return res.jsonp(normalizeAddr(a));
+        return res.jsonp(a.getObj());
       }
     }, req.query.noTxList);
   }
