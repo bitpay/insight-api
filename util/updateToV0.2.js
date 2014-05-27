@@ -5,17 +5,6 @@
 var HistoricSync = require('../lib/HistoricSync');
 var async = require('async');
 
-//
-// 1)
-// var MAIN_PREFIX       = 'bma-';     // bma-<hash> =>    <height> (0 is unconnected)
-// var TIP               = 'bti-';     // bti = <hash>:<height> last block on the chain
-//
-// var IN_BLK_PREFIX = 'btx-'; //btx-<txid> = <block> 
-// v
-// 2) DELETE txs/tx-
-// 3) DELETE txs/txb
-//
-
 
 var historicSync = new HistoricSync({ shouldBroadcastSync: false });
 var txDb=historicSync.sync.txDb;
@@ -45,9 +34,9 @@ async.series([
           if (err) return w_cb(err);
           tipHash = hash;
           hash = val;
-          height++;
+          if (hash) height++;
           if (!(height%1000) || !hash) {
-            console.log('\t%d blocks processed (set height 1/2)', height);
+            console.log('*update 1/2\t%d blocks processed', height);
             bDb._runScript(script, function(err) {
               script=[];
               return w_cb(err);
@@ -58,7 +47,14 @@ async.series([
       }, c);
   },
   function(c){
-    bDb.setTip(tipHash, height-1, c);
+    console.log('Migrating txs... (this will take some minutes...)'); //TODO
+    bDb.migrateV02(c);
+  },
+  function(c){
+    bDb.setTip(tipHash, height, c);
+  },
+  function(c){
+    bDb.migrateV02cleanup(c);
   },
   ],function(err){
     if (err)
