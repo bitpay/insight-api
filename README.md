@@ -9,6 +9,19 @@ require certain information from the blockchain that bitcoind does not provide.
 A blockchain explorer front-end have been developed to top of *Insight API*, it can
 be downloaded at [Github Insight Repository](https://github.com/bitpay/insight).
 
+## IMPORTANT: Upgrading from  v0.1 to v0.2
+In order to optimize some queries, the key-value layout in Level DB has been changed.
+An update script need to be run when updating from version v0.1.x to 0.2.x
+
+The script is located at:
+```
+  $ util/updateToV0.2.js
+```
+
+The script takes ~3minutes in testnet. While the script is running,  *Insight API*
+must be stopped.
+
+Alternatively, a total resync can be made, running `$ util/sync.js -D`
 
 ## Prerequisites
 
