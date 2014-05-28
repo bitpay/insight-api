@@ -62,13 +62,13 @@ exports.show = function(req, res, next) {
 exports.utxo = function(req, res, next) {
   var a = getAddr(req, res, next);
   if (a) {
-    a.getUtxo(function(err, utxo) {
+    a.update(function(err) {
       if (err)
         return common.handleErrors(err, res);
       else {
-        return res.jsonp(utxo);
+        return res.jsonp(a.unspent);
       }
-    });
+    }, {onlyUnspent: 1});
   }
 };
 
@@ -77,11 +77,11 @@ exports.multiutxo = function(req, res, next) {
   if (as) {
     var utxos = [];
     async.each(as, function(a, callback) {
-      a.getUtxo(function(err, utxo) {
+      a.update(function(err) {
         if (err) callback(err);
-        utxos = utxos.concat(utxo);
+        utxos = utxos.concat(a.unspent);
         callback();
-      });
+      }, {onlyUnspent:1});
     }, function(err) { // finished callback
       if (err) return common.handleErrors(err, res);
       res.jsonp(utxos);

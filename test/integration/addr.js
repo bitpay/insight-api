@@ -76,7 +76,7 @@ describe('Address balances', function() {
 });
 
 //tested against https://api.biteasy.com/testnet/v1/addresses/2N1pLkosf6o8Ciqs573iwwgVpuFS6NbNKx5/unspent-outputs?per_page=40
-describe('Address utxo', function() {
+describe('Address unspent', function() {
 
   before(function(c) {
     txDb = TransactionDb;
@@ -96,15 +96,15 @@ describe('Address utxo', function() {
     if (v.disabled) {
       console.log(v.addr + ' => disabled in JSON');
     } else {
-      it('Address utxo for: ' + v.addr, function(done) {
+      it('Address unspent for: ' + v.addr, function(done) {
         this.timeout(2000);
         var a = new Address(v.addr, txDb);
-        a.getUtxo(function(err, utxo) {
+        a.update(function(err) {
           if (err) done(err);
           assert.equal(v.addr, a.addrStr);
-          if (v.length) utxo.length.should.equal(v.length, 'Unspent count');
+          if (v.length) a.unspent.length.should.equal(v.length, 'Unspent count');
           if (v.tx0id) {
-            var x=utxo.filter(function(x){
+            var x=a.unspent.filter(function(x){
                 return x.txid === v.tx0id;
             });
             assert(x,'found output');
@@ -113,17 +113,17 @@ describe('Address utxo', function() {
             x[0].amount.should.equal(v.tx0amount,'amount');
           }
           done();
-        });
+        }, {onlyUnspent:1});
       });
-      it('Address utxo (cached) for: ' + v.addr, function(done) {
+      it('Address unspent (cached) for: ' + v.addr, function(done) {
         this.timeout(2000);
         var a = new Address(v.addr, txDb);
-        a.getUtxo(function(err, utxo) {
+        a.update(function(err) {
           if (err) done(err);
           assert.equal(v.addr, a.addrStr);
-          if (v.length) utxo.length.should.equal(v.length, 'Unspent count');
+          if (v.length) a.unspent.length.should.equal(v.length, 'Unspent count');
           if (v.tx0id) {
-            var x=utxo.filter(function(x){
+            var x=a.unspent.filter(function(x){
                 return x.txid === v.tx0id;
             });
             assert(x,'found output');
@@ -132,7 +132,7 @@ describe('Address utxo', function() {
             x[0].amount.should.equal(v.tx0amount,'amount');
           }
           done();
-        });
+        }, {onlyUnspent:1});
       });
     }
   });

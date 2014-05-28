@@ -26,6 +26,7 @@ function Address(addrStr) {
 
   // TODO store only txids? +index? +all?
   this.transactions   = [];
+  this.unspent   = [];
 
   var a = new BitcoreAddress(addrStr);
   a.validate();
@@ -152,6 +153,10 @@ Address.prototype._setTxs = function(txs) {
   this.transactions = txs.map(function(i) { return i.txid; } );
 };
 
+// opts are
+// .noTxList
+// .onlyUnspent
+// .noSortTxs
 Address.prototype.update = function(next, opts) {
   var self = this;
   if (!self.addrStr) return next();
@@ -165,21 +170,42 @@ Address.prototype.update = function(next, opts) {
 
     bDb.fillConfirmations(txOut, function(err) {
       if (err) return next(err);
+
       tDb.cacheConfirmations(txOut, function(err) {
         if (err) return next(err);
 
-        txOut.forEach(function(txItem){
-          self._addTxItem(txItem, txList);
-        });
+        if (opts.onlyUnspent) {
+          txOut  = txOut.filter(function(x){
+            return !x.spentTxId;
+          });
+          tDb.fillScriptPubKey(txOut, function() {
+            self.unspent = txOut.map(function(x){
+              return {
+                address: self.addrStr,
+                txid: x.txid,
+                vout: x.index,
+                ts: x.ts,
+                scriptPubKey: x.scriptPubKey,
+                amount: x.value_sat / BitcoreUtil.COIN,
+                confirmations: x.isConfirmedCached ? (config.safeConfirmations+'+') : x.confirmations,
+              };
+            });
+            return next();
+          });
+        }
+        else {
+          txOut.forEach(function(txItem){
+            self._addTxItem(txItem, txList);
+          });
 
-        if (txList)
-          self._setTxs(txList);
-        return next();
+          if (txList && !opts.noSortTxs)
+            self._setTxs(txList);
+          return next();
+        }
       });
     });
   });
 };
-
 Address.prototype.getUtxo = function(next) {
   var self = this;
   var tDb   = TransactionDb;
@@ -194,20 +220,6 @@ Address.prototype.getUtxo = function(next) {
     });
 
     bDb.fillConfirmations(unspent, function() {
-      tDb.fillScriptPubKey(unspent, function() {
-        ret = unspent.map(function(x){
-          return {
-            address: self.addrStr,
-            txid: x.txid,
-            vout: x.index,
-            ts: x.ts,
-            scriptPubKey: x.scriptPubKey,
-            amount: x.value_sat / BitcoreUtil.COIN,
-            confirmations: x.isConfirmedCached ? (config.safeConfirmations+'+') : x.confirmations,
-          };
-        });
-        return next(null, ret);
-      });
     });
   });
 };
