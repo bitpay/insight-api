@@ -23,6 +23,9 @@ async.series([
     });
   },
   function(c){
+    txDb.migrateV02(c);
+  },
+  function(c){
     var script=[];
     async.whilst(
       function() {

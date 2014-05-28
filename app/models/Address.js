@@ -104,13 +104,13 @@ Address.prototype._addTxItem = function(txItem, txList) {
     add=1;
 
     if (txList)
-      txList.push({txid: txItem.txid, ts: txItem.ts});
+      txList.push(txItem.txid);
   }
 
   // Spent tx
   if (txItem.spentTxId && !seen[txItem.spentTxId]  ) {
     if (txList) {
-      txList.push({txid: txItem.spentTxId, ts: txItem.spentTs});
+      txList.push(txItem.spentTxId);
     }
     seen[txItem.spentTxId]=1;
     addSpend=1;
@@ -140,29 +140,16 @@ Address.prototype._addTxItem = function(txItem, txList) {
   }
 };
 
-Address.prototype._setTxs = function(txs) {
-
-  // sort input and outputs togheter
-  txs.sort(
-    function compare(a,b) {
-    if (a.ts < b.ts) return 1;
-    if (a.ts > b.ts) return -1;
-    return 0;
-  });
-
-  this.transactions = txs.map(function(i) { return i.txid; } );
-};
-
 // opts are
-// .noTxList
 // .onlyUnspent
-// .noSortTxs
+// .txLimit     (=0 -> no txs, => -1 no limit)
+// 
 Address.prototype.update = function(next, opts) {
   var self = this;
   if (!self.addrStr) return next();
   opts = opts || {};
 
-  var txList  = opts.noTxList ? null : [];
+  var txList  = opts.txLimit === 0 ? null: [];
   var tDb   = TransactionDb;
   var bDb   = BlockDb;
   tDb.fromAddr(self.addrStr, function(err,txOut){
@@ -172,8 +159,8 @@ Address.prototype.update = function(next, opts) {
       if (err) return next(err);
 
       tDb.cacheConfirmations(txOut, function(err) {
+// console.log('[Address.js.161:txOut:]',txOut); //TODO
         if (err) return next(err);
-
         if (opts.onlyUnspent) {
           txOut  = txOut.filter(function(x){
             return !x.spentTxId;
@@ -197,29 +184,10 @@ Address.prototype.update = function(next, opts) {
           txOut.forEach(function(txItem){
             self._addTxItem(txItem, txList);
           });
-
-          if (txList && !opts.noSortTxs)
-            self._setTxs(txList);
+          if (txList) self.transactions = txList;
           return next();
         }
       });
-    });
-  });
-};
-Address.prototype.getUtxo = function(next) {
-  var self = this;
-  var tDb   = TransactionDb;
-  var bDb   = BlockDb;
-  var ret;
-  if (!self.addrStr) return next(new Error('no error'));
-
-  tDb.fromAddr(self.addrStr, function(err,txOut){
-    if (err) return next(err);
-    var unspent = txOut.filter(function(x){
-      return !x.spentTxId;
-    });
-
-    bDb.fillConfirmations(unspent, function() {
     });
   });
 };
