@@ -68,7 +68,7 @@ describe('Address balances', function() {
           if (v.totalSent) assert.equal(v.totalSent, a.totalSent, 'send: ' + a.totalSent);
           if (v.balance) assert.equal(v.balance, a.balance, 'balance: ' + a.balance);
           done();
-        },1);
+        },{noTxList:1});
       });
     }
   });

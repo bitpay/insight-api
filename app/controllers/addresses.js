@@ -53,7 +53,7 @@ exports.show = function(req, res, next) {
       } else {
         return res.jsonp(a.getObj());
       }
-    }, req.query.noTxList);
+    }, {noTxList: req.query.noTxList});
   }
 };
 
