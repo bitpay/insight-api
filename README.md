@@ -23,6 +23,18 @@ must be stopped.
 
 Alternatively, a total resync can be made, running `$ util/sync.js -D`
 
+## IMPORTANT: v0.2 Caching schema
+
+In v0.2 a new cache schema has been introduced. Only information from transactions with
+SAFE_CONFIRMATIONS+ settings will be cached (by default SAFE_CONFIRMATIONS=6). There 
+are 3 different caches:
+ * nr. of confirmations 
+ * transaction spent information
+ * scriptPubKey for unspent transactions
+
+Cache data is only completed on request, i.e., only after accessing the required data for
+the first time, the information is cached, there is not pre-caching procedure.
+
 ## Prerequisites
 
 * **bitcoind** - Download and Install [Bitcoin](http://bitcoin.org/en/download)
@@ -79,6 +91,7 @@ BITCOIND_PASS         # RPC password
 BITCOIND_DATADIR      # bitcoind datadir for livenet, or datadir/testnet3 for testnet
 INSIGHT_NETWORK [= 'livenet' | 'testnet']
 INSIGHT_DB            # Path where to store insight's internal DB. (defaults to $HOME/.insight)
+SAFE_CONFIRMATIONS=6  # Nr. of confirmation needed to start caching transaction information   
 ```
 
 Make sure that bitcoind is configured to [accept incoming connections using 'rpcallowip'](https://en.bitcoin.it/wiki/Running_Bitcoin).
@@ -157,6 +170,33 @@ The end-points are:
 ```
   /api/addr/[:addr]/utxo
 ```
+Sample return:
+``` json
+[
+    {
+    address: "n2PuaAguxZqLddRbTnAoAuwKYgN2w2hZk7",
+    txid: "dbfdc2a0d22a8282c4e7be0452d595695f3a39173bed4f48e590877382b112fc",
+    vout: 0,
+    ts: 1401276201,
+    scriptPubKey: "76a914e50575162795cd77366fb80d728e3216bd52deac88ac",
+    amount: 0.001,
+    confirmations: 3
+    },
+    {
+    address: "n2PuaAguxZqLddRbTnAoAuwKYgN2w2hZk7",
+    txid: "e2b82af55d64f12fd0dd075d0922ee7d6a300f58fe60a23cbb5831b31d1d58b4",
+    vout: 0,
+    ts: 1401226410,
+    scriptPubKey: "76a914e50575162795cd77366fb80d728e3216bd52deac88ac",
+    amount: 0.001,
+    confirmations: "6+"
+    }
+]
+```
+Please not that in case confirmations are cached and are more that SAFE_CONFIRMATIONS setting, the
+return can be a string of the form 'SAFE_CONFIRMATIONS+'
+
+
 ### Unspent Outputs for multiple addresses
 GET method:
 ```

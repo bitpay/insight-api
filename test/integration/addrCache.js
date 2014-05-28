@@ -91,7 +91,7 @@ describe('Address cache ', function() {
       a.totalReceived.should.equal(1376000, 'totalReceived');
       a.txApperances.should.equal(8003, 'txApperances');
       return done();
-    },1);
+    },{noTxList:1});
   });
 });
 
