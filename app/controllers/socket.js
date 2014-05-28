@@ -46,9 +46,10 @@ module.exports.broadcastBlock = function(block) {
     ios.sockets.in('inv').emit('block', block);
 };
 
-module.exports.broadcastAddressTx = function(address, tx) {
-  if (ios)
-    ios.sockets.in(address).emit(address, tx);
+module.exports.broadcastAddressTx = function(txid, address) {
+  if (ios) {
+    ios.sockets.in(address).emit(address, txid);
+  }
 };
 
 module.exports.broadcastSyncInfo = function(historicSync) {
