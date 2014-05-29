@@ -23,6 +23,7 @@ async.series([
     });
   },
   function(c){
+    console.log('[1/3] Migrating txs ... (this will take some minutes...)'); //TODO
     txDb.migrateV02(c);
   },
   function(c){
@@ -39,7 +40,7 @@ async.series([
           hash = val;
           if (hash) height++;
           if (!(height%1000) || !hash) {
-            console.log('*update 1/2\t%d blocks processed', height);
+            console.log('[2/3] migrating blocks \t%d blocks processed', height);
             bDb._runScript(script, function(err) {
               script=[];
               return w_cb(err);
@@ -50,7 +51,7 @@ async.series([
       }, c);
   },
   function(c){
-    console.log('Migrating txs... (this will take some minutes...)'); //TODO
+    console.log('[3/3] Migrating txs... (this will take some minutes...)'); //TODO
     bDb.migrateV02(c);
   },
   function(c){
