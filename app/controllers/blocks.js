@@ -100,7 +100,6 @@ exports.list = function(req, res) {
   var dateStr;
   var todayStr = formatTimestamp(new Date());
 
-console.log('[blocks.js.102]'); //TODO
   if (req.query.blockDate) {
     // TODO: Validate format yyyy-mm-dd
     dateStr = req.query.blockDate;
@@ -110,18 +109,14 @@ console.log('[blocks.js.102]'); //TODO
     isToday = true;
   }
   var gte = Math.round((new Date(dateStr)).getTime() / 1000);
-console.log('[blocks.js.112:gte:]',gte); //TODO
 
   //pagination
   var lte = parseInt(req.query.startTimestamp) || gte + 86400;
-console.log('[blocks.js.115:lte:]',lte); //TODO
   var prev = formatTimestamp(new Date((gte - 86400) * 1000));
   var next = lte ? formatTimestamp(new Date(lte * 1000)) :null;
-console.log('[blocks.js.116:next:]',next, lte); //TODO
   var limit = parseInt(req.query.limit || DFLT_LIMIT) + 1;
   var more;
 
-console.log('[blocks.js.119]'); //TODO
   bdb.getBlocksByDate(gte, lte, limit, function(err, blockList) {
 
     if (err) {
