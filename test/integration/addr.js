@@ -19,7 +19,14 @@ describe('Address balances', function() {
 
   before(function(c) {
     txDb = TransactionDb;
-    return c();
+
+    var l =addrValid.length;
+    var i =0;
+    addrValid.forEach(function(v) {
+      TransactionDb.deleteCacheForAddress(v.addr, function() {
+        if (++i===l) return c();
+      });
+    });
   });
 
   addrValid.forEach(function(v) {
@@ -47,7 +54,7 @@ describe('Address balances', function() {
           if (v.transactions) {
 
             v.transactions.forEach(function(tx) {
-              assert(a.transactions.indexOf(tx) > -1, 'have tx ' + tx);
+              a.transactions.should.include(tx);
             });
           }
           done();
@@ -59,7 +66,7 @@ describe('Address balances', function() {
         a.update(function(err) {
           if (err) done(err);
           v.addr.should.equal(a.addrStr);
-          a.unconfirmedTxApperances.should.equal(v.unconfirmedTxApperances || 0, 'unconfirmedTxApperances'); 
+          a.unconfirmedTxApperances.should.equal(v.unconfirmedTxApperances || 0, 'unconfirmedTxApperances');
           a.unconfirmedBalanceSat.should.equal(v.unconfirmedBalanceSat || 0, 'unconfirmedBalanceSat');
           if (v.txApperances)
             a.txApperances.should.equal(v.txApperances, 'txApperances');
@@ -68,7 +75,7 @@ describe('Address balances', function() {
           if (v.totalSent) assert.equal(v.totalSent, a.totalSent, 'send: ' + a.totalSent);
           if (v.balance) assert.equal(v.balance, a.balance, 'balance: ' + a.balance);
           done();
-        },{noTxList:1});
+        },{txLimit:0});
       });
     }
   });
