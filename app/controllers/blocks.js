@@ -61,7 +61,7 @@ var getBlock = function(blockhash, cb) {
 
     // TODO
     if (!block.info) {
-      console.log('[blocks.js.60]: could not get %s from RPC. Orphan? Error?', blockhash); //TODO
+      console.log('Could not get %s from RPC. Orphan? Error?', blockhash); //TODO
       // Probably orphan
       block.info = {
         hash: blockhash,
@@ -80,6 +80,11 @@ var getBlock = function(blockhash, cb) {
 /**
  * List of blocks by date
  */
+
+var DFLT_LIMIT=200;
+          // in testnet, this number is much bigger, we dont support
+          // exploring blocks by date.
+
 exports.list = function(req, res) {
   var isToday = false;
 
@@ -95,6 +100,7 @@ exports.list = function(req, res) {
   var dateStr;
   var todayStr = formatTimestamp(new Date());
 
+console.log('[blocks.js.102]'); //TODO
   if (req.query.blockDate) {
     // TODO: Validate format yyyy-mm-dd
     dateStr = req.query.blockDate;
@@ -103,27 +109,32 @@ exports.list = function(req, res) {
     dateStr = todayStr;
     isToday = true;
   }
-
   var gte = Math.round((new Date(dateStr)).getTime() / 1000);
+console.log('[blocks.js.112:gte:]',gte); //TODO
 
   //pagination
-  var lte = gte + 86400;
+  var lte = parseInt(req.query.startTimestamp) || gte + 86400;
+console.log('[blocks.js.115:lte:]',lte); //TODO
   var prev = formatTimestamp(new Date((gte - 86400) * 1000));
-  var next = formatTimestamp(new Date(lte * 1000));
+  var next = lte ? formatTimestamp(new Date(lte * 1000)) :null;
+console.log('[blocks.js.116:next:]',next, lte); //TODO
+  var limit = parseInt(req.query.limit || DFLT_LIMIT) + 1;
+  var more;
 
-  bdb.getBlocksByDate(gte, lte, function(err, blocks) {
+console.log('[blocks.js.119]'); //TODO
+  bdb.getBlocksByDate(gte, lte, limit, function(err, blockList) {
+
     if (err) {
       res.status(500).send(err);
     } else {
-      var blockList = [];
-      var l = blocks.length;
-      var limit = parseInt(req.query.limit || l);
-      if (l < limit) limit = l;
+      var l = blockList.length;
 
-      for (var i = 0; i < limit; i++) {
-        blockList.push(blocks[i]);
+      if (l===limit) {
+        more = true;
+        blockList.pop;
       }
 
+      var moreTs=lte;
       async.mapSeries(blockList,
         function(b, cb) {
           getBlock(b.hash, function(err, info) {
@@ -131,6 +142,7 @@ exports.list = function(req, res) {
               console.log(err);
               return cb(err);
             }
+            if (b.ts < moreTs) moreTs = b.ts;
             return cb(err, {
               height: info.height,
               size: info.size,
@@ -141,6 +153,7 @@ exports.list = function(req, res) {
             });
           });
         }, function(err, allblocks) {
+
           // sort blocks by height
           allblocks.sort(
             function compare(a,b) {
@@ -157,7 +170,9 @@ exports.list = function(req, res) {
               prev: prev,
               currentTs: lte - 1,
               current: dateStr,
-              isToday: isToday
+              isToday: isToday,
+              more: more,
+              moreTs: moreTs,
             }
           });
         });
