@@ -93,6 +93,17 @@ describe('Address cache ', function() {
       return done();
     },{txLimit:0});
   });
+  it('cache case 2 w ignore cache', function(done) {
+    var a = new Address('mt2AzeCorSf7yFckj19HFiXJgh9aNyc4h3', txDb);
+    a.update(function(err) {
+      if (err) done(err);
+      a.balance.should.equal(0, 'balance');
+      a.totalReceived.should.equal(1376000, 'totalReceived');
+      a.txApperances.should.equal(8003, 'txApperances');
+      return done();
+    },{txLimit:0, ignoreCache:1});
+  });
+
 });
 
 

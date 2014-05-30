@@ -53,7 +53,7 @@ exports.show = function(req, res, next) {
       } else {
         return res.jsonp(a.getObj());
       }
-    }, {txLimit: req.query.noTxList?0:-1});
+    }, {txLimit: req.query.noTxList?0:-1, ignoreCache: req.param('nocache')});
   }
 };
 
@@ -68,7 +68,7 @@ exports.utxo = function(req, res, next) {
       else {
         return res.jsonp(a.unspent);
       }
-    }, {onlyUnspent: 1});
+    }, {onlyUnspent:1, ignoreCache: req.param('nocache')});
   }
 };
 
@@ -81,7 +81,7 @@ exports.multiutxo = function(req, res, next) {
         if (err) callback(err);
         utxos = utxos.concat(a.unspent);
         callback();
-      }, {onlyUnspent:1});
+      }, {onlyUnspent:1, ignoreCache: req.param('nocache')});
     }, function(err) { // finished callback
       if (err) return common.handleErrors(err, res);
       res.jsonp(utxos);
@@ -99,7 +99,7 @@ exports.balance = function(req, res, next) {
       } else {
         return res.jsonp(a.balanceSat);
       }
-    });
+    }, {ignoreCache: req.param('nocache')});
 };
 
 exports.totalReceived = function(req, res, next) {
@@ -111,7 +111,7 @@ exports.totalReceived = function(req, res, next) {
       } else {
         return res.jsonp(a.totalReceivedSat);
       }
-    });
+    }, {ignoreCache: req.param('nocache')});
 };
 
 exports.totalSent = function(req, res, next) {
@@ -123,7 +123,7 @@ exports.totalSent = function(req, res, next) {
       } else {
         return res.jsonp(a.totalSentSat);
       }
-    });
+    }, {ignoreCache: req.param('nocache')});
 };
 
 exports.unconfirmedBalance = function(req, res, next) {
@@ -135,5 +135,5 @@ exports.unconfirmedBalance = function(req, res, next) {
       } else {
         return res.jsonp(a.unconfirmedBalanceSat);
       }
-    });
+    }, {ignoreCache: req.param('nocache')});
 };
