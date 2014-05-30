@@ -149,10 +149,15 @@ Address.prototype.update = function(next, opts) {
   if (!self.addrStr) return next();
   opts = opts || {};
 
+  if (! ('ignoreCache' in opts) )
+    opts.ignoreCache = config.ignoreCache;
+
+  // should collect txList from address?
   var txList  = opts.txLimit === 0 ? null: [];
+
   var tDb   = TransactionDb;
   var bDb   = BlockDb;
-  tDb.fromAddr(self.addrStr, function(err,txOut){
+  tDb.fromAddr(self.addrStr, opts, function(err,txOut){
     if (err) return next(err);
 
     bDb.fillConfirmations(txOut, function(err) {
@@ -184,7 +189,9 @@ Address.prototype.update = function(next, opts) {
           txOut.forEach(function(txItem){
             self._addTxItem(txItem, txList);
           });
-          if (txList) self.transactions = txList;
+          if (txList) 
+            self.transactions = txList;
+
           return next();
         }
       });

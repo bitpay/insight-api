@@ -26,14 +26,16 @@ Alternatively, a total resync can be made, running `$ util/sync.js -D`
 ## IMPORTANT: v0.2 Caching schema
 
 In v0.2 a new cache schema has been introduced. Only information from transactions with
-SAFE_CONFIRMATIONS+ settings will be cached (by default SAFE_CONFIRMATIONS=6). There 
+INSIGHT_SAFE_CONFIRMATIONS+ settings will be cached (by default SAFE_CONFIRMATIONS=6). There 
 are 3 different caches:
  * nr. of confirmations 
  * transaction spent information
  * scriptPubKey for unspent transactions
 
-Cache data is only completed on request, i.e., only after accessing the required data for
-the first time, the information is cached, there is not pre-caching procedure.
+Cache data is only populated on request, i.e., only after accessing the required data for
+the first time, the information is cached, there is not pre-caching procedure.  To ignore 
+cache by default, use INSIGHT_IGNORE_CACHE. Also, address related calls support `?noCache=1`
+to ignore the cache in a particular API request.
 
 ## Prerequisites
 
@@ -91,7 +93,9 @@ BITCOIND_PASS         # RPC password
 BITCOIND_DATADIR      # bitcoind datadir for livenet, or datadir/testnet3 for testnet
 INSIGHT_NETWORK [= 'livenet' | 'testnet']
 INSIGHT_DB            # Path where to store insight's internal DB. (defaults to $HOME/.insight)
-SAFE_CONFIRMATIONS=6  # Nr. of confirmation needed to start caching transaction information   
+INSIGHT_SAFE_CONFIRMATIONS=6  # Nr. of confirmation needed to start caching transaction information   
+INSIGHT_IGNORE_CACHE  # True to ignore cache of spents in transaction, with more than INSIGHT_SAFE_CONFIRMATIONS confirmations. This is useful for tracking double spents for old transactions.
+
 ```
 
 Make sure that bitcoind is configured to [accept incoming connections using 'rpcallowip'](https://en.bitcoin.it/wiki/Running_Bitcoin).
@@ -163,12 +167,12 @@ The end-points are:
 ```
 ### Address
 ```
-  /api/addr/[:addr][?noTxList=1]
+  /api/addr/[:addr][?noTxList=1&noCache=1]
   /api/addr/mmvP3mTe53qxHdPqXEvdu8WdC7GfQ2vmx5?noTxList=1
 ```
 ### Unspent Outputs
 ```
-  /api/addr/[:addr]/utxo
+  /api/addr/[:addr]/utxo[?noCache=1]
 ```
 Sample return:
 ``` json
@@ -193,8 +197,8 @@ Sample return:
     }
 ]
 ```
-Please not that in case confirmations are cached and are more that SAFE_CONFIRMATIONS setting, the
-return can be a string of the form 'SAFE_CONFIRMATIONS+'
+Please not that in case confirmations are cached and are more that INSIGHT_SAFE_CONFIRMATIONS setting, the
+return can be a string of the form `SAFE_CONFIRMATIONS+`, e.g.: the string `6+`
 
 
 ### Unspent Outputs for multiple addresses

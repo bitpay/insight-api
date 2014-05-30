@@ -60,7 +60,8 @@ if (!dataDir) {
 }
 dataDir += network === 'testnet' ? 'testnet3' : '';
 
-var safeConfirmations = process.env.SAFE_CONFIRMATIONS || 6;
+var safeConfirmations = process.env.INSIGHT_SAFE_CONFIRMATIONS || 6;
+var ignoreCache      = process.env.INSIGHT_IGNORE_CACHE || 0;
 
 
 var bitcoindConf = {
@@ -88,7 +89,8 @@ console.log(
   # Configuration:\n\
 \t\tNetwork: %s\tINSIGHT_NETWORK\n\
 \t\tDatabase Path:  %s\tINSIGHT_DB\n\
-\t\tSafe Confirmations:  %s\tSAFE_CONFIRMATIONS\n\
+\t\tSafe Confirmations:  %s\tINSIGHT_SAFE_CONFIRMATIONS\n\
+\t\tIgnore Cache:  %s\tINSIGHT_IGNORE_CACHE\n\
  # Bicoind Connection configuration:\n\
 \t\tRPC Username: %s\tBITCOIND_USER\n\
 \t\tRPC Password: %s\tBITCOIND_PASS\n\
@@ -102,7 +104,7 @@ console.log(
  $ INSIGHT_NETWORK="testnet" BITCOIND_HOST="123.123.123.123" ./insight.js\
 \n\n',
 version,
-network, home, safeConfirmations,
+network, home, safeConfirmations, ignoreCache?'yes':'no',
 bitcoindConf.user,
 bitcoindConf.pass?'Yes(hidden)':'No',
 bitcoindConf.protocol,
@@ -139,4 +141,5 @@ module.exports = {
     segmentio: process.env.INSIGHT_SEGMENTIO_KEY
   },
   safeConfirmations: safeConfirmations, // PLEASE NOTE THAT *FULL RESYNC* IS NEEDED TO CHANGE safeConfirmations
+  ignoreCache: ignoreCache,
 };
