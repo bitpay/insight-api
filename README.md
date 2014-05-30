@@ -32,10 +32,10 @@ are 3 different caches:
  * transaction spent information
  * scriptPubKey for unspent transactions
 
-Cache data is only filled on request, i.e., only after accessing the required data for
-the first time, the information is cached, there is not pre-caching procedure.
-
-To ignore cache, use INSIGHT_IGNORE_CACHE;
+Cache data is only populated on request, i.e., only after accessing the required data for
+the first time, the information is cached, there is not pre-caching procedure.  To ignore 
+cache by default, use INSIGHT_IGNORE_CACHE. Also, address related calls support `?noCache=1`
+to ignore the cache in a particular API request.
 
 ## Prerequisites
 
@@ -167,12 +167,12 @@ The end-points are:
 ```
 ### Address
 ```
-  /api/addr/[:addr][?noTxList=1]
+  /api/addr/[:addr][?noTxList=1&noCache=1]
   /api/addr/mmvP3mTe53qxHdPqXEvdu8WdC7GfQ2vmx5?noTxList=1
 ```
 ### Unspent Outputs
 ```
-  /api/addr/[:addr]/utxo
+  /api/addr/[:addr]/utxo[?noCache=1]
 ```
 Sample return:
 ``` json
@@ -197,8 +197,8 @@ Sample return:
     }
 ]
 ```
-Please not that in case confirmations are cached and are more that SAFE_CONFIRMATIONS setting, the
-return can be a string of the form 'SAFE_CONFIRMATIONS+'
+Please not that in case confirmations are cached and are more that INSIGHT_SAFE_CONFIRMATIONS setting, the
+return can be a string of the form `SAFE_CONFIRMATIONS+`, e.g.: the string `6+`
 
 
 ### Unspent Outputs for multiple addresses
