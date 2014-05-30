@@ -23,7 +23,7 @@ describe('BlockDb getBlocksByDate', function(){
 
   it('Get Hash by Date', function(done) {
 
-    bDb.getBlocksByDate(START_TS, END_TS, function(err, list) {
+    bDb.getBlocksByDate(START_TS, END_TS, 1000, function(err, list) {
       if (err) done(err);
       assert(list, 'returns list');
       assert.equal(list.length,2, 'list has 2 items');
