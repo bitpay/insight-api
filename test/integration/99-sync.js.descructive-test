@@ -157,7 +157,7 @@ describe('Sync Reorgs', function(){
   };
 
 
-  describe('reorg, case 1', function(done) {
+  describe('reorg, case 1', function() {
     checkTxs([t[0], t[1], t[2], t[3], t[4]],[16,17,18,19,20]);
     checkBlocks([b[0], b[1], b[2], b[3], b[4]],[16,17,18,19,20]);
     it('trigger reorg case 1', function(done1){
@@ -168,399 +168,199 @@ describe('Sync Reorgs', function(){
     });
     checkTxs([t[0], t[1], t[2], t[3], t[4],case1.tx],[16,17,18,-1,-1,19]);
     checkBlocks([b[0], b[1], b[2],b[3],b[4],case1.hash],[16,17,18,-1,-1,19]);
+
+    it('reorg, case 1 (repeat)', function(done) {
+      s.sync.storeTipBlock(case1, function(err) {
+        assert(!err, 'shouldnt return error' + err);
+        return done();
+      });
+    });
   });
+
+  var case2 = {
+    hash: '00000000c262f9428bb84407780bb0bd008b74941d651111ab2500cf649fa45d',
+    tx: [  '3fa6fce216e91c9dc9a6267168e9d8bfb4ae57aec0d26590442cfec6e8233682' ],
+    time: 1296690099,
+    previousblockhash: b[3],
+  };
+
+
+//  *  case 2)
+//  *           0-1-2---3-4
+//  *                \   \
+//  *                 C1  C2*
+ 
+
+  describe('reorg, case 2', function() {
+    checkTxs([t[0], t[1], t[2], t[3], t[4],case1.tx[0]],[16,17,18,-1,-1,19]);
+    checkBlocks([b[0], b[1], b[2],b[3],b[4],case1.hash],[16,17,18,-1,-1,19]);
+    it('trigger reorg case 2', function(done1){
+      s.sync.storeTipBlock(case2, function(err) {
+        assert(!err, 'shouldnt return error' + err);
+        return done1();
+      });
+    });
+    checkBlocks([b[0], b[1], b[2],b[3],b[4],case2.hash],[16,17,18,19,-1,20]);
+    checkTxs([t[0], t[1], t[2],t[3],t[4],case2.tx[0]],[16,17,18,19,-1,20]);
+    it('next from block 2', function(done1){
+      s.sync.bDb.getNext(b[2], function(err, val) {
+        assert(!err);
+        assert.equal(val,b[3]);
+        return done1();
+      });
+    });
+  });
+
+
+//  *  case 2b)
+//  *           0-1-2---3-4
+//  *                \   \
+//  *                 C1  C2-C2b(TX=C1.TX)*
+ 
+
+  var case2b = {
+    hash: '0000000022bb34bc09f8d8d0ae26b86c87f8483e54b9c3addfe6f30b12bc656a',
+    tx: case1.tx,
+    time: 1296690099,
+    previousblockhash: case2.hash,
+  };
+
+  describe('reorg, case 2', function() {
+    it('reorg case 2b', function(done1){
+      s.sync.storeTipBlock(case2b, function(err) {
+        assert(!err, 'shouldnt return error' + err);
+        return done1();
+      });
+    });
+    checkBlocks([b[0], b[1], b[2],b[3],b[4],case2.hash, case2b.hash, case1.hash],[16,17,18,19,-1,20, 21, -1]);
+    checkTxs([t[0], t[1], t[2],t[3],t[4],case2.tx[0], case1.tx],[16,17,18,19,-1,20, 21]);
+  });
+
+  var case2c = {
+    hash: '0000000000000000000000000000000000000000000000000000000000000004',
+    tx: case2.tx,
+    time: 1296690099,
+    previousblockhash: case1.hash,
+  };
+
+//  *  case 2c)
+//  *           0-1-2---3-4
+//  *                \   \
+//  *                 C1  C2-C2b(TX=C1.TX)
+//  *                  \
+//  *                   C2c(TX=C2.TX)*
+ 
+  describe('reorg, case 2c', function() {
+    it('trigger reorg case 2c', function(done1){
+      s.sync.storeTipBlock(case2c, function(err) {
+        assert(!err, 'shouldnt return error' + err);
+        return done1();
+      });
+    });
+    checkBlocks([b[0], b[1], b[2],
+                  b[3],b[4],case2.hash, case2b.hash,
+                  case1.hash, case2c.hash],
+                [16,17,18,
+                  -1,-1,-1, -1,
+                  19, 20
+                ]);
+    checkTxs(
+      [t[0], t[1], t[2],
+        t[3],t[4], case2.tx[0],
+        case1.tx, case2c.tx[0]],
+        [16,17,18,
+          -1,-1, 20,
+          19, 20]);
+  });
+
+
+//  *  case 3)
+//  *           0-1-2---3-4
+//  *                \   \
+//  *                 C1  C2-C2b(TX=C1.TX)
+//  *                  \
+//  *                   C2c(TX=C2.TX)
 //
-//   it('reorg, case 1 (repeat)', function(done) {
-//     s.sync.storeTipBlock(case1, function(err) {
-//       assert(!err, 'shouldnt return error' + err);
-//       return done();
-//     });
-//   });
-//
-//   var case2 = {
-//     hash: '00000000c262f9428bb84407780bb0bd008b74941d651111ab2500cf649fa45d',
-//     tx: [  '3fa6fce216e91c9dc9a6267168e9d8bfb4ae57aec0d26590442cfec6e8233682' ],
-//     time: 1296690099,
-//     previousblockhash: b[3],
-//   };
-//
-//
-//   it('reorg, case 2', function(done) {
-//       async.series([
-//         function (c) {
-//         s.sync.txDb.getBlock(t[0], function(err,is) {
-//           assert(!err);
-//           assert(is);
-//           return c();
-//         });
-//         },
-//         function (c) {
-//           s.sync.txDb.getBlock(case1.tx[0], function(err,is) {
-//             assert(!err);
-//             assert(is);
-//             return c();
-//           });
-//         },
-//         function (c) {
-//           s.sync.txDb.getBlock(t[4], function(err,is) {
-//             assert(!err);
-//             assert(!is);
-//             return c();
-//           });
-//         },
-//         // BEFORE
-//         function (c) {
-//           s.sync.bDb.getHeight(b[3], function(err,is) {
-//             assert(!err);
-//             assert.equal(is,-1);
-//             return c();
-//           });
-//         },
-//         function (c) {
-//           s.sync.storeTipBlock(case2, function(err) {
-//             assert(!err, 'shouldnt return error' + err);
-//             return c();
-//           });
-//         },
-//         // AFTER
-//         function (c) {
-//           s.sync.bDb.getHeight(b[3], function(err,is) {
-//             assert(!err);
-//             assert.equal(is,19);
-//             return c();
-//           });
-//         },
-//         function (c) {
-//           s.sync.bDb.getHeight(b[4], function(err,is) {
-//             assert(!err);
-//             assert.equal( is,-1, b[3] + 'should not be on main chain: #'+is);
-//             return c();
-//           });
-//         },
-//         function (c) {
-//           s.sync.bDb.getHeight(case1.hash, function(err,is) {
-//             assert(!err);
-//             assert.equal(is,-1);
-//             return c();
-//           });
-//         },
-//         function (c) {
-//           s.sync.bDb.getHeight(case2.hash, function(err,is) {
-//             assert(!err);
-//             assert.equal(is, 20);
-//             return c();
-//           });
-//         },
-//         function (c) {
-//           s.sync.txDb.getBlock(t[3], function(err,is) {
-// console.log('[99-sync.js.descructive-test.300:is:]',is); //TODO
-//             assert(!err);
-//             assert(is, 'transaction t[3] should be valid:' + t[3]);
-//             return c();
-//           });
-//         },
-//         function (c) {
-//         s.sync.txDb.getBlock(case1.tx[0], function(err,is) {
-//           assert(!err);
-//           assert(!is);
-//           return c();
-//         });
-//         },
-//          function (c) {
-//           s.sync.txDb.getBlock(case2.tx[0], function(err,is) {
-//             assert(!err);
-//             assert(is);
-//             return c();
-//           });
-//         },
-//         function (c) {
-//           s.sync.txDb.getBlock(t[4], function(err,is) {
-//             assert(!err);
-//             assert(!is);
-//             return c();
-//           });
-//         },
-//         function (c) {
-//           s.sync.bDb.getNext(b[2], function(err, val) {
-//             assert(!err);
-//             assert.equal(val,b[3]);
-//             return c();
-//           });
-//         },
-//
-//
-//
-//         ], done );
-//   });
-//
-//
-//   var case2b = {
-//     hash: '0000000022bb34bc09f8d8d0ae26b86c87f8483e54b9c3addfe6f30b12bc656a',
-//     tx: case1.tx,
-//     time: 1296690099,
-//     previousblockhash: case2.hash,
-//   };
-//
-//   it('reorg, case 2b', function(done) {
-//       async.series([
-//         function (c) {
-//         s.sync.txDb.getBlock(case2b.tx[0], function(err,is) {
-//           assert(!err);
-//           assert(!is);
-//           return c();
-//         });
-//         },
-//         function (c) {
-//           s.sync.storeTipBlock(case2b, function(err) {
-//             assert(!err, 'shouldnt return error' + err);
-//             return c();
-//           });
-//         },
-//         function (c) {
-//           s.sync.txDb.getBlock(t[3], function(err,is) {
-//             assert(!err);
-//             assert(is, 'transaction t[3] should be valid:' + t[3]);
-//             return c();
-//           });
-//         },
-//         function (c) {
-//         s.sync.txDb.getBlock(case2b.tx[0], function(err,is) {
-//           assert(!err);
-//           assert(is);
-//           return c();
-//         });
-//         },
-//         ], done );
-//   });
-//
-//
-//
-//   var case2c = {
-//     hash: '0000000000000000000000000000000000000000000000000000000000000004',
-//     tx: case2.tx,
-//     time: 1296690099,
-//     previousblockhash: case1.hash,
-//   };
-//
-//   it('reorg, case 2c', function(done) {
-//       async.series([
-//         function (c) {
-//           s.sync.txDb.getBlock(case1.tx[0], function(err,is) {
-//             assert(!err);
-//             assert(is);
-//             return c();
-//           });
-//         },
-//         function (c) {
-//           s.sync.bDb.getHeight(case1.hash, function(err,is) {
-//             assert(!err);
-//             assert.equal(is, -1, 'case1 block shouldnt be main:' + case1.hash);
-//             return c();
-//           });
-//         },
-//         function (c) {
-//           s.sync.txDb.getBlock(case2c.tx[0], function(err,is) {
-//             assert(!err);
-//             assert(is);   //It was there before (from case2)
-//             return c();
-//           });
-//         },
-//         function (c) {
-//           s.sync.storeTipBlock(case2c, function(err) {
-//             assert(!err, 'shouldnt return error' + err);
-//             return c();
-//           });
-//         },
-//         function (c) {
-//           s.sync.txDb.getBlock(case1.tx[0], function(err,is) {
-//             assert(!err);
-//             assert(is);
-//             return c();
-//           });
-//         },
-//         function (c) {
-//           s.sync.bDb.has(case1.hash, function(err,is) {
-//             assert(!err);
-//             assert(is);
-//             return c();
-//           });
-//         },
-//         function (c) {
-//           s.sync.bDb.has(case2c.hash, function(err,is) {
-//             assert(!err);
-//             assert(is);
-//             return c();
-//           });
-//         },
-//         function (c) {
-//           s.sync.bDb.getHeight(case1.hash, function(err,h) {
-//             assert(!err);
-//             assert.equal(h,19);
-//             return c();
-//           });
-//         },
-//         function (c) {
-//           s.sync.bDb.getHeight(case2c.hash, function(err,h) {
-//             assert(!err);
-//             assert.equal(h,20);
-//             return c();
-//           });
-//         },
-//         function (c) {
-//           s.sync.txDb.getBlock(case2c.tx[0], function(err,is) {
-//             assert(!err);
-//             assert(is);
-//             return c();
-//           });
-//         },
-//         function (c) {
-//           s.sync.txDb.getBlock(t[3], function(err,is) {
-//             assert(!err);
-//             assert(!is, 'TX t[3]: shouldnt be confirmed:' + t[3] +':'+ is);
-//             return c();
-//           });
-//         },
-//         function (c) {
-//           s.sync.txDb.getBlock(t[4], function(err,is) {
-//             assert(!err);
-//             assert(!is);
-//             return c();
-//           });
-//         },
-//         function (c) {
-//           s.sync.txDb.getBlock(case2.tx[0], function(err,is) {
-//             assert(!err);
-//             assert(is);
-//             return c();
-//           });
-//         },
-//  
-//         ], done );
-//   });
-//
-//   var case3  = {
-//     hash: '0000000000000000000000000000000000000000000000000000000000000005',
-//     tx: case2.tx,
-//     time: 1296690099,
-//     previousblockhash: '666',
-//   };
-//
-//   it('reorg, case 3)', function(done) {
-//       async.series([
-//         function (c) {
-//           s.sync.storeTipBlock(case3, function(err) {
-//             assert(err, 'should return error' + err);
-//             return c();
-//           });
-//         },
-//
-//         //shoudnt change anything
-//         function (c) {
-//           s.sync.txDb.getBlock(case1.tx[0], function(err,is) {
-//             assert(!err);
-//             assert(is);
-//             return c();
-//           });
-//         },
-//         function (c) {
-//           s.sync.bDb.has(case1.hash, function(err,is) {
-//             assert(!err);
-//             assert(is);
-//             return c();
-//           });
-//         },
-//         function (c) {
-//           s.sync.bDb.has(case2c.hash, function(err,is) {
-//             assert(!err);
-//             assert(is);
-//             return c();
-//           });
-//         },
-//         function (c) {
-//           s.sync.txDb.getBlock(case2c.tx[0], function(err,is) {
-//             assert(!err);
-//             assert(is);
-//             return c();
-//           });
-//         },
-//         function (c) {
-//           s.sync.txDb.getBlock(t[3], function(err,is) {
-//             assert(!err);
-//             assert(!is, 'TX t[3]: shouldnt be confirmed:' + t[3] +':'+ is);
-//             return c();
-//           });
-//         },
-//         function (c) {
-//           s.sync.txDb.getBlock(t[4], function(err,is) {
-//             assert(!err);
-//             assert(!is);
-//             return c();
-//           });
-//         },
-//         function (c) {
-//           s.sync.txDb.getBlock(case2.tx[0], function(err,is) {
-//             assert(!err);
-//             assert(is);
-//             return c();
-//           });
-//         },
-//  
-//         ], done );
-//   });
-//
-//   var p2p  = {
-//     hash: '0000000000000000000000000000000000000000000000000000000000000006',
-//     tx: ['f6c2901f39fd07f2f2e503183d76f73ecc1aee9ac9216fde58e867bc29ce674e'],
-//     time: 1296690099,
-//     previousblockhash: '111',
-//   };
-//
-//   it('p2p, no reorg allowed', function(done) {
-//       async.series([
-//         function (c) {
-//           s.sync.storeTipBlock(p2p, false, function(err) {
-//             assert(!err, 'shouldnt return error' + err);
-//             return c();
-//           });
-//         },
-//         function (c) {
-//           s.sync.bDb.has(p2p.hash, function(err,is) {
-//             assert(!err);
-//             assert(is);
-//             return c();
-//           });
-//         },
-//         function (c) {
-//           s.sync.txDb.getBlock(p2p.tx[0], function(err,is) {
-//             assert(!err);
-//             assert(is);
-//             return c();
-//           });
-//         },
-//         function (c) {
-//           s.sync.bDb.getNext(p2p.hash, function(err,v) {
-//             assert(!err);
-//             assert.equal(v,p2p.nextblockhash);
-//             return c();
-//           });
-//         },
-//          function (c) {
-//           s.sync.bDb.getNext(p2p.previousblockhash, function(err,v) {
-//             assert(!err);
-//             assert.equal(v,p2p.hash);
-//             return c();
-//           });
-//         },
-//          function (c) {
-//            s.sync.bDb.getHeight(p2p.hash, function(err,is) {
-//             assert(!err);
-//             assert.equal(is,-1);
-//             return c();
-//           });
-//         },
-//  
-//         ], done );
-//   });
+//                  (orphan)-C3*
+//  -> returns error
+
+  var case3  = {
+    hash: '0000000000000000000000000000000000000000000000000000000000000005',
+    tx: case2.tx,
+    time: 1296690099,
+    previousblockhash: '666',
+  };
+
+  describe('reorg, case 3)', function() {
+    it('case 3). Should return an error', function(done1){
+      s.sync.storeTipBlock(case3, function(err) {
+        assert(err, 'should return error' + err);
+        return done1();
+      });
+    });
+    //shoudnt change anything
+    checkBlocks([b[0], b[1], b[2],
+                  b[3],b[4],case2.hash, case2b.hash,
+                  case1.hash, case2c.hash],
+                [16,17,18,
+                  -1,-1,-1, -1,
+                  19, 20
+                ]);
+    checkTxs(
+      [t[0], t[1], t[2],
+        t[3],t[4], case2.tx[0],
+        case1.tx, case2c.tx[0]],
+        [16,17,18,
+          -1,-1, 20,
+          19, 20]);
+  });
+
+  var p2p = {
+    hash: '0000000000000000000000000000000000000000000000000000000000000006',
+    tx: ['f6c2901f39fd07f2f2e503183d76f73ecc1aee9ac9216fde58e867bc29ce674e'],
+    time: 1296690099,
+    previousblockhash: '111',
+  };
+  
+  describe('p2p sync. no reorgs', function() {
+    it('Should return an error', function(done1){
+      s.sync.storeTipBlock(p2p, false, function(err) {
+        assert(!err, 'shouldnt return error' + err);
+        return done1();
+      });
+    it('Block should be stored', function(done1){
+      s.sync.bDb.has(p2p.hash, function(err,is) {
+        assert(!err);
+        assert(is);
+        return done1();
+      });
+    });
+    //shoudnt change anything
+    checkBlocks([b[0], b[1], b[2],
+                  b[3],b[4],case2.hash, case2b.hash,
+                  case1.hash, case2c.hash,
+                  p2p.hash],
+                [16,17,18,
+                  -1,-1,-1, -1,
+                  19, 20,
+                  -1
+                ]);
+          });
+    it('next Block should be stored', function(done1){
+      s.sync.bDb.getNext(p2p.hash, function(err,v) {
+        assert(!err);
+        assert.equal(v,p2p.nextblockhash);
+        return done1();
+      });
+    });
+    it('next Block should be stored', function(done1){
+      s.sync.bDb.getNext(p2p.previousblockhash, function(err,v) {
+        assert(!err);
+        assert.equal(v,p2p.hash);
+        return done1();
+      });
+    });
+  });
 });
 
 
