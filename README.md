@@ -90,7 +90,7 @@ BITCOIND_PORT         # RPC bitcoind Port
 BITCOIND_P2P_PORT     # P2P bitcoind Port
 BITCOIND_USER         # RPC username
 BITCOIND_PASS         # RPC password
-BITCOIND_DATADIR      # bitcoind datadir for livenet, or datadir/testnet3 for testnet
+BITCOIND_DATADIR      # bitcoind datadir. 'testnet3' will be appended automatically if testnet is used. NEED to finish with '/'. e.g: `/vol/data/`
 INSIGHT_NETWORK [= 'livenet' | 'testnet']
 INSIGHT_DB            # Path where to store insight's internal DB. (defaults to $HOME/.insight)
 INSIGHT_SAFE_CONFIRMATIONS=6  # Nr. of confirmation needed to start caching transaction information   
