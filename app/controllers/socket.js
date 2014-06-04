@@ -7,7 +7,6 @@ var util = require('bitcore').util;
 
 module.exports.init = function(app, io_ext) {
   ios = io_ext;
-  ios.set('log level', 1); // reduce logging
   ios.sockets.on('connection', function(socket) {
     socket.on('subscribe', function(topic) {
       socket.join(topic);
