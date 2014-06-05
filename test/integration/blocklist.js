@@ -23,12 +23,12 @@ describe('BlockDb getBlocksByDate', function(){
 
   it('Get Hash by Date', function(done) {
 
-    bDb.getBlocksByDate(START_TS, END_TS, 1000, function(err, list) {
+    bDb.getBlocksByDate(START_TS, END_TS, 2, function(err, list) {
       if (err) done(err);
       assert(list, 'returns list');
       assert.equal(list.length,2, 'list has 2 items');
-      assert.equal(list[0].hash, TESTING_BLOCK0);
-      assert.equal(list[1].hash, TESTING_BLOCK1);
+      assert.equal(list[1].hash, TESTING_BLOCK0);
+      assert.equal(list[0].hash, TESTING_BLOCK1);
       done();
     });
   });

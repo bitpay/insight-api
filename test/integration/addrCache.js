@@ -22,7 +22,10 @@ describe('Address cache ', function() {
   before(function(c) {
     txDb = TransactionDb;
     txDb.deleteCacheForAddress('muAt5RRqDarPFCe6qDXGZc54xJjXYUyepG',function(){
-     txDb.deleteCacheForAddress('mt2AzeCorSf7yFckj19HFiXJgh9aNyc4h3',c);
+     txDb.deleteCacheForAddress('mt2AzeCorSf7yFckj19HFiXJgh9aNyc4h3',function(){
+      txDb.deleteCacheForAddress('2N7zvqQTUYFfhYvFs1NEzureMLvhwk5FSsk',c);
+     });
+
     });
   });
 
@@ -51,7 +54,7 @@ describe('Address cache ', function() {
  
 
 
-  it('cache case unspent w/o cache', function(done) {
+  it('cache case 2  w/o cache', function(done) {
     var a = new Address('2N7zvqQTUYFfhYvFs1NEzureMLvhwk5FSsk', txDb);
     a.update(function(err) {
       if (err) done(err);
@@ -62,8 +65,7 @@ describe('Address cache ', function() {
     });
   });
  
-
-  it('cache case unspent w cache', function(done) {
+  it('cache case 2  w cache', function(done) {
     var a = new Address('2N7zvqQTUYFfhYvFs1NEzureMLvhwk5FSsk', txDb);
     a.update(function(err) {
       if (err) done(err);
@@ -73,7 +75,34 @@ describe('Address cache ', function() {
       return done();
     });
   });
-  it('cache case 2 w/o cache', function(done) {
+
+  it('cache case 2 unspent wo cache', function(done) {
+    txDb.deleteCacheForAddress('2N7zvqQTUYFfhYvFs1NEzureMLvhwk5FSsk',function() {
+      var a = new Address('2N7zvqQTUYFfhYvFs1NEzureMLvhwk5FSsk', txDb);
+      a.update(function(err) {
+        if (err) done(err);
+        a.unspent.length.should.equal(1);
+        a.unspent[0].confirmations.should.be.above(15000);
+        a.unspent[0].confirmationsFromCache.should.equal(false);
+        return done();
+      }, {onlyUnspent:1});
+    });
+  });
+
+  it('cache case 2 unspent w cache', function(done) {
+    var a = new Address('2N7zvqQTUYFfhYvFs1NEzureMLvhwk5FSsk', txDb);
+    a.update(function(err) {
+      if (err) done(err);
+      a.unspent.length.should.equal(1);
+      a.unspent[0].confirmationsFromCache.should.equal(true);
+      a.unspent[0].confirmations.should.equal(6);
+      return done();
+    }, {onlyUnspent:1});
+  });
+
+
+ 
+  it('cache case 3 w/o cache', function(done) {
     var a = new Address('mt2AzeCorSf7yFckj19HFiXJgh9aNyc4h3', txDb);
     a.update(function(err) {
       if (err) done(err);
@@ -83,7 +112,7 @@ describe('Address cache ', function() {
       return done();
     });
   },1);
-  it('cache case 2 w cache', function(done) {
+  it('cache case 4 w cache', function(done) {
     var a = new Address('mt2AzeCorSf7yFckj19HFiXJgh9aNyc4h3', txDb);
     a.update(function(err) {
       if (err) done(err);
@@ -93,7 +122,7 @@ describe('Address cache ', function() {
       return done();
     },{txLimit:0});
   });
-  it('cache case 2 w ignore cache', function(done) {
+  it('cache case 4 w ignore cache', function(done) {
     var a = new Address('mt2AzeCorSf7yFckj19HFiXJgh9aNyc4h3', txDb);
     a.update(function(err) {
       if (err) done(err);
@@ -103,6 +132,19 @@ describe('Address cache ', function() {
       return done();
     },{txLimit:0, ignoreCache:1});
   });
+
+  it('cache case 5 unspent w cache', function(done) {
+    var a = new Address('2NBuTjjZrURxLaMyPUu2sJwNrtpt7GtPX2p', txDb);
+    a.update(function(err) {
+      if (err) done(err);
+      a.unspent.length.should.equal(1);
+      a.unspent[0].confirmationsFromCache.should.equal(true);
+      a.unspent[0].confirmations.should.equal(6);
+      return done();
+    }, {onlyUnspent:1});
+  });
+ 
+
 
 });
 

@@ -193,12 +193,13 @@ Sample return:
     ts: 1401226410,
     scriptPubKey: "76a914e50575162795cd77366fb80d728e3216bd52deac88ac",
     amount: 0.001,
-    confirmations: "6+"
+    confirmation: 6    
+    confirmationsFromCache: true,
     }
 ]
 ```
-Please not that in case confirmations are cached and are more that INSIGHT_SAFE_CONFIRMATIONS setting, the
-return can be a string of the form `SAFE_CONFIRMATIONS+`, e.g.: the string `6+`
+Please note that in case confirmations are cached (because the number of confirmations if bigger that INSIGHT_SAFE_CONFIRMATIONS) the return will include the pair confirmationsFromCache:true, and confirmations will equal INSIGHT_SAFE_CONFIRMATIONS. See noCache and INSIGHT_IGNORE_CACHE options for details.
+
 
 
 ### Unspent Outputs for multiple addresses
