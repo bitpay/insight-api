@@ -110,7 +110,7 @@ bitcoindConf.pass?'Yes(hidden)':'No',
 bitcoindConf.protocol,
 bitcoindConf.host,
 bitcoindConf.port,
-bitcoindConf.p2p_port,
+bitcoindConf.p2pPort,
 dataDir+(network==='testnet'?'*':''),
 (network==='testnet'?'* (/testnet3 is added automatically)':'')
 );
