@@ -109,7 +109,7 @@ The initial synchronization process scans the blockchain from the paired bitcoin
 
 While *insight* is synchronizing the website can be accessed (the sync process is embedded in the webserver), but there may be missing data or incorrect balances for addresses. The 'sync' status is shown on the top-right of all pages.
 
-The blockchain can be read from bitcoind's raw `.dat` files or RPC interface. Reading the information from the `.dat` files is much faster so it's the recommended (and default) alternative. `.dat` files are scanned in the default location for each platform. In case a non-standard location is used, it needs to be defined (see the Configuration section). The synchronization type being used can be seen at the [Status page](http://localhost:3001/status).  As of February 2014, using `.dat` files the sync process takes 7 hrs. for livenet and 20 mins. for testnet.
+The blockchain can be read from bitcoind's raw `.dat` files or RPC interface. Reading the information from the `.dat` files is much faster so it's the recommended (and default) alternative. `.dat` files are scanned in the default location for each platform. In case a non-standard location is used, it needs to be defined (see the Configuration section). The synchronization type being used can be seen at the [Status page](http://localhost:3001/status).  As of June 2014, using `.dat` files the sync process takes 9 hrs. for livenet and 30 mins. for testnet.
 
 While synchronizing the blockchain, *insight* listens for new blocks and transactions relayed by the bitcoind node. Those are also stored on *insight*'s database. In case *insight* is shutdown for a period of time, restarting it will trigger a partial (historic) synchronization of the blockchain. Depending on the size of that synchronization task, a reverse RPC or forward `.dat` syncing strategy will be used.
 
@@ -132,7 +132,7 @@ To store the blockchain and address related information, *insight* uses LevelDB.
   ```<user's home>/db```
 Please note that previous version's of Insight-API store that on `<insight's root>/db`
 
-this can be changed on config/config.js. As of February 2014, storing the livenet blockchain takes ~30GB of disk space (2GB for the testnet).
+this can be changed on config/config.js. As of June 2014, storing the livenet blockchain takes ~35GB of disk space (2GB for the testnet).
 
 ## Development
 
