@@ -82,21 +82,35 @@ describe('Address cache ', function() {
       a.update(function(err) {
         if (err) done(err);
         a.unspent.length.should.equal(1);
+        a.unspent[0].scriptPubKey.should.equal('a914a1d5be9f72224b5e83d00d7f5b9b674d456c573f87');
         a.unspent[0].confirmations.should.be.above(15000);
         a.unspent[0].confirmationsFromCache.should.equal(false);
-        return done();
+        a.update(function(err) {
+          a.balance.should.equal(0.23, 'balance');
+          a.totalReceived.should.equal(0.23, 'totalReceived');
+          a.txApperances.should.equal(1, 'txApperances');
+          return done();
+        });
       }, {onlyUnspent:1});
     });
   });
 
   it('cache case 2 unspent w cache', function(done) {
+
     var a = new Address('2N7zvqQTUYFfhYvFs1NEzureMLvhwk5FSsk', txDb);
     a.update(function(err) {
       if (err) done(err);
       a.unspent.length.should.equal(1);
       a.unspent[0].confirmationsFromCache.should.equal(true);
       a.unspent[0].confirmations.should.equal(6);
-      return done();
+      a.unspent[0].scriptPubKey.should.equal('a914a1d5be9f72224b5e83d00d7f5b9b674d456c573f87');
+        a.update(function(err) {
+          a.balance.should.equal(0.23, 'balance');
+          a.totalReceived.should.equal(0.23, 'totalReceived');
+          a.txApperances.should.equal(1, 'txApperances');
+          return done();
+        });
+ 
     }, {onlyUnspent:1});
   });
 
