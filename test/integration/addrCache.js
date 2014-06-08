@@ -158,7 +158,41 @@ describe('Address cache ', function() {
     }, {onlyUnspent:1});
   });
  
-
+  it('cache fix broken cases', function(done) {
+    txDb._db.put('txa2-2N7zvqQTUYFfhYvFs1NEzureMLvhwk5FSsk-9998599199253-16c0287dbea7e323431caff7f7e490da6de66530717f86f8dae9549b3355301a-0', '23000000:1399232338:0:a914a1d5be9f72224b5e83d00d7f5b9b674d456c573f87', function(){
+      var a = new Address('2N7zvqQTUYFfhYvFs1NEzureMLvhwk5FSsk', txDb);
+      a.update(function(err) {
+        if (err) done(err);
+        a.balance.should.equal(0.23, 'balance');
+        a.totalReceived.should.equal(0.23, 'totalReceived');
+        a.txApperances.should.equal(1, 'txApperances');
+        a.transactions.length.should.equal(1);
+        a.transactions[0].should.equal('16c0287dbea7e323431caff7f7e490da6de66530717f86f8dae9549b3355301a');
+        return done();
+      });
+    });
+  });
+   it('cache fix broken cases 2)', function(done) {
+    txDb._db.put('txa2-2N7zvqQTUYFfhYvFs1NEzureMLvhwk5FSsk-9998599199253-16c0287dbea7e323431caff7f7e490da6de66530717f86f8dae9549b3355301a-0', '23000000:1399232338:0:a914a1d5be9f72224b5e83d00d7f5b9b674d456c573f87', function(){
+      var a = new Address('2N7zvqQTUYFfhYvFs1NEzureMLvhwk5FSsk', txDb);
+      a.update(function(err) {
+        if (err) done(err);
+      a.unspent.length.should.equal(1);
+      a.unspent[0].confirmationsFromCache.should.equal(false);
+      a.unspent[0].confirmations.should.above(6);
+      a.unspent[0].scriptPubKey.should.equal('a914a1d5be9f72224b5e83d00d7f5b9b674d456c573f87');
+      a.update(function(err) {
+          if (err) done(err);
+        a.unspent.length.should.equal(1);
+        a.unspent[0].confirmationsFromCache.should.equal(true);
+        a.unspent[0].confirmations.should.equal(6);
+        a.unspent[0].scriptPubKey.should.equal('a914a1d5be9f72224b5e83d00d7f5b9b674d456c573f87');
+          return done();
+        }, {onlyUnspent:1});
+      }, {onlyUnspent:1});
+    });
+  });
+ 
 
 });
 
