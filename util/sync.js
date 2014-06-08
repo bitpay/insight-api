@@ -15,7 +15,8 @@ program
   .option('-D --destroy', 'Remove current DB (and start from there)', 0)
   .option('-S --startfile', 'Number of file from bitcoind to start(default=0)')
   .option('-R --rpc', 'Force sync with RPC')
-  .option('--stop [hash]', 'StopAt block',1)
+  .option('--start [hash]', 'StartAt block')
+  .option('--stop [hash]', 'StopAt block')
   .option('-v --verbose', 'Verbose 0/1', 0)
   .parse(process.argv);
 
@@ -34,6 +35,7 @@ async.series([
     var opts= {
       forceStartFile: program.startfile,
       forceRPC: program.rpc,
+      startAt: program.start,
       stopAt: program.stop,
     };
     console.log('[options]',opts); //TODO
