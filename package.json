@@ -80,7 +80,7 @@
     "grunt-nodemon": "~0.2.0",
     "grunt-mocha-test": "~0.8.1",
     "should": "2.1.1",
-    "chai": "=1.9.1",
+    "chai": "*",
     "grunt-markdown": "~0.5.0"
   }
 }

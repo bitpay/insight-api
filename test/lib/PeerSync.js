@@ -28,8 +28,7 @@ describe('PeerSync', function() {
     it('should return with no errors', function() {
       expect(function() {
         ps.handleInv(inv_info);
-      }).not.to.
-      throw (Error);
+      }).not.to.throw(Error);
     });
     it('should call sendGetData', function() {
       ps.handleInv(inv_info);
