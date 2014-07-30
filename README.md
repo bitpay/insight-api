@@ -99,9 +99,9 @@ In case the network is changed (testnet to livenet or vice versa) levelDB databa
 
 The initial synchronization process scans the blockchain from the paired bitcoind server to update addresses and balances. *insight* needs one (and only one) trusted bitcoind node to run. This node must have finished downloading the blockchain before running *insight*.
 
-While *insight* is synchronizing the website can be accessed (the sync process is embedded in the webserver), but there may be missing data or incorrect balances for addresses. The 'sync' status is shown on the top-right of all pages.
+While *insight* is synchronizing the website can be accessed (the sync process is embedded in the webserver), but there may be missing data or incorrect balances for addresses. The 'sync' status is shown at the `/api/sync` endpoint.
 
-The blockchain can be read from bitcoind's raw `.dat` files or RPC interface. Reading the information from the `.dat` files is much faster so it's the recommended (and default) alternative. `.dat` files are scanned in the default location for each platform. In case a non-standard location is used, it needs to be defined (see the Configuration section). The synchronization type being used can be seen at the [Status page](http://localhost:3001/status).  As of June 2014, using `.dat` files the sync process takes 9 hrs. for livenet and 30 mins. for testnet.
+The blockchain can be read from bitcoind's raw `.dat` files or RPC interface. Reading the information from the `.dat` files is much faster so it's the recommended (and default) alternative. `.dat` files are scanned in the default location for each platform (for example, `~/.bitcoin` on Linux). In case a non-standard location is used, it needs to be defined (see the Configuration section). As of June 2014, using `.dat` files the sync process takes 9 hrs. for livenet and 30 mins. for testnet.
 
 While synchronizing the blockchain, *insight* listens for new blocks and transactions relayed by the bitcoind node. Those are also stored on *insight*'s database. In case *insight* is shutdown for a period of time, restarting it will trigger a partial (historic) synchronization of the blockchain. Depending on the size of that synchronization task, a reverse RPC or forward `.dat` syncing strategy will be used.
 
@@ -121,7 +121,7 @@ If bitcoind is shutdown, *insight* needs to be stopped and restarted once bitcoi
 ### DB storage requirement
 
 To store the blockchain and address related information, *insight* uses LevelDB. Two DBs are created: txs and blocks. By default these are stored on
-  ```<user's home>/db```
+  ```~/.insight/```
 Please note that previous version's of Insight-API store that on `<insight's root>/db`
 
 this can be changed on config/config.js. As of June 2014, storing the livenet blockchain takes ~35GB of disk space (2GB for the testnet).
@@ -137,7 +137,7 @@ To run the tests
 ```$ grunt test```
 
 
-Contributions and suggestions are welcomed at [insight-api github repository](https://github.com/bitpay/insight-api).
+Contributions and suggestions are welcome at [insight-api github repository](https://github.com/bitpay/insight-api).
 
 
 ## API
@@ -170,23 +170,23 @@ Sample return:
 ``` json
 [
     {
-    address: "n2PuaAguxZqLddRbTnAoAuwKYgN2w2hZk7",
-    txid: "dbfdc2a0d22a8282c4e7be0452d595695f3a39173bed4f48e590877382b112fc",
-    vout: 0,
-    ts: 1401276201,
-    scriptPubKey: "76a914e50575162795cd77366fb80d728e3216bd52deac88ac",
-    amount: 0.001,
-    confirmations: 3
+      address: "n2PuaAguxZqLddRbTnAoAuwKYgN2w2hZk7",
+      txid: "dbfdc2a0d22a8282c4e7be0452d595695f3a39173bed4f48e590877382b112fc",
+      vout: 0,
+      ts: 1401276201,
+      scriptPubKey: "76a914e50575162795cd77366fb80d728e3216bd52deac88ac",
+      amount: 0.001,
+      confirmations: 3
     },
     {
-    address: "n2PuaAguxZqLddRbTnAoAuwKYgN2w2hZk7",
-    txid: "e2b82af55d64f12fd0dd075d0922ee7d6a300f58fe60a23cbb5831b31d1d58b4",
-    vout: 0,
-    ts: 1401226410,
-    scriptPubKey: "76a914e50575162795cd77366fb80d728e3216bd52deac88ac",
-    amount: 0.001,
-    confirmation: 6    
-    confirmationsFromCache: true,
+      address: "n2PuaAguxZqLddRbTnAoAuwKYgN2w2hZk7",
+      txid: "e2b82af55d64f12fd0dd075d0922ee7d6a300f58fe60a23cbb5831b31d1d58b4",
+      vout: 0,
+      ts: 1401226410,
+      scriptPubKey: "76a914e50575162795cd77366fb80d728e3216bd52deac88ac",
+      amount: 0.001,
+      confirmation: 6    
+      confirmationsFromCache: true,
     }
 ]
 ```
