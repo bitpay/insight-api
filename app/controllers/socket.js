@@ -1,11 +1,10 @@
 'use strict';
 
 // server-side socket behaviour
-// io is a variable already taken in express
-var ios = null;
+var ios = null; // io is already taken in express
 var util = require('bitcore').util;
 
-module.exports.init = function(app, io_ext) {
+module.exports.init = function(io_ext) {
   ios = io_ext;
   ios.sockets.on('connection', function(socket) {
     socket.on('subscribe', function(topic) {
@@ -21,9 +20,7 @@ module.exports.broadcastTx = function(tx) {
       t = {
         txid: tx
       };
-    }
-    
-    else {
+    } else {
       t = {
         txid: tx.txid,
         size: tx.size,
@@ -34,7 +31,7 @@ module.exports.broadcastTx = function(tx) {
         valueOut += o.valueSat;
       });
 
-      t.valueOut = (valueOut.toFixed(8)/util.COIN);
+      t.valueOut = (valueOut.toFixed(8) / util.COIN);
     }
     ios.sockets.in('inv').emit('tx', t);
   }
@@ -55,3 +52,11 @@ module.exports.broadcastSyncInfo = function(historicSync) {
   if (ios)
     ios.sockets.in('sync').emit('status', historicSync);
 };
+
+module.exports.broadcastMessage = function(from, to, ts, message) {
+  console.log('sending socket: %s, %s, %s, %s', from, to, ts, message);
+  if (ios) {
+    ios.sockets.in(to).emit(from + '-' + ts, message);
+  }
+
+}
