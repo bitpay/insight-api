@@ -26,32 +26,32 @@ console.log(
 /___/_/ /_/____/_/\\__, /_/ /_/\\__/  /_/  |_/ .___/_/   \n\
                  /____/                   /_/           \n\
 \n\t\t\t\t\t\tv%s\n\
-  # Configuration:\n\
-\t\tNetwork: %s\tINSIGHT_NETWORK\n\
-\t\tDatabase Path:  %s\tINSIGHT_DB\n\
-\t\tSafe Confirmations:  %s\tINSIGHT_SAFE_CONFIRMATIONS\n\
-\t\tIgnore Cache:  %s\tINSIGHT_IGNORE_CACHE\n\
+# Configuration:\n\
+\tINSIGHT_NETWORK (Network): %s\n\
+\tINSIGHT_DB (Database Path):  %s\n\
+\tINSIGHT_SAFE_CONFIRMATIONS (Safe Confirmations):  %s\n\
+\tINSIGHT_IGNORE_CACHE (Ignore Cache):  %s\n\
  # Bicoind Connection configuration:\n\
-\t\tRPC Username: %s\tBITCOIND_USER\n\
-\t\tRPC Password: %s\tBITCOIND_PASS\n\
-\t\tRPC Protocol: %s\tBITCOIND_PROTO\n\
-\t\tRPC Host: %s\tBITCOIND_HOST\n\
-\t\tRPC Port: %s\tBITCOIND_PORT\n\
-\t\tP2P Port: %s\tBITCOIND_P2P_PORT\n\
-\t\tData Dir: %s\tBITCOIND_DATADIR\n\
-\t\t%s\n\
-\nChange setting by assigning the enviroment variables in the last column. Example:\n\
+\tRPC Username: %s\t\tBITCOIND_USER\n\
+\tRPC Password: %s\tBITCOIND_PASS\n\
+\tRPC Protocol: %s\t\tBITCOIND_PROTO\n\
+\tRPC Host: %s\t\tBITCOIND_HOST\n\
+\tRPC Port: %s\t\t\tBITCOIND_PORT\n\
+\tP2P Port: %s\t\t\tBITCOIND_P2P_PORT\n\
+\tBITCOIND_DATADIR: %s\n\
+\t%s\n\
+\nChange setting by assigning the enviroment variables above. Example:\n\
  $ INSIGHT_NETWORK="testnet" BITCOIND_HOST="123.123.123.123" ./insight.js\
 \n\n',
-  version,
-  network, home, safeConfirmations, ignoreCache ? 'yes' : 'no',
-  bitcoindConf.user,
-  bitcoindConf.pass ? 'Yes(hidden)' : 'No',
-  bitcoindConf.protocol,
-  bitcoindConf.host,
-  bitcoindConf.port,
-  bitcoindConf.p2pPort,
-  dataDir + (network === 'testnet' ? '*' : ''), (network === 'testnet' ? '* (/testnet3 is added automatically)' : '')
+  config.version,
+  config.network, config.leveldb, config.safeConfirmations, config.ignoreCache ? 'yes' : 'no',
+  config.bitcoind.user,
+  config.bitcoind.pass ? 'Yes(hidden)' : 'No',
+  config.bitcoind.protocol,
+  config.bitcoind.host,
+  config.bitcoind.port,
+  config.bitcoind.p2pPort,
+  config.bitcoind.dataDir + (config.network === 'testnet' ? '*' : ''), (config.network === 'testnet' ? '* (/testnet3 is added automatically)' : '')
 );
 
 /**

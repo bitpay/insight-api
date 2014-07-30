@@ -89,6 +89,7 @@ if (!fs.existsSync(db)) {
 }
 
 module.exports = {
+  version: version,
   root: rootPath,
   publicPath: process.env.INSIGHT_PUBLIC_PATH || false,
   appName: 'Insight ' + env,
