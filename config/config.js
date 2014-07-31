@@ -98,6 +98,7 @@ console.log(
 \t\tRPC Protocol: %s\tBITCOIND_PROTO\n\
 \t\tRPC Host: %s\tBITCOIND_HOST\n\
 \t\tRPC Port: %s\tBITCOIND_PORT\n\
+\t\tP2P Host: %s\tBITCOIND_P2P_HOST\n\
 \t\tP2P Port: %s\tBITCOIND_P2P_PORT\n\
 \t\tData Dir: %s\tBITCOIND_DATADIR\n\
 \t\t%s\n\
@@ -111,6 +112,7 @@ bitcoindConf.pass?'Yes(hidden)':'No',
 bitcoindConf.protocol,
 bitcoindConf.host,
 bitcoindConf.port,
+bitcoindConf.p2pHost,
 bitcoindConf.p2pPort,
 dataDir+(network==='testnet'?'*':''),
 (network==='testnet'?'* (/testnet3 is added automatically)':'')

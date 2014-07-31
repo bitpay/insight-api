@@ -79,6 +79,7 @@ All configuration is specified in the [config](config/) folder, particularly the
 ```
 BITCOIND_HOST         # RPC bitcoind host
 BITCOIND_PORT         # RPC bitcoind Port
+BITCOIND_P2P_HOST     # P2P bitcoind Host (will default to BITCOIND_HOST, if specified)
 BITCOIND_P2P_PORT     # P2P bitcoind Port
 BITCOIND_USER         # RPC username
 BITCOIND_PASS         # RPC password
