@@ -1,23 +1,23 @@
 'use strict';
 
 var path = require('path'),
-    fs = require('fs'),
-    rootPath = path.normalize(__dirname + '/..'),
-    env,
-    db,
-    port,
-    b_port,
-    p2p_port;
+  fs = require('fs'),
+  rootPath = path.normalize(__dirname + '/..'),
+  env,
+  db,
+  port,
+  b_port,
+  p2p_port;
 
 var packageStr = fs.readFileSync('package.json');
 var version = JSON.parse(packageStr).version;
 
 
 function getUserHome() {
-    return process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
+  return process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
 }
 
-var home = process.env.INSIGHT_DB || ( getUserHome()  + '/.insight' );
+var home = process.env.INSIGHT_DB || (getUserHome() + '/.insight');
 
 if (process.env.INSIGHT_NETWORK === 'livenet') {
   env = 'livenet';
@@ -25,8 +25,7 @@ if (process.env.INSIGHT_NETWORK === 'livenet') {
   port = '3000';
   b_port = '8332';
   p2p_port = '8333';
-}
-else {
+} else {
   env = 'testnet';
   db = home + '/testnet';
   port = '3001';
@@ -35,7 +34,7 @@ else {
 }
 
 
-switch(process.env.NODE_ENV) {
+switch (process.env.NODE_ENV) {
   case 'production':
     env += '';
     break;
@@ -61,11 +60,11 @@ if (!dataDir) {
 dataDir += network === 'testnet' ? 'testnet3' : '';
 
 var safeConfirmations = process.env.INSIGHT_SAFE_CONFIRMATIONS || 6;
-var ignoreCache      = process.env.INSIGHT_IGNORE_CACHE || 0;
+var ignoreCache = process.env.INSIGHT_IGNORE_CACHE || 0;
 
 
 var bitcoindConf = {
-  protocol:  process.env.BITCOIND_PROTO || 'http',
+  protocol: process.env.BITCOIND_PROTO || 'http',
   user: process.env.BITCOIND_USER || 'user',
   pass: process.env.BITCOIND_PASS || 'pass',
   host: process.env.BITCOIND_HOST || '127.0.0.1',
@@ -79,7 +78,7 @@ var bitcoindConf = {
 
 /*jshint multistr: true */
 console.log(
-'\n\
+  '\n\
     ____           _       __    __     ___          _ \n\
    /  _/___  _____(_)___ _/ /_  / /_   /   |  ____  (_)\n\
    / // __ \\/ ___/ / __ `/ __ \\/ __/  / /\| \| / __ \\/ / \n\
@@ -105,24 +104,27 @@ console.log(
 \nChange setting by assigning the enviroment variables in the last column. Example:\n\
  $ INSIGHT_NETWORK="testnet" BITCOIND_HOST="123.123.123.123" ./insight.js\
 \n\n',
-version,
-network, home, safeConfirmations, ignoreCache?'yes':'no',
-bitcoindConf.user,
-bitcoindConf.pass?'Yes(hidden)':'No',
-bitcoindConf.protocol,
-bitcoindConf.host,
-bitcoindConf.port,
-bitcoindConf.p2pHost,
-bitcoindConf.p2pPort,
-dataDir+(network==='testnet'?'*':''),
-(network==='testnet'?'* (/testnet3 is added automatically)':'')
+  version,
+  network, home, safeConfirmations, ignoreCache ? 'yes' : 'no',
+  bitcoindConf.user,
+  bitcoindConf.pass ? 'Yes(hidden)' : 'No',
+  bitcoindConf.protocol,
+  bitcoindConf.host,
+  bitcoindConf.port,
+  bitcoindConf.p2pHost,
+  bitcoindConf.p2pPort,
+  dataDir + (network === 'testnet' ? '*' : ''), (network === 'testnet' ? '* (/testnet3 is added automatically)' : '')
 );
 
 
-if (! fs.existsSync(db)){
-
-  console.log('## ERROR ##\n\tDB Directory "%s" not found. \n\tCreate it, move your old DB there or set the INSIGHT_DB environment variable.\n\tNOTE: In older insight-api versions, db was stored at <insight-root>/db', db);
-  process.exit(-1);
+if (!fs.existsSync(db)) {
+  var err = fs.mkdirSync(db);
+  if (err) {
+    console.log(err);
+    console.log("## ERROR! Can't create insight directory! \n");
+    console.log('\tPlease create it manually: ', db);
+    process.exit(-1);
+  }
 }
 
 module.exports = {
@@ -132,7 +134,7 @@ module.exports = {
   apiPrefix: '/api',
   port: port,
   leveldb: db,
-  bitcoind: bitcoindConf, 
+  bitcoind: bitcoindConf,
   network: network,
   disableP2pSync: false,
   disableHistoricSync: false,
