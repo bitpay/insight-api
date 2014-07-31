@@ -82,6 +82,7 @@
     "grunt-mocha-test": "~0.8.1",
     "grunt-nodemon": "~0.2.0",
     "memdown": "^0.10.2",
+    "microtime": "^0.6.0",
     "should": "2.1.1"
   }
 }
