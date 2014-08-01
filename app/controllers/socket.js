@@ -63,7 +63,8 @@ module.exports.broadcastSyncInfo = function(historicSync) {
 module.exports.broadcastMessage = function(from, to, ts, message) {
   if (ios) {
     console.log('sending message '+to);
-    ios.sockets.in(to).emit(from, {
+    ios.sockets.in(to).emit('message', {
+      from: from,
       payload: message,
       ts: ts
     });

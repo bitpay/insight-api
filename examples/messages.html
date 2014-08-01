@@ -22,7 +22,7 @@
     form input {
       border: 0;
       padding: 10px;
-      width: 90%;
+      width: 40%;
       margin-right: .5%;
     }
     form button {
@@ -46,31 +46,66 @@
 </head>
 
 <body>
+  <h3 id="sin">Generating SIN...</h3>
   <ul id="messages"></ul>
   <form action="">
-    <input id="m" autocomplete="off" />
+    <input id="other" placeholder="other SIN" autocomplete="off" />
+    <input id="m" placeholder="Text message..." autocomplete="off" />
     <button>Send</button>
   </form>
   <script src="http://localhost:3001/socket.io/socket.io.js"></script>
   <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+  <script src="./bitcore-0.1.34.js"></script>
   <script>
-    var socket = io('http://localhost:3001');
-    $('form').submit(function()
+    $(document).ready(function()
     {
-      var payload = $('#m').val()
-      socket.emit('message',
+      // load dependencies 
+      var socket = io('http://localhost:3001');
+      var bitcore = require('bitcore');
+      var SIN = bitcore.SIN;
+      var util = bitcore.util;
+      var Key = bitcore.Key;
+
+      // show message
+      var show = function(msg) {
+        $('#messages').append($('<li>').text(msg.from+':' + JSON.stringify(msg.payload)));
+      };
+
+
+      // generate new identity
+      var pk = Key.generateSync();
+      var sin = SIN.fromPubKey(pk.public).toString('hex');
+      $('#sin').text('Your SIN: '+sin);
+
+      // send chat handler
+      $('form').submit(function()
       {
-        payload: payload,
-        from: 'SIN_A',
-        to: 'SIN_B'
+        var payload = $('#m').val()
+        if (payload.length === 0) {
+          return false;
+        }
+
+        var other = $('#other').val();
+        var otherSIN = new SIN(other);
+        var data = {
+          payload: payload,
+          from: sin,
+          to: other
+        }
+        socket.emit('message', data);
+        data.from = 'You';
+        show(data);
+
+        $('#m').val('');
+        return false;
       });
-      $('#m').val('');
-      return false;
-    });
-    socket.emit('subscribe', 'SIN_B');
-    socket.on('SIN_A', function(msg)
-    {
-      $('#messages').append($('<li>').text(msg.ts+':'+JSON.stringify(msg.payload)));
+
+      // receive chat handler
+      socket.emit('subscribe', sin);
+      socket.on('message', function(msg)
+      {
+        show(msg);
+      });
     });
   </script>
 </body>
