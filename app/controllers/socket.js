@@ -13,7 +13,7 @@ module.exports.init = function(io_ext) {
       socket.join(topic);
     });
     socket.on('message', function(m) {
-      mdb.addMessage(m.payload, m.from, m.to, function(err) {
+      mdb.addMessage(m, m.from, m.to, function(err) {
         if (err) throw err; // TODO: handle
       });
     });

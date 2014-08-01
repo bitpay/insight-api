@@ -1,0 +1,1 @@
+../node_modules/bitcore/browser/bundle.js
