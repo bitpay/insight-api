@@ -9,15 +9,16 @@ module.exports.init = function(io_ext) {
   ios = io_ext;
   ios.sockets.on('connection', function(socket) {
     socket.on('subscribe', function(topic) {
-      console.log('subscribe ' + topic);
       socket.join(topic);
     });
     socket.on('message', function(m) {
-      mdb.addMessage(m, m.from, m.to, function(err) {
+      mdb.addMessage(m, function(err) {
         if (err) throw err; // TODO: handle
       });
     });
   });
+
+  mdb.on('message', broadcastMessage);
 };
 
 module.exports.broadcastTx = function(tx) {
@@ -60,14 +61,9 @@ module.exports.broadcastSyncInfo = function(historicSync) {
     ios.sockets.in('sync').emit('status', historicSync);
 };
 
-module.exports.broadcastMessage = function(from, to, ts, message) {
+var broadcastMessage = module.exports.broadcastMessage = function(message) {
   if (ios) {
-    console.log('sending message '+to);
-    ios.sockets.in(to).emit('message', {
-      from: from,
-      payload: message,
-      ts: ts
-    });
+    ios.sockets.in(message.to).emit('message', message);
   }
 
 }
