@@ -33,7 +33,7 @@ module.exports.init = function(io_ext) {
             throw new Error('Couldn\'t get messages on sync request: ' + err);
           }
           for (var i = 0; i < messages.length; i++) {
-            broadcastMessage(messages[i]);
+            broadcastMessage(messages[i], socket);
           }
         });
       });
@@ -95,9 +95,10 @@ module.exports.broadcastSyncInfo = function(historicSync) {
     ios.sockets.in('sync').emit('status', historicSync);
 };
 
-var broadcastMessage = module.exports.broadcastMessage = function(message) {
+var broadcastMessage = module.exports.broadcastMessage = function(message, socket) {
   if (ios) {
-    ios.sockets.in(message.to).emit('message', message);
+    var s = socket || ios.sockets.in(message.to);
+    s.emit('message', message);
   }
 
 }
