@@ -88,6 +88,7 @@ INSIGHT_NETWORK [= 'livenet' | 'testnet']
 INSIGHT_DB            # Path where to store insight's internal DB. (defaults to $HOME/.insight)
 INSIGHT_SAFE_CONFIRMATIONS=6  # Nr. of confirmation needed to start caching transaction information   
 INSIGHT_IGNORE_CACHE  # True to ignore cache of spents in transaction, with more than INSIGHT_SAFE_CONFIRMATIONS confirmations. This is useful for tracking double spents for old transactions.
+ENABLE_MESSAGE_BROKER # if "true" will enable message broker module
 
 ```
 
