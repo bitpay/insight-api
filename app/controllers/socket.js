@@ -5,8 +5,10 @@ var ios = null; // io is already taken in express
 var util = require('bitcore').util;
 var mdb = require('../../lib/MessageDb').default();
 var microtime = require('microtime');
+var enableMessageBroker;
 
-module.exports.init = function(io_ext) {
+module.exports.init = function(io_ext, config) {
+  enableMessageBroker = config ? config.enableMessageBroker : false;
   ios = io_ext;
   if (ios) {
     // when a new socket connects
@@ -14,40 +16,43 @@ module.exports.init = function(io_ext) {
       // when it subscribes, make it join the according room
       socket.on('subscribe', function(topic) {
         if (socket.rooms.length === 1) {
-          console.log('subscribe to '+topic);
+          console.log('subscribe to ' + topic);
           socket.join(topic);
         }
       });
 
-      // when it requests sync, send him all pending messages
-      socket.on('sync', function(ts) {
-        var rooms = socket.rooms;
-        if (rooms.length !== 2) {
-          socket.emit('insight-error', 'Must subscribe with public key before syncing');
-          return;
-        }
-        var to = rooms[1];
-        var upper_ts = Math.round(microtime.now());
-        mdb.getMessages(to, ts, upper_ts, function(err, messages) {
-          if (err) {
-            throw new Error('Couldn\'t get messages on sync request: ' + err);
+      if (enableMessageBroker) {
+        // when it requests sync, send him all pending messages
+        socket.on('sync', function(ts) {
+          var rooms = socket.rooms;
+          if (rooms.length !== 2) {
+            socket.emit('insight-error', 'Must subscribe with public key before syncing');
+            return;
           }
-          for (var i = 0; i < messages.length; i++) {
-            broadcastMessage(messages[i], socket);
-          }
+          var to = rooms[1];
+          var upper_ts = Math.round(microtime.now());
+          mdb.getMessages(to, ts, upper_ts, function(err, messages) {
+            if (err) {
+              throw new Error('Couldn\'t get messages on sync request: ' + err);
+            }
+            for (var i = 0; i < messages.length; i++) {
+              broadcastMessage(messages[i], socket);
+            }
+          });
         });
-      });
 
-      // when it sends a message, add it to db
-      socket.on('message', function(m) {
-        mdb.addMessage(m, function(err) {
-          if (err) {
-            throw new Error('Couldn\'t add message to database: ' + err);
-          }
+        // when it sends a message, add it to db
+        socket.on('message', function(m) {
+          mdb.addMessage(m, function(err) {
+            if (err) {
+              throw new Error('Couldn\'t add message to database: ' + err);
+            }
+          });
         });
-      });
+      }
     });
-    mdb.on('message', broadcastMessage);
+    if (enableMessageBroker)
+      mdb.on('message', broadcastMessage);
   }
 };
 

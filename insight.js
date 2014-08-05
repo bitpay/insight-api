@@ -120,7 +120,7 @@ require('./config/routes')(expressApp);
 // socket.io
 var server = require('http').createServer(expressApp);
 var ios = require('socket.io')(server);
-require('./app/controllers/socket.js').init(ios);
+require('./app/controllers/socket.js').init(ios, config);
 
 //Start the app by listening on <port>
 server.listen(config.port, function() {

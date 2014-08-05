@@ -76,7 +76,7 @@ var bitcoindConf = {
   disableAgent: true
 };
 
-
+var enableMessageBroker = process.env.ENABLE_MESSAGE_BROKER === 'true';
 
 if (!fs.existsSync(db)) {
   var err = fs.mkdirSync(db);
@@ -89,6 +89,7 @@ if (!fs.existsSync(db)) {
 }
 
 module.exports = {
+  enableMessageBroker: enableMessageBroker,
   version: version,
   root: rootPath,
   publicPath: process.env.INSIGHT_PUBLIC_PATH || false,
