@@ -1,0 +1,122 @@
+<!doctype html>
+<html>
+
+<head>
+  <title>Socket.IO chat</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font: 13px Helvetica, Arial;
+    }
+    form {
+      background: #000;
+      padding: 3px;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+    }
+    form input {
+      border: 0;
+      padding: 10px;
+      width: 40%;
+      margin-right: .5%;
+    }
+    form button {
+      width: 9%;
+      background: rgb(130, 224, 255);
+      border: none;
+      padding: 10px;
+    }
+    #messages {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+    }
+    #messages li {
+      padding: 5px 10px;
+    }
+    #messages li:nth-child(odd) {
+      background: #eee;
+    }
+  </style>
+</head>
+
+<body>
+  <h3 id="pubkey">Generating public key...</h3>
+  <ul id="messages"></ul>
+  <form action="">
+    <input id="other" placeholder="other user's key" autocomplete="off" />
+    <input id="m" placeholder="Text message..." autocomplete="off" />
+    <button>Send</button>
+  </form>
+  <script src="http://localhost:3001/socket.io/socket.io.js"></script>
+  <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+  <script src="./bitcore.js"></script>
+  <script>
+    var fixedPK = prompt('Enter your private key or leave empty to generate one', 'a52e54d90c1ff4846e6f164e56405094cc96ecc0ea7732831e24418204c8ab55');
+
+    $(document).ready(function()
+    {
+      // load dependencies 
+      var socket = io('http://localhost:3001');
+      var bitcore = require('bitcore');
+      var util = bitcore.util;
+      var Key = bitcore.Key;
+      var AuthMessage = bitcore.AuthMessage;
+      var Buffer = bitcore.Buffer;
+
+      // generate new identity
+      var pk = Key.generateSync();
+      if (fixedPK) {
+        pk.private = new Buffer(fixedPK, 'hex');
+        pk.regenerateSync();
+      }
+      console.log(pk.private.toString('hex'));
+      var pubkey = pk.public.toString('hex');
+      $('#pubkey').text('Your key: '+pubkey);
+
+      // show message
+      var show = function(from, text) {
+        $('#messages').append($('<li>').text(from+': ' + text));
+      };
+
+      // send chat handler
+      $('form').submit(function(e)
+      {
+        e.preventDefault();
+        var text = $('#m').val()
+        if (text.length === 0) {
+          return;
+        }
+
+        var otherPubkey = $('#other').val();
+        var data = AuthMessage.encode(otherPubkey, pk, text);
+        socket.emit('message', data);
+        show('You', text);
+
+        $('#m').val('');
+        return;
+      });
+
+      // receive chat handler
+      socket.emit('subscribe', pubkey);
+      var ts = undefined; // timestamp to sync, undefined syncs all
+      socket.emit('sync', ts);
+      socket.on('message', function(msg)
+      {
+        try {
+          var data = AuthMessage.decode(pk, msg);
+        } catch(e) {
+          alert(e);
+        }
+        show(msg.pubkey, data.payload);
+      });
+    });
+  </script>
+</body>
+
+</html>
