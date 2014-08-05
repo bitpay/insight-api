@@ -104,7 +104,8 @@
 
       // receive chat handler
       socket.emit('subscribe', pubkey);
-      socket.emit('sync', pubkey);
+      var ts = undefined; // timestamp to sync, undefined syncs all
+      socket.emit('sync', ts);
       socket.on('message', function(msg)
       {
         try {

@@ -61,8 +61,10 @@ describe('MessageDb', function() {
       });
     });
   });
-  it('should be able to add many messages and read them', function(done) {
+  var sharedMDB;
+  it('should be able to add many messages and read some', function(done) {
     var mdb = new MessageDb(opts);
+    sharedMDB = mdb;
     var lower_ts = microtime.now();
     mdb.addMessage(message, function(err) {
       expect(err).to.not.exist;
@@ -88,6 +90,22 @@ describe('MessageDb', function() {
           });
         }, 10);
       });
+    });
+  });
+  it('should be able to add many messages and read all', function(done) {
+    var mdb = sharedMDB;
+    mdb.getMessages(to, null, null, function(err, messages) {
+      expect(err).to.not.exist;
+      messages.length.should.equal(4);
+      var m0 = AuthMessage.decode(tpk, messages[0]).payload;
+      JSON.stringify(m0).should.equal('{"a":1,"b":2}');
+      var m1 = AuthMessage.decode(tpk, messages[1]).payload;
+      JSON.stringify(m1).should.equal('{"a":1,"b":2}');
+      var m2 = AuthMessage.decode(tpk, messages[2]).payload;
+      JSON.stringify(m2).should.equal('{}');
+      var m3 = AuthMessage.decode(tpk, messages[3]).payload;
+      JSON.stringify(m3).should.equal('["a","b"]');
+      done();
     });
   });
   it('should be able to close instance', function() {
