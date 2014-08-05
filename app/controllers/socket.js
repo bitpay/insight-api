@@ -7,40 +7,63 @@ var mdb = require('../../lib/MessageDb').default();
 
 module.exports.init = function(io_ext) {
   ios = io_ext;
-  ios.sockets.on('connection', function(socket) {
-    socket.on('subscribe', function(topic) {
-      socket.join(topic);
-    });
-    socket.on('message', function(m) {
-      mdb.addMessage(m, function(err) {
-        if (err) throw err; // TODO: handle
+  if (ios) {
+    // when a new socket connects
+    ios.sockets.on('connection', function(socket) {
+      // when it subscribes, make it join the according room
+      socket.on('subscribe', function(topic) {
+        socket.join(topic);
+      });
+
+      // when it requests sync, send him all pending messages
+      socket.on('sync', function(ts) {
+        mdb.getMessages(to, lower_ts, upper_ts, function(err, messages) {
+          if (err) {
+            throw new Error('Couldn\'t get messages on sync request: ' + err);
+          }
+          for (var i = 0; i < message.length; i++) {
+            broadcastMessage(messages[i]);
+          }
+        });
+      });
+
+      // when it sends a message, add it to db
+      socket.on('message', function(m) {
+        mdb.addMessage(m, function(err) {
+          if (err) {
+            throw new Error('Couldn\'t add message to database: ' + err);
+          }
+        });
       });
     });
+    mdb.on('message', broadcastMessage);
+  }
+};
+
+var simpleTx = function(tx) {
+  return {
+    txid: tx
+  };
+};
+
+var fullTx = function(tx) {
+  var t = {
+    txid: tx.txid,
+    size: tx.size,
+  };
+  // Outputs
+  var valueOut = 0;
+  tx.vout.forEach(function(o) {
+    valueOut += o.valueSat;
   });
 
-  mdb.on('message', broadcastMessage);
+  t.valueOut = (valueOut.toFixed(8) / util.COIN);
+  return t;
 };
 
 module.exports.broadcastTx = function(tx) {
   if (ios) {
-    var t;
-    if (typeof tx === 'string') {
-      t = {
-        txid: tx
-      };
-    } else {
-      t = {
-        txid: tx.txid,
-        size: tx.size,
-      };
-      // Outputs
-      var valueOut = 0;
-      tx.vout.forEach(function(o) {
-        valueOut += o.valueSat;
-      });
-
-      t.valueOut = (valueOut.toFixed(8) / util.COIN);
-    }
+    var t = (typeof tx === 'string') ? simpleTx(tx) : fullTx(tx);
     ios.sockets.in('inv').emit('tx', t);
   }
 };

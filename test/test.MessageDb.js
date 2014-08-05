@@ -49,7 +49,7 @@ describe('MessageDb', function() {
     mdb.addMessage(message, function(err) {
       expect(err).to.not.exist;
       var upper_ts = microtime.now();
-      mdb.getMessages(from, to, lower_ts, upper_ts, function(err, messages) {
+      mdb.getMessages(to, lower_ts, upper_ts, function(err, messages) {
         expect(err).to.not.exist;
         messages.length.should.equal(1);
         messages[0].ts.should.be.below(upper_ts);
@@ -72,7 +72,7 @@ describe('MessageDb', function() {
         setTimeout(function() {
           mdb.addMessage(message3, function(err) {
             expect(err).to.not.exist;
-            mdb.getMessages(from, to, lower_ts, upper_ts, function(err, messages) {
+            mdb.getMessages(to, lower_ts, upper_ts, function(err, messages) {
               expect(err).to.not.exist;
               messages.length.should.equal(2);
               messages[0].ts.should.be.below(upper_ts);

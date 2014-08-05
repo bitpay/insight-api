@@ -57,6 +57,8 @@
   <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
   <script src="./bitcore.js"></script>
   <script>
+    var fixedPK = prompt('Enter your private key or leave empty to generate one', 'a52e54d90c1ff4846e6f164e56405094cc96ecc0ea7732831e24418204c8ab55');
+
     $(document).ready(function()
     {
       // load dependencies 
@@ -69,6 +71,11 @@
 
       // generate new identity
       var pk = Key.generateSync();
+      if (fixedPK) {
+        pk.private = new Buffer(fixedPK, 'hex');
+        pk.regenerateSync();
+      }
+      console.log(pk.private.toString('hex'));
       var pubkey = pk.public.toString('hex');
       $('#pubkey').text('Your key: '+pubkey);
 
@@ -97,6 +104,7 @@
 
       // receive chat handler
       socket.emit('subscribe', pubkey);
+      socket.emit('sync', pubkey);
       socket.on('message', function(msg)
       {
         try {
