@@ -13,7 +13,7 @@ module.exports.init = function(io_ext, config) {
   if (ios) {
     // when a new socket connects
     ios.sockets.on('connection', function(socket) {
-      console.log("New connection from " + socket.request.connection.remoteAddress + ":" + socket.request.connection.remotePort);
+      console.log('New connection from ' + socket.request.connection.remotePort);
       // when it subscribes, make it join the according room
       socket.on('subscribe', function(topic) {
         if (socket.rooms.length === 1) {
@@ -25,6 +25,7 @@ module.exports.init = function(io_ext, config) {
       if (enableMessageBroker) {
         // when it requests sync, send him all pending messages
         socket.on('sync', function(ts) {
+          console.log('Sync requested by ' + socket.request.connection.remotePort);
           var rooms = socket.rooms;
           if (rooms.length !== 2) {
             socket.emit('insight-error', 'Must subscribe with public key before syncing');
@@ -36,6 +37,7 @@ module.exports.init = function(io_ext, config) {
             if (err) {
               throw new Error('Couldn\'t get messages on sync request: ' + err);
             }
+            console.log('\tFound '+messages.length+' message'+(messages.length !== 1?'s':''));
             for (var i = 0; i < messages.length; i++) {
               broadcastMessage(messages[i], socket);
             }
@@ -44,6 +46,7 @@ module.exports.init = function(io_ext, config) {
 
         // when it sends a message, add it to db
         socket.on('message', function(m) {
+          console.log('Message sent from ' + m.pubkey +' to '+m.to);
           mdb.addMessage(m, function(err) {
             if (err) {
               throw new Error('Couldn\'t add message to database: ' + err);
