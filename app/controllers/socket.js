@@ -13,6 +13,7 @@ module.exports.init = function(io_ext, config) {
   if (ios) {
     // when a new socket connects
     ios.sockets.on('connection', function(socket) {
+      console.log("New connection from " + socket.request.connection.remoteAddress + ":" + socket.request.connection.remotePort);
       // when it subscribes, make it join the according room
       socket.on('subscribe', function(topic) {
         if (socket.rooms.length === 1) {
