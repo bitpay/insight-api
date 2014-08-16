@@ -123,7 +123,9 @@ If bitcoind is shutdown, *insight* needs to be stopped and restarted once bitcoi
 ### DB storage requirement
 
 To store the blockchain and address related information, *insight* uses LevelDB. Two DBs are created: txs and blocks. By default these are stored on
-  ```~/.insight/```
+
+  ``~/.insight/``
+
 Please note that previous version's of Insight-API store that on `<insight's root>/db`
 
 this can be changed on config/config.js. As of June 2014, storing the livenet blockchain takes ~35GB of disk space (2GB for the testnet).
