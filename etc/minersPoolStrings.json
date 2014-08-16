@@ -21,6 +21,13 @@
          "Mined By ASICMiner"
       ]
    },
+	{
+      "poolName":"AntMiner",
+      "url":"https://bitmaintech.com/",
+      "searchStrings":[
+         "AntPool"
+      ]
+   },
    {
       "poolName":"BitMinter",
       "url":"https://bitminter.com/",
@@ -44,6 +51,13 @@
       ]
    },
    {
+      "poolName":"bcpool.io",
+      "url":"https://bcpool.io/",
+      "searchStrings":[
+         "bcpool"
+      ]
+   },
+   {
       "poolName":"Discus Fish",
       "url":"http://f2pool.com/",
       "searchStrings":[
@@ -57,6 +71,13 @@
       "url":"http://f2pool.com/",
       "searchStrings":[
          "For Pierce and Paul"
+      ]
+   },
+   {
+      "poolName":"Cointerra",
+      "url":"http://cointerra.com/",
+      "searchStrings":[
+         "cointerra"
       ]
    },
    {
@@ -102,6 +123,13 @@
       "url":"http://megabigpower.com/",
       "searchStrings":[
          "megabigpower.com"
+      ]
+   },
+   {
+      "poolName":"MultiCoin",
+      "url":"https://multicoin.co/",
+      "searchStrings":[
+         "MultiCoin.co"
       ]
    },
    {
