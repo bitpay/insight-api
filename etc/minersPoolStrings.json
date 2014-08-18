@@ -29,6 +29,13 @@
       ]
    },
    {
+      "poolName":"agentD",
+      "url":"http://",
+      "searchStrings":[
+         "agentD"
+      ]
+   },
+   {
       "poolName":"Bitfury",
       "url":"http://bitfury.org/",
       "searchStrings":[
@@ -123,6 +130,13 @@
       "url":"http://hhtt.1209k.com/",
       "searchStrings":[
          "HHTT"
+      ]
+   },
+   {
+      "poolName":"KNCminer",
+      "url":"https://www.kncminer.com/",
+      "searchStrings":[
+         "KnCMiner"
       ]
    },
    {
