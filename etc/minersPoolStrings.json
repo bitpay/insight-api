@@ -21,11 +21,18 @@
          "Mined By ASICMiner"
       ]
    },
-	{
+   {
       "poolName":"AntMiner",
       "url":"https://bitmaintech.com/",
       "searchStrings":[
          "AntPool"
+      ]
+   },
+   {
+      "poolName":"Bitfury",
+      "url":"http://bitfury.org/",
+      "searchStrings":[
+         "2av0id51pct"
       ]
    },
    {
