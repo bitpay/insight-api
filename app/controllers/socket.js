@@ -13,7 +13,7 @@ module.exports.init = function(io_ext, config) {
   if (ios) {
     // when a new socket connects
     ios.sockets.on('connection', function(socket) {
-      console.log('New connection from ' + socket.request.connection.remotePort);
+      console.log('New connection from ' + socket.id);
       // when it subscribes, make it join the according room
       socket.on('subscribe', function(topic) {
         if (socket.rooms.length === 1) {
@@ -25,7 +25,8 @@ module.exports.init = function(io_ext, config) {
       if (enableMessageBroker) {
         // when it requests sync, send him all pending messages
         socket.on('sync', function(ts) {
-          console.log('Sync requested by ' + socket.request.connection.remotePort);
+          console.log('Sync requested by ' + socket.id);
+          console.log('    from timestamp '+ts);
           var rooms = socket.rooms;
           if (rooms.length !== 2) {
             socket.emit('insight-error', 'Must subscribe with public key before syncing');
@@ -33,11 +34,12 @@ module.exports.init = function(io_ext, config) {
           }
           var to = rooms[1];
           var upper_ts = Math.round(microtime.now());
+          console.log('    to timestamp '+upper_ts);
           mdb.getMessages(to, ts, upper_ts, function(err, messages) {
             if (err) {
               throw new Error('Couldn\'t get messages on sync request: ' + err);
             }
-            console.log('\tFound '+messages.length+' message'+(messages.length !== 1?'s':''));
+            console.log('\tFound ' + messages.length + ' message' + (messages.length !== 1 ? 's' : ''));
             for (var i = 0; i < messages.length; i++) {
               broadcastMessage(messages[i], socket);
             }
@@ -46,12 +48,18 @@ module.exports.init = function(io_ext, config) {
 
         // when it sends a message, add it to db
         socket.on('message', function(m) {
-          console.log('Message sent from ' + m.pubkey +' to '+m.to);
+          console.log('Message sent from ' + m.pubkey + ' to ' + m.to);
           mdb.addMessage(m, function(err) {
             if (err) {
               throw new Error('Couldn\'t add message to database: ' + err);
             }
           });
+        });
+
+
+        // disconnect handler
+        socket.on('disconnect', function() {
+          console.log('disconnected ' + socket.id);
         });
       }
     });
@@ -107,6 +115,7 @@ module.exports.broadcastSyncInfo = function(historicSync) {
 var broadcastMessage = module.exports.broadcastMessage = function(message, socket) {
   if (ios) {
     var s = socket || ios.sockets.in(message.to);
+    console.log('sending message to ' + message.to);
     s.emit('message', message);
   }
 
