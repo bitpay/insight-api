@@ -111,9 +111,6 @@ if (!config.disableHistoricSync) {
 if (peerSync) peerSync.allowReorgs = true;
 
 
-// express settings
-require('./config/express')(expressApp, historicSync, peerSync);
-
 // routes
 require('./config/routes')(expressApp);
 
@@ -131,9 +128,14 @@ if (config.enableRatelimiter) {
   require('./plugins/ratelimiter').init(expressApp, config.ratelimiter);
 }
 
+
+// express settings
+require('./config/express')(expressApp, historicSync, peerSync);
+
+
 //Start the app by listening on <port>
 server.listen(config.port, function() {
-  console.log('insight server listening on port %d in %s mode', server.address().port, process.env.NODE_ENV);
+  logger.info('insight server listening on port %d in %s mode', server.address().port, process.env.NODE_ENV);
 });
 
 //expose app
