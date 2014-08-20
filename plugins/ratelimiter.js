@@ -2,6 +2,7 @@ var logger = require('../lib/logger').logger;
 var preconditions = require('preconditions').singleton();
 
 var limiter = require('connect-ratelimit');
+var ONE_HOUR = 60 * 60 * 1000;
 
 module.exports.init = function(app, config) {
   preconditions.checkArgument(app);
@@ -9,24 +10,26 @@ module.exports.init = function(app, config) {
 
   config = config || {};
   config.whitelistRPH = config.whitelistRPH || 5000;
-  config.normalRPH = config.normalRPH || 1;
+  config.normalRPH = config.normalRPH || 2;
+  config.blacklistRPH = config.blacklistRPH || 0;
+  console.log(config);
 
-  console.log('asdasdasd');
   app.use(limiter({
     whitelist: [],
-    blacklist: ['localhost'], // 'example.com'
+    end: true,
+    blacklist: [], // 'example.com'
     categories: {
       whitelist: {
         totalRequests: config.whitelistRPH,
-        every: 60 * 60 * 1000
+        every: ONE_HOUR
       },
       blacklist: {
-        totalRequests: 0,
-        every: 0
+        totalRequests: config.blacklistRPH,
+        every: ONE_HOUR
       },
       normal: {
         totalRequests: config.normalRPH,
-        every: 60 * 60 * 1000
+        every: ONE_HOUR
       }
     }
   }));

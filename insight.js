@@ -9,7 +9,6 @@ var PeerSync = require('./lib/PeerSync');
 var HistoricSync = require('./lib/HistoricSync');
 
 var express = require('express');
-var connect = require('connect');
 var program = require('commander');
 
 var config = require('./config/config');
@@ -111,8 +110,6 @@ if (!config.disableHistoricSync) {
 if (peerSync) peerSync.allowReorgs = true;
 
 
-// routes
-require('./config/routes')(expressApp);
 
 // socket.io
 var server = require('http').createServer(expressApp);
@@ -130,6 +127,7 @@ if (config.enableRatelimiter) {
 
 
 // express settings
+require('./config/routes')(expressApp);
 require('./config/express')(expressApp, historicSync, peerSync);
 
 

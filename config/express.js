@@ -28,7 +28,6 @@ module.exports = function(app, historicSync, peerSync) {
 
   //Enable jsonp
   app.enable('jsonp callback');
-
   app.use(config.apiPrefix + '/sync', setHistoric);
   app.use(config.apiPrefix + '/peer', setPeer);
   app.use(express.logger('dev'));
