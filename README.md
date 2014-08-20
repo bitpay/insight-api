@@ -166,6 +166,14 @@ The end-points are:
   /api/addr/[:addr][?noTxList=1&noCache=1]
   /api/addr/mmvP3mTe53qxHdPqXEvdu8WdC7GfQ2vmx5?noTxList=1
 ```
+### Address Properties
+```
+  /api/addr/[:addr]/balance
+  /api/addr/[:addr]/totalReceived
+  /api/addr/[:addr]/totalSent
+  /api/addr/[:addr]/unconfirmedBalance
+```
+The response contains the value in Satoshis.
 ### Unspent Outputs
 ```
   /api/addr/[:addr]/utxo[?noCache=1]
