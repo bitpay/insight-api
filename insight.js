@@ -4,15 +4,13 @@
 //Set the node enviornment variable if not set before
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
-/**
- * Module dependencies.
- */
-var express = require('express'),
-  fs = require('fs'),
-  PeerSync = require('./lib/PeerSync'),
-  HistoricSync = require('./lib/HistoricSync');
+var fs = require('fs');
+var PeerSync = require('./lib/PeerSync');
+var HistoricSync = require('./lib/HistoricSync');
 
-//Initializing system variables
+var express = require('express');
+var connect = require('connect');
+
 var config = require('./config/config');
 
 // text title
@@ -54,14 +52,12 @@ console.log(
   config.bitcoind.dataDir + (config.network === 'testnet' ? '*' : ''), (config.network === 'testnet' ? '* (/testnet3 is added automatically)' : '')
 );
 
-/**
- * express app
- */
+
+
+// create express app
 var expressApp = express();
 
-/**
- * Bootstrap models
- */
+// Bootstrap models
 var models_path = __dirname + '/app/models';
 var walk = function(path) {
   fs.readdirSync(path).forEach(function(file) {
@@ -125,6 +121,10 @@ require('./app/controllers/socket.js').init(ios);
 // plugins
 if (config.enableMailbox) {
   require('./plugins/mailbox').init(ios, config.mailbox);
+}
+
+if (config.enableRatelimiter) {
+  require('./plugins/ratelimiter').init(expressApp, config.ratelimiter);
 }
 
 //Start the app by listening on <port>

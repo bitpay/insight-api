@@ -58,6 +58,8 @@
     "bufferput": "git://github.com/bitpay/node-bufferput.git",
     "buffertools": "*",
     "commander": "*",
+    "connect": "^2.25.7",
+    "connect-ratelimit": "0.0.6",
     "express": "~3.4.7",
     "glob": "*",
     "leveldown": "*",

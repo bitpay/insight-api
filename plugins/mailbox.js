@@ -5,6 +5,7 @@ var preconditions = require('preconditions').singleton();
 
 var io;
 module.exports.init = function(ext_io, config) {
+  logger.info('Using mailbox plugin');
   preconditions.checkArgument(ext_io);
   io = ext_io;
   io.sockets.on('connection', function(socket) {

@@ -77,6 +77,7 @@ var bitcoindConf = {
 };
 
 var enableMailbox = process.env.ENABLE_MAILBOX === 'true';
+var enableRatelimiter = process.env.ENABLE_RATELIMITER === 'true';
 var loggerLevel = process.env.LOGGER_LEVEL || 'info';
 
 if (!fs.existsSync(db)) {
@@ -91,6 +92,7 @@ if (!fs.existsSync(db)) {
 
 module.exports = {
   enableMailbox: enableMailbox,
+  enableRatelimiter: enableRatelimiter,
   loggerLevel: loggerLevel,
   version: version,
   root: rootPath,
