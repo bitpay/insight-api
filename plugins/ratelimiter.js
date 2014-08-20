@@ -10,9 +10,8 @@ module.exports.init = function(app, config) {
 
   config = config || {};
   config.whitelistRPH = config.whitelistRPH || 5000;
-  config.normalRPH = config.normalRPH || 2;
+  config.normalRPH = config.normalRPH || 500;
   config.blacklistRPH = config.blacklistRPH || 0;
-  console.log(config);
 
   app.use(limiter({
     whitelist: [],

@@ -10,11 +10,16 @@ module.exports.init = function(io_ext) {
   if (ios) {
     // when a new socket connects
     ios.sockets.on('connection', function(socket) {
-      logger.debug('New connection from ' + socket.id);
+      logger.verbose('New connection from ' + socket.id);
       // when it subscribes, make it join the according room
       socket.on('subscribe', function(topic) {
         logger.debug('subscribe to ' + topic);
         socket.join(topic);
+      });
+
+      // disconnect handler
+      socket.on('disconnect', function() {
+        logger.verbose('disconnected ' + socket.id);
       });
 
     });
@@ -65,4 +70,3 @@ module.exports.broadcastSyncInfo = function(historicSync) {
   if (ios)
     ios.sockets.in('sync').emit('status', historicSync);
 };
-

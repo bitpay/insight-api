@@ -11,7 +11,7 @@ module.exports.init = function(ext_io, config) {
   io.sockets.on('connection', function(socket) {
     // when it requests sync, send him all pending messages
     socket.on('sync', function(ts) {
-      logger.debug('Sync requested by ' + socket.id);
+      logger.verbose('Sync requested by ' + socket.id);
       logger.debug('    from timestamp ' + ts);
       var rooms = socket.rooms;
       if (rooms.length !== 2) {
@@ -25,7 +25,7 @@ module.exports.init = function(ext_io, config) {
         if (err) {
           throw new Error('Couldn\'t get messages on sync request: ' + err);
         }
-        logger.debug('\tFound ' + messages.length + ' message' + (messages.length !== 1 ? 's' : ''));
+        logger.verbose('\tFound ' + messages.length + ' message' + (messages.length !== 1 ? 's' : ''));
         for (var i = 0; i < messages.length; i++) {
           broadcastMessage(messages[i], socket);
         }
@@ -42,10 +42,6 @@ module.exports.init = function(ext_io, config) {
       });
     });
 
-    // disconnect handler
-    socket.on('disconnect', function() {
-      logger.debug('disconnected ' + socket.id);
-    });
   });
 
   mdb.on('message', broadcastMessage);
