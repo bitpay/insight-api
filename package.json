@@ -57,7 +57,7 @@
     "bitcore": "git://github.com/bitpay/bitcore.git#aa41c70cff2583d810664c073a324376c39c8b36",
     "bufferput": "git://github.com/bitpay/node-bufferput.git",
     "buffertools": "*",
-    "commander": "*",
+    "commander": "^2.3.0",
     "connect": "^2.25.7",
     "connect-ratelimit": "0.0.6",
     "express": "~3.4.7",

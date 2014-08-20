@@ -10,11 +10,14 @@ var HistoricSync = require('./lib/HistoricSync');
 
 var express = require('express');
 var connect = require('connect');
+var program = require('commander');
 
 var config = require('./config/config');
+var logger = require('./lib/logger').logger;
+program
+  .version(config.version);
 
 // text title
-/*jshint multistr: true */
 console.log(
   '\n\
     ____           _       __    __     ___          _ \n\
@@ -23,8 +26,9 @@ console.log(
  _/ // / / (__  ) / /_/ / / / / /_   / ___ |/ /_/ / /  \n\
 /___/_/ /_/____/_/\\__, /_/ /_/\\__/  /_/  |_/ .___/_/   \n\
                  /____/                   /_/           \n\
-\n\t\t\t\t\t\tv%s\n\
-# Configuration:\n\
+\n\t\t\t\t\t\tv%s\n', config.version);
+program.on('--help', function() {
+  logger.info('\n# Configuration:\n\
 \tINSIGHT_NETWORK (Network): %s\n\
 \tINSIGHT_DB (Database Path):  %s\n\
 \tINSIGHT_SAFE_CONFIRMATIONS (Safe Confirmations):  %s\n\
@@ -41,18 +45,18 @@ console.log(
 \nChange setting by assigning the enviroment variables above. Example:\n\
  $ INSIGHT_NETWORK="testnet" BITCOIND_HOST="123.123.123.123" ./insight.js\
 \n\n',
-  config.version,
-  config.network, config.leveldb, config.safeConfirmations, config.ignoreCache ? 'yes' : 'no',
-  config.bitcoind.user,
-  config.bitcoind.pass ? 'Yes(hidden)' : 'No',
-  config.bitcoind.protocol,
-  config.bitcoind.host,
-  config.bitcoind.port,
-  config.bitcoind.p2pPort,
-  config.bitcoind.dataDir + (config.network === 'testnet' ? '*' : ''), (config.network === 'testnet' ? '* (/testnet3 is added automatically)' : '')
-);
+    config.network, config.leveldb, config.safeConfirmations, config.ignoreCache ? 'yes' : 'no',
+    config.bitcoind.user,
+    config.bitcoind.pass ? 'Yes(hidden)' : 'No',
+    config.bitcoind.protocol,
+    config.bitcoind.host,
+    config.bitcoind.port,
+    config.bitcoind.p2pPort,
+    config.bitcoind.dataDir + (config.network === 'testnet' ? '*' : ''), (config.network === 'testnet' ? '* (/testnet3 is added automatically)' : '')
+  );
+});
 
-
+program.parse(process.argv);
 
 // create express app
 var expressApp = express();
