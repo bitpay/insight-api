@@ -61,6 +61,7 @@ dataDir += network === 'testnet' ? 'testnet3' : '';
 
 var safeConfirmations = process.env.INSIGHT_SAFE_CONFIRMATIONS || 6;
 var ignoreCache = process.env.INSIGHT_IGNORE_CACHE || 0;
+var verbose = process.env.VERBOSE === 'true';
 
 
 var bitcoindConf = {
@@ -76,7 +77,7 @@ var bitcoindConf = {
   disableAgent: true
 };
 
-var enableMessageBroker = process.env.ENABLE_MESSAGE_BROKER === 'true';
+var enableMailbox = process.env.ENABLE_MAILBOX === 'true';
 
 if (!fs.existsSync(db)) {
   var err = fs.mkdirSync(db);
@@ -89,7 +90,8 @@ if (!fs.existsSync(db)) {
 }
 
 module.exports = {
-  enableMessageBroker: enableMessageBroker,
+  enableMailbox: enableMailbox,
+  verbose: verbose,
   version: version,
   root: rootPath,
   publicPath: process.env.INSIGHT_PUBLIC_PATH || false,
