@@ -77,6 +77,7 @@ var bitcoindConf = {
 };
 
 var enableMailbox = process.env.ENABLE_MAILBOX === 'true';
+var loggerLevel = process.env.LOGGER_LEVEL || 'info';
 
 if (!fs.existsSync(db)) {
   var err = fs.mkdirSync(db);
@@ -90,6 +91,7 @@ if (!fs.existsSync(db)) {
 
 module.exports = {
   enableMailbox: enableMailbox,
+  loggerLevel: loggerLevel,
   version: version,
   root: rootPath,
   publicPath: process.env.INSIGHT_PUBLIC_PATH || false,

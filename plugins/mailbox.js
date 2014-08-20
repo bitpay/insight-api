@@ -9,7 +9,6 @@ module.exports.init = function(ext_io, config) {
   io = ext_io;
   io.sockets.on('connection', function(socket) {
     // when it requests sync, send him all pending messages
-    // when it requests sync, send him all pending messages
     socket.on('sync', function(ts) {
       logger.debug('Sync requested by ' + socket.id);
       logger.debug('    from timestamp ' + ts);
