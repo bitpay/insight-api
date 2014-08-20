@@ -117,13 +117,14 @@ var ios = require('socket.io')(server, config);
 require('./app/controllers/socket.js').init(ios);
 
 // plugins
+if (config.enableRatelimiter) {
+  require('./plugins/ratelimiter').init(expressApp, config.ratelimiter);
+}
+
 if (config.enableMailbox) {
   require('./plugins/mailbox').init(ios, config.mailbox);
 }
 
-if (config.enableRatelimiter) {
-  require('./plugins/ratelimiter').init(expressApp, config.ratelimiter);
-}
 
 
 // express settings
