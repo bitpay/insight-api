@@ -61,7 +61,6 @@ dataDir += network === 'testnet' ? 'testnet3' : '';
 
 var safeConfirmations = process.env.INSIGHT_SAFE_CONFIRMATIONS || 6;
 var ignoreCache = process.env.INSIGHT_IGNORE_CACHE || 0;
-var verbose = process.env.VERBOSE === 'true';
 
 
 var bitcoindConf = {
@@ -91,7 +90,6 @@ if (!fs.existsSync(db)) {
 
 module.exports = {
   enableMailbox: enableMailbox,
-  verbose: verbose,
   version: version,
   root: rootPath,
   publicPath: process.env.INSIGHT_PUBLIC_PATH || false,

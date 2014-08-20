@@ -3,24 +3,17 @@
 // server-side socket behaviour
 var ios = null; // io is already taken in express
 var util = require('bitcore').util;
+var logger = require('../../lib/logger');
 
-var verbose = false;
-var log = function() {
-  if (verbose) {
-    console.log(arguments);
-  }
-}
-
-module.exports.init = function(io_ext, config) {
+module.exports.init = function(io_ext) {
   ios = io_ext;
-  verbose = config.verbose;
   if (ios) {
     // when a new socket connects
     ios.sockets.on('connection', function(socket) {
-      log('New connection from ' + socket.id);
+      logger.info('New connection from ' + socket.id);
       // when it subscribes, make it join the according room
       socket.on('subscribe', function(topic) {
-        log('subscribe to ' + topic);
+        logger.info('subscribe to ' + topic);
         socket.join(topic);
       });
 
@@ -76,7 +69,7 @@ module.exports.broadcastSyncInfo = function(historicSync) {
 var broadcastMessage = module.exports.broadcastMessage = function(message, socket) {
   if (ios) {
     var s = socket || ios.sockets.in(message.to);
-    log('sending message to ' + message.to);
+    logger.info('sending message to ' + message.to);
     s.emit('message', message);
   }
 
