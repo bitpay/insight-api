@@ -6,7 +6,7 @@ and websocket API. Insight API runs in NodeJS and uses LevelDB for storage.
 This is a backend-only service. If you're looking for the web frontend application,
 take a look at https://github.com/bitpay/insight.
 
-*Insight API* allows to develop bitcoin related applications such as wallets that 
+*Insight API* allows to develop bitcoin-related applications (such as wallets) that 
 require certain information from the blockchain that bitcoind does not provide.
 
 A blockchain explorer front-end have been developed to top of *Insight API*, it can
