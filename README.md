@@ -281,7 +281,7 @@ POST response:
   /api/peer
 ```
 
-### Status network
+### Status of the bitcoin network
 ```
   /api/status?q=xxx
 ```
