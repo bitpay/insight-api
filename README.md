@@ -18,7 +18,7 @@ be downloaded at [Github Insight Repository](https://github.com/bitpay/insight).
 * **bitcoind** - Download and Install [Bitcoin](http://bitcoin.org/en/download)
 
 *insight API* needs a *trusted* bitcoind node to run. *insight API* will connect to the node
-thru the RPC API, Peer-to-peer protocol and will even read its raw .dat files for syncing.
+through the RPC API, Peer-to-peer protocol and will even read its raw .dat files for syncing.
 
 Configure bitcoind to listen to RPC calls and set `txindex` to true.
 The easiest way to do this is by copying `./etc/bitcoind/bitcoin.conf` to your
