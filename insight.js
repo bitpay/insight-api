@@ -64,14 +64,15 @@ var expressApp = express();
 
 
 // setup http/https base server
-var protocol = config.enableHTTPS ? https : http;
-var serverOpts = {};
+var server;
 if (config.enableHTTPS) {
+  var serverOpts = {};
   serverOpts.key = fs.readFileSync('./etc/test-key.pem');
   serverOpts.cert = fs.readFileSync('./etc/test-cert.pem');
+  server = https.createServer(serverOpts, expressApp);
+} else {
+  server = http.createServer(expressApp);
 }
-var server = protocol.createServer(serverOpts, expressApp);
-console.log(config.enableHTTPS);
 
 // Bootstrap models
 var models_path = __dirname + '/app/models';
