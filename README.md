@@ -1,7 +1,7 @@
 # *insight API*
 
 *insight API* is an open-source bitcoin blockchain REST
-and websocket API. Insight API runs in NodeJS and use LevelDB for storage. 
+and websocket API. Insight API runs in NodeJS and uses LevelDB for storage. 
 
 This is a backend-only service. If you're looking for the web frontend application,
 take a look at https://github.com/bitpay/insight.
