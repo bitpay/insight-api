@@ -124,7 +124,7 @@ Two DBs are created: txs and blocks. By default these are stored on
 
   ``~/.insight/``
 
-Please note that previous version's of Insight-API store that on `<insight's root>/db`
+Please note that some older versions of Insight-API store that on `<insight's root>/db`
 
 this can be changed on config/config.js. As of June 2014, storing the livenet blockchain takes ~35GB of disk space (2GB for the testnet).
 
