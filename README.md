@@ -9,7 +9,7 @@ take a look at https://github.com/bitpay/insight.
 *Insight API* allows to develop bitcoin-related applications (such as wallets) that 
 require certain information from the blockchain that bitcoind does not provide.
 
-A blockchain explorer front-end have been developed to top of *Insight API*, it can
+A blockchain explorer front-end has been developed on top of *Insight API*. It can
 be downloaded at [Github Insight Repository](https://github.com/bitpay/insight).
 
 ## IMPORTANT: Upgrading from  v0.1 to v0.2
