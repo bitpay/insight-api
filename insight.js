@@ -62,6 +62,8 @@ program.parse(process.argv);
 // create express app
 var expressApp = express();
 
+// setup headers
+require('./config/headers')(expressApp);
 
 // setup http/https base server
 var server;
