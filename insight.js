@@ -94,10 +94,7 @@ var walk = function(path) {
 
 walk(models_path);
 
-/**
- * p2pSync process
- */
-
+// p2pSync process
 var peerSync = new PeerSync({
   shouldBroadcast: true
 });
@@ -106,9 +103,7 @@ if (!config.disableP2pSync) {
   peerSync.run();
 }
 
-/**
- * historic_sync process
- */
+// historic_sync process
 var historicSync = new HistoricSync({
   shouldBroadcastSync: true
 });
@@ -143,8 +138,8 @@ if (config.enableMailbox) {
 
 
 // express settings
-require('./config/routes')(expressApp);
 require('./config/express')(expressApp, historicSync, peerSync);
+require('./config/routes')(expressApp);
 
 
 //Start the app by listening on <port>

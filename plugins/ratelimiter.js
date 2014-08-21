@@ -32,5 +32,4 @@ module.exports.init = function(app, config) {
       }
     }
   }));
-
 };
