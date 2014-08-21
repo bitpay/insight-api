@@ -22,8 +22,8 @@ through the RPC API, bitcoin peer-to-peer protocol, and will even read its raw b
 
 Configure bitcoind to listen to RPC calls and set `txindex` to true.
 The easiest way to do this is by copying `./etc/bitcoind/bitcoin.conf` to your
-bitcoin data directory (usually `"~/.bitcoin"` on Linux, `"%appdata%\Bitcoin\"` on Windows,
-or `"~/Library/Application Support/Bitcoin"` on Mac OS X).
+bitcoin data directory (usually `~/.bitcoin` on Linux, `%appdata%\Bitcoin\` on Windows,
+or `~/Library/Application Support/Bitcoin` on Mac OS X).
 
 bitcoind must be running and must have finished downloading the blockchain **before** running *insight API*.
 
