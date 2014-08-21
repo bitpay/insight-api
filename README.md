@@ -83,15 +83,26 @@ In case the network is changed (testnet to livenet or vice versa) levelDB databa
 
 ## Synchronization
 
-The initial synchronization process scans the blockchain from the paired bitcoind server to update addresses and balances. *insight* needs one (and only one) trusted bitcoind node to run. This node must have finished downloading the blockchain before running *insight*.
+The initial synchronization process scans the blockchain from the paired bitcoind server to update addresses and balances. *insight-api* needs exactly one trusted bitcoind node to run. This node must have finished downloading the blockchain before running *insight-api*.
 
 While *insight* is synchronizing the website can be accessed (the sync process is embedded in the webserver), but there may be missing data or incorrect balances for addresses. The 'sync' status is shown at the `/api/sync` endpoint.
 
-The blockchain can be read from bitcoind's raw `.dat` files or RPC interface. Reading the information from the `.dat` files is much faster so it's the recommended (and default) alternative. `.dat` files are scanned in the default location for each platform (for example, `~/.bitcoin` on Linux). In case a non-standard location is used, it needs to be defined (see the Configuration section). As of June 2014, using `.dat` files the sync process takes 9 hrs. for livenet and 30 mins. for testnet.
+The blockchain can be read from bitcoind's raw `.dat` files or RPC interface. 
+Reading the information from the `.dat` files is much faster so it's the
+recommended (and default) alternative. `.dat` files are scanned in the default
+location for each platform (for example, `~/.bitcoin` on Linux). In case a
+non-standard location is used, it needs to be defined (see the Configuration section).
+As of June 2014, using `.dat` files the sync process takes 9 hrs.
+for livenet and 30 mins. for testnet.
 
-While synchronizing the blockchain, *insight* listens for new blocks and transactions relayed by the bitcoind node. Those are also stored on *insight*'s database. In case *insight* is shutdown for a period of time, restarting it will trigger a partial (historic) synchronization of the blockchain. Depending on the size of that synchronization task, a reverse RPC or forward `.dat` syncing strategy will be used.
+While synchronizing the blockchain, *insight-api* listens for new blocks and
+transactions relayed by the bitcoind node. Those are also stored on *insight-api*'s database.
+In case *insight-api* is shutdown for a period of time, restarting it will trigger
+a partial (historic) synchronization of the blockchain. Depending on the size of
+that synchronization task, a reverse RPC or forward `.dat` syncing strategy will be used.
 
-If bitcoind is shutdown, *insight* needs to be stopped and restarted once bitcoind is restarted.
+If bitcoind is shutdown, *insight-api* needs to be stopped and restarted
+once bitcoind is restarted.
 
 ### Syncing old blockchain data manually
 
@@ -101,7 +112,7 @@ If bitcoind is shutdown, *insight* needs to be stopped and restarted once bitcoi
 
   Check util/sync.js --help for options, particulary -D to erase the current DB.
 
-  *NOTE* that there is no need to run this manually since the historic synchronization is embedded on the web application, so by running you will trigger the historic sync automatically.
+  *NOTE*: there is no need to run this manually since the historic synchronization is embedded on the web application, so by running you will trigger the historic sync automatically.
 
 
 ### DB storage requirement
