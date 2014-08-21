@@ -37,6 +37,7 @@ module.exports = function(app, historicSync, peerSync) {
   app.use(express.compress());
 
   app.use(function(req, res, next) {
+    console.log('asdasdasdasd');
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
     res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');

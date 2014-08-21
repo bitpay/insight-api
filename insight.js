@@ -8,6 +8,8 @@ var fs = require('fs');
 var PeerSync = require('./lib/PeerSync');
 var HistoricSync = require('./lib/HistoricSync');
 
+var http = require('http');
+var https = require('https');
 var express = require('express');
 var program = require('commander');
 
@@ -59,6 +61,17 @@ program.parse(process.argv);
 
 // create express app
 var expressApp = express();
+
+
+// setup http/https base server
+var protocol = config.enableHTTPS ? https : http;
+var serverOpts = {};
+if (config.enableHTTPS) {
+  serverOpts.key = fs.readFileSync('./etc/test-key.pem');
+  serverOpts.cert = fs.readFileSync('./etc/test-cert.pem');
+}
+var server = protocol.createServer(serverOpts, expressApp);
+console.log(config.enableHTTPS);
 
 // Bootstrap models
 var models_path = __dirname + '/app/models';
@@ -112,7 +125,6 @@ if (peerSync) peerSync.allowReorgs = true;
 
 
 // socket.io
-var server = require('http').createServer(expressApp);
 var ios = require('socket.io')(server, config);
 require('./app/controllers/socket.js').init(ios);
 
