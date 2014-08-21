@@ -146,8 +146,8 @@ Contributions and suggestions are welcome at [insight-api github repository](htt
 Since v0.2 a new cache schema has been introduced. Only information from transactions with
 INSIGHT_SAFE_CONFIRMATIONS settings will be cached (by default SAFE_CONFIRMATIONS=6). There 
 are 3 different caches:
- * nr. of confirmations 
- * transaction spent information
+ * Number of confirmations 
+ * Transaction output spent/unspent status
  * scriptPubKey for unspent transactions
 
 Cache data is only populated on request, i.e., only after accessing the required data for
