@@ -112,12 +112,15 @@ once bitcoind is restarted.
 
   Check util/sync.js --help for options, particulary -D to erase the current DB.
 
-  *NOTE*: there is no need to run this manually since the historic synchronization is embedded on the web application, so by running you will trigger the historic sync automatically.
+  *NOTE*: there is no need to run this manually since the historic synchronization
+  is built in into the web application. Running *insight-api* normally will trigger
+  the historic sync automatically.
 
 
 ### DB storage requirement
 
-To store the blockchain and address related information, *insight* uses LevelDB. Two DBs are created: txs and blocks. By default these are stored on
+To store the blockchain and address related information, *insight-api* uses LevelDB.
+Two DBs are created: txs and blocks. By default these are stored on
 
   ``~/.insight/``
 
