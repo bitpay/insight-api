@@ -53,7 +53,7 @@ bitcoind must be running and must have finished downloading the blockchain **bef
 
   Please note that the app will need to sync its internal database
   with the blockchain state, which may take some time. You can check
-  sync progress from within the web interface.
+  sync progress at http://localhost:3001/api/sync.
 
 
 ## Configuration
