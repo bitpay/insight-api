@@ -124,9 +124,9 @@ Two DBs are created: txs and blocks. By default these are stored on
 
   ``~/.insight/``
 
-Please note that some older versions of Insight-API store that on `<insight's root>/db`
+Please note that some older versions of Insight-API store that on `<insight's root>/db`.
 
-this can be changed on config/config.js. As of June 2014, storing the livenet blockchain takes ~35GB of disk space (2GB for the testnet).
+This can be changed at config/config.js. As of June 2014, storing the livenet blockchain takes ~35GB of disk space (2GB for the testnet).
 
 ## Development
 
@@ -141,7 +141,7 @@ To run the tests
 
 Contributions and suggestions are welcome at [insight-api github repository](https://github.com/bitpay/insight-api).
 
-### Caching schema
+## Caching schema
 
 Since v0.2 a new cache schema has been introduced. Only information from transactions with
 INSIGHT_SAFE_CONFIRMATIONS settings will be cached (by default SAFE_CONFIRMATIONS=6). There 
