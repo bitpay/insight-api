@@ -213,7 +213,7 @@ Sample return:
     }
 ]
 ```
-Please note that in case confirmations are cached (because the number of confirmations if bigger that INSIGHT_SAFE_CONFIRMATIONS) the return will include the pair confirmationsFromCache:true, and confirmations will equal INSIGHT_SAFE_CONFIRMATIONS. See noCache and INSIGHT_IGNORE_CACHE options for details.
+Please note that in case confirmations are cached (which happens by default when the number of confirmations is bigger that INSIGHT_SAFE_CONFIRMATIONS) the response will include the pair confirmationsFromCache:true, and confirmations will equal INSIGHT_SAFE_CONFIRMATIONS. See noCache and INSIGHT_IGNORE_CACHE options for details.
 
 
 
