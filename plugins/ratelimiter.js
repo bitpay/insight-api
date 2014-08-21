@@ -9,8 +9,8 @@ module.exports.init = function(app, config) {
   logger.info('Using ratelimiter plugin');
 
   config = config || {};
-  config.whitelistRPH = config.whitelistRPH || 5000;
-  config.normalRPH = config.normalRPH || 500;
+  config.whitelistRPH = config.whitelistRPH || 50000;
+  config.normalRPH = config.normalRPH || 1000;
   config.blacklistRPH = config.blacklistRPH || 0;
 
   app.use(limiter({
