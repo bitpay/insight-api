@@ -109,7 +109,7 @@ While synchronizing the blockchain, *insight* listens for new blocks and transac
 
 If bitcoind is shutdown, *insight* needs to be stopped and restarted once bitcoind is restarted.
 
-### Syncing old blockchain data manualy
+### Syncing old blockchain data manually
 
   Old blockchain data can be manually synced issuing:
 
