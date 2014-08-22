@@ -3,9 +3,10 @@
 /**
  * Module dependencies.
  */
-var express = require('express'),
-    config = require('./config'),
-    path = require('path');
+var express = require('express');
+var config = require('./config');
+var path = require('path');
+var logger = require('../lib/logger').logger;
 
 module.exports = function(app, historicSync, peerSync) {
 
@@ -22,13 +23,9 @@ module.exports = function(app, historicSync, peerSync) {
   };
 
   app.set('showStackError', true);
-
-  // Compress JSON outputs
   app.set('json spaces', 0);
 
-  //Enable jsonp
   app.enable('jsonp callback');
-
   app.use(config.apiPrefix + '/sync', setHistoric);
   app.use(config.apiPrefix + '/peer', setPeer);
   app.use(express.logger('dev'));
@@ -37,21 +34,12 @@ module.exports = function(app, historicSync, peerSync) {
   app.use(express.methodOverride());
   app.use(express.compress());
 
-  app.use(function(req, res, next) {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
-    next();
-  });
-
   if (config.publicPath) {
     var staticPath = path.normalize(config.rootPath + '/../' + config.publicPath);
-
     //IMPORTANT: for html5mode, this line must to be before app.router
     app.use(express.static(staticPath));
   }
 
-  // manual helpers
   app.use(function(req, res, next) {
     app.locals.config = config;
     next();
@@ -60,15 +48,10 @@ module.exports = function(app, historicSync, peerSync) {
   //routes should be at the last
   app.use(app.router);
 
-  //Assume "not found" in the error msgs is a 404. this is somewhat silly, but valid, you can do whatever you like, set properties, use instanceof etc.
+  //Assume "not found" in the error msgs is a 404
   app.use(function(err, req, res, next) {
-    //Treat as 404
     if (~err.message.indexOf('not found')) return next();
-
-    //Log it
     console.error(err.stack);
-
-    //Error page
     res.status(500).jsonp({
       status: 500,
       error: err.stack

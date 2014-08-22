@@ -15,7 +15,7 @@ describe('socket server', function() {
   });
   it('should register socket handlers', function() {
     var io = {
-      sockets: new EventEmitter()
+      sockets: new EventEmitter(),
     }
     socket.init(io);
 

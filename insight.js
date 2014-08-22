@@ -4,19 +4,21 @@
 //Set the node enviornment variable if not set before
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
-/**
- * Module dependencies.
- */
-var express = require('express'),
-  fs = require('fs'),
-  PeerSync = require('./lib/PeerSync'),
-  HistoricSync = require('./lib/HistoricSync');
+var fs = require('fs');
+var PeerSync = require('./lib/PeerSync');
+var HistoricSync = require('./lib/HistoricSync');
 
-//Initializing system variables
+var http = require('http');
+var https = require('https');
+var express = require('express');
+var program = require('commander');
+
 var config = require('./config/config');
+var logger = require('./lib/logger').logger;
+program
+  .version(config.version);
 
 // text title
-/*jshint multistr: true */
 console.log(
   '\n\
     ____           _       __    __     ___          _ \n\
@@ -25,8 +27,9 @@ console.log(
  _/ // / / (__  ) / /_/ / / / / /_   / ___ |/ /_/ / /  \n\
 /___/_/ /_/____/_/\\__, /_/ /_/\\__/  /_/  |_/ .___/_/   \n\
                  /____/                   /_/           \n\
-\n\t\t\t\t\t\tv%s\n\
-# Configuration:\n\
+\n\t\t\t\t\t\tv%s\n', config.version);
+program.on('--help', function() {
+  logger.info('\n# Configuration:\n\
 \tINSIGHT_NETWORK (Network): %s\n\
 \tINSIGHT_DB (Database Path):  %s\n\
 \tINSIGHT_SAFE_CONFIRMATIONS (Safe Confirmations):  %s\n\
@@ -43,25 +46,37 @@ console.log(
 \nChange setting by assigning the enviroment variables above. Example:\n\
  $ INSIGHT_NETWORK="testnet" BITCOIND_HOST="123.123.123.123" ./insight.js\
 \n\n',
-  config.version,
-  config.network, config.leveldb, config.safeConfirmations, config.ignoreCache ? 'yes' : 'no',
-  config.bitcoind.user,
-  config.bitcoind.pass ? 'Yes(hidden)' : 'No',
-  config.bitcoind.protocol,
-  config.bitcoind.host,
-  config.bitcoind.port,
-  config.bitcoind.p2pPort,
-  config.bitcoind.dataDir + (config.network === 'testnet' ? '*' : ''), (config.network === 'testnet' ? '* (/testnet3 is added automatically)' : '')
-);
+    config.network, config.leveldb, config.safeConfirmations, config.ignoreCache ? 'yes' : 'no',
+    config.bitcoind.user,
+    config.bitcoind.pass ? 'Yes(hidden)' : 'No',
+    config.bitcoind.protocol,
+    config.bitcoind.host,
+    config.bitcoind.port,
+    config.bitcoind.p2pPort,
+    config.bitcoind.dataDir + (config.network === 'testnet' ? '*' : ''), (config.network === 'testnet' ? '* (/testnet3 is added automatically)' : '')
+  );
+});
 
-/**
- * express app
- */
+program.parse(process.argv);
+
+// create express app
 var expressApp = express();
 
-/**
- * Bootstrap models
- */
+// setup headers
+require('./config/headers')(expressApp);
+
+// setup http/https base server
+var server;
+if (config.enableHTTPS) {
+  var serverOpts = {};
+  serverOpts.key = fs.readFileSync('./etc/test-key.pem');
+  serverOpts.cert = fs.readFileSync('./etc/test-cert.pem');
+  server = https.createServer(serverOpts, expressApp);
+} else {
+  server = http.createServer(expressApp);
+}
+
+// Bootstrap models
 var models_path = __dirname + '/app/models';
 var walk = function(path) {
   fs.readdirSync(path).forEach(function(file) {
@@ -79,10 +94,7 @@ var walk = function(path) {
 
 walk(models_path);
 
-/**
- * p2pSync process
- */
-
+// p2pSync process
 var peerSync = new PeerSync({
   shouldBroadcast: true
 });
@@ -91,9 +103,7 @@ if (!config.disableP2pSync) {
   peerSync.run();
 }
 
-/**
- * historic_sync process
- */
+// historic_sync process
 var historicSync = new HistoricSync({
   shouldBroadcastSync: true
 });
@@ -111,20 +121,30 @@ if (!config.disableHistoricSync) {
 if (peerSync) peerSync.allowReorgs = true;
 
 
-//express settings
-require('./config/express')(expressApp, historicSync, peerSync);
-
-//Bootstrap routes
-require('./config/routes')(expressApp);
 
 // socket.io
-var server = require('http').createServer(expressApp);
-var ios = require('socket.io')(server);
-require('./app/controllers/socket.js').init(ios, config);
+var ios = require('socket.io')(server, config);
+require('./app/controllers/socket.js').init(ios);
+
+// plugins
+if (config.enableRatelimiter) {
+  require('./plugins/ratelimiter').init(expressApp, config.ratelimiter);
+}
+
+if (config.enableMailbox) {
+  require('./plugins/mailbox').init(ios, config.mailbox);
+}
+
+
+
+// express settings
+require('./config/express')(expressApp, historicSync, peerSync);
+require('./config/routes')(expressApp);
+
 
 //Start the app by listening on <port>
 server.listen(config.port, function() {
-  console.log('insight server listening on port %d in %s mode', server.address().port, process.env.NODE_ENV);
+  logger.info('insight server listening on port %d in %s mode', server.address().port, process.env.NODE_ENV);
 });
 
 //expose app
