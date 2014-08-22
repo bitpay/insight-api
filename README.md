@@ -284,13 +284,11 @@ Where "xxx" can be:
  * getLastBlockHash
 
 ## Web Socket API
-The web socket API is served using [socket.io](http://socket.io) at:
-```
-  /socket.io/1/
-```
+The web socket API is served using [socket.io](http://socket.io).
 
-Bitcoin network events published are:
-'tx': new transaction received from network. Data will be a app/models/Transaction object.
+The following are the events published by insight:
+
+'tx': new transaction received from network. This event is published in the 'inv' room. Data will be a app/models/Transaction object.
 Sample output:
 ```
 {
@@ -301,7 +299,7 @@ Sample output:
 ```
 
 
-'block': new block received from network. Data will be a app/models/Block object.
+'block': new block received from network. This event is published in the 'inv' room. Data will be a app/models/Block object.
 Sample output:
 ```
 {
@@ -311,7 +309,9 @@ Sample output:
 }
 ```
 
-'sync': every 1% increment on the sync task, this event will be triggered.
+'<bitcoinAddress>': new transaction concerning <bitcoinAddress> received from network. This event is published in the '<bitcoinAddress>' room.
+
+'status': every 1% increment on the sync task, this event will be triggered. This event is published in the 'sync' room.
 
 Sample output:
 ```
@@ -327,6 +327,31 @@ Sample output:
 }
 ```
 
+### Example Usage
+
+The following html page connects to the socket.io insight API and listens for new transactions.
+
+html
+```
+<html>
+<body>
+  <script src="http://<insight-server>:<port>/socket.io/socket.io.js"></script>
+  <script>
+    eventToListenTo = 'tx'
+    room = 'inv'
+
+    var socket = io("http://<insight-server>:<port>/");
+    socket.on('connect', function() {
+      // Join the room.
+      socket.emit('subscribe', room);
+    })
+    socket.on(eventToListenTo, function(data) {
+      console.log("New transaction received: " + data.txid)
+    })
+  </script>
+</body>
+</html>
+```
 
 ## License
 (The MIT License)
