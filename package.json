@@ -59,10 +59,10 @@
     "buffertools": "*",
     "commander": "^2.3.0",
     "connect-ratelimit": "git://github.com/dharmafly/connect-ratelimit.git#0550eff209c54f35078f46445000797fa942ab97",
+    "cron": "^1.0.4",
     "express": "~3.4.7",
     "glob": "*",
-    "leveldown": "~0.10.0",
-    "levelup": "~0.19.0",
+    "microtime": "^0.6.0",
     "moment": "~2.5.0",
     "preconditions": "^1.0.7",
     "should": "~2.1.1",
@@ -71,8 +71,7 @@
     "socket.io-client": "1.0.6",
     "soop": "=0.1.5",
     "winston": "*",
-    "xmlhttprequest": "~1.6.0",
-    "microtime": "^0.6.0"
+    "xmlhttprequest": "~1.6.0"
   },
   "devDependencies": {
     "chai": "*",
