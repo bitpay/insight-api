@@ -15,6 +15,7 @@ module.exports.init = function(io_ext) {
       socket.on('subscribe', function(topic) {
         logger.debug('subscribe to ' + topic);
         socket.join(topic);
+        socket.emit('subscribed');
       });
 
       // disconnect handler
