@@ -26,8 +26,13 @@ module.exports.init = function(ext_io, config) {
           throw new Error('Couldn\'t get messages on sync request: ' + err);
         }
         logger.verbose('\tFound ' + messages.length + ' message' + (messages.length !== 1 ? 's' : ''));
-        for (var i = 0; i < messages.length; i++) {
-          broadcastMessage(messages[i], socket);
+
+        if (messages.length) {
+          for (var i = 0; i < messages.length; i++) {
+            broadcastMessage(messages[i], socket);
+          }
+        } else {
+          socket.emit('no messages');
         }
       });
     });
