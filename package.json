@@ -61,7 +61,7 @@
     "connect-ratelimit": "git://github.com/dharmafly/connect-ratelimit.git#0550eff209c54f35078f46445000797fa942ab97",
     "express": "~3.4.7",
     "glob": "*",
-    "leveldown": "*",
+    "leveldown": "~0.10.0",
     "levelup": "*",
     "moment": "~2.5.0",
     "preconditions": "^1.0.7",
