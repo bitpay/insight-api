@@ -1,5 +1,6 @@
 module.exports = {
 
-  cronTime: '* * * * *'
+  cronTime: '* * * * *',
+  threshold: 10, // in seconds
 
 };
