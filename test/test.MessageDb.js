@@ -108,6 +108,10 @@ describe('MessageDb', function() {
       done();
     });
   });
+  it('should be able #removeUpTo', function() {
+    var mdb = sharedMDB;
+    mdb.removeUpTo(microtime.now());
+  });
   it('should be able to close instance', function() {
     var mdb = new MessageDb(opts);
     mdb.close();
