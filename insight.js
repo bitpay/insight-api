@@ -135,6 +135,10 @@ if (config.enableMailbox) {
   require('./plugins/mailbox').init(ios, config.mailbox);
 }
 
+if (config.enableCleaner) {
+  require('./plugins/cleaner').init(config.cleaner);
+}
+
 
 
 // express settings
