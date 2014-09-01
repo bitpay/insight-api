@@ -7,16 +7,19 @@ var CronJob = cron.CronJob;
 
 
 module.exports.init = function(config) {
-  logger.info('Using cleaner plugin');
-  logger.info(config);
+  var cronTime = config.cronTime || '0 * * * *';
+  logger.info('Using cleaner plugin with cronTime ' + cronTime);
+  var onTick = function() {
+    var limit = microtime.now() - 1000 * 1000 * config.threshold;
+    mdb.removeUpTo(limit, function(err, n) {
+      if (err) logger.error(err);
+      else logger.info('Ran cleaner task, removed ' + n);
+    });
+  };
   var job = new CronJob({
-    cronTime: config.cronTime || '0 * * * *',
-    onTick: function() {
-      var limit = microtime.now() - 1000 * 1000 * config.threshold;
-      mdb.removeUpTo(limit, function(err, n) {
-        logger.verbose('Ran cleaner task, removed ' + n);
-      });
-    },
-    start: true
+    cronTime: cronTime,
+    onTick: onTick
   });
+  onTick();
+  job.start();
 };

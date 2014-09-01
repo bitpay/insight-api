@@ -1,6 +1,6 @@
 module.exports = {
 
   cronTime: '* * * * *',
-  threshold: 10, // in seconds
+  threshold: 2*24*60*60, // 2 days, in seconds
 
 };
