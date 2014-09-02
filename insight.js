@@ -139,6 +139,9 @@ if (config.enableCleaner) {
   require('./plugins/cleaner').init(config.cleaner);
 }
 
+if (config.enableMonitor) {
+  require('./plugins/monitor').init(config.monitor);
+}
 
 
 // express settings

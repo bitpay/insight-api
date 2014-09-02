@@ -95,7 +95,7 @@ if (!fs.existsSync(db)) {
 
 module.exports = {
   enableMonitor: enableMonitor,
-  cleaner: require('../plugins/config-monitor.js'),
+  monitor: require('../plugins/config-monitor.js'),
   enableCleaner: enableCleaner,
   cleaner: require('../plugins/config-cleaner.js'),
   enableMailbox: enableMailbox,
