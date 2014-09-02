@@ -76,6 +76,7 @@ var bitcoindConf = {
   disableAgent: true
 };
 
+var enableMonitor = process.env.ENABLE_MONITOR === 'true';
 var enableCleaner = process.env.ENABLE_CLEANER === 'true';
 var enableMailbox = process.env.ENABLE_MAILBOX === 'true';
 var enableRatelimiter = process.env.ENABLE_RATELIMITER === 'true';
@@ -93,6 +94,8 @@ if (!fs.existsSync(db)) {
 }
 
 module.exports = {
+  enableMonitor: enableMonitor,
+  cleaner: require('../plugins/config-monitor.js'),
   enableCleaner: enableCleaner,
   cleaner: require('../plugins/config-cleaner.js'),
   enableMailbox: enableMailbox,
