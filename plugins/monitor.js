@@ -5,4 +5,5 @@ var microtime = require('microtime');
 
 
 module.exports.init = function(config) {
+  logger.info('Using monitor plugin');
 };
