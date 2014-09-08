@@ -76,6 +76,7 @@ var bitcoindConf = {
   disableAgent: true
 };
 
+var enableCleaner = process.env.ENABLE_CLEANER === 'true';
 var enableMailbox = process.env.ENABLE_MAILBOX === 'true';
 var enableRatelimiter = process.env.ENABLE_RATELIMITER === 'true';
 var loggerLevel = process.env.LOGGER_LEVEL || 'info';
@@ -92,8 +93,12 @@ if (!fs.existsSync(db)) {
 }
 
 module.exports = {
+  enableCleaner: enableCleaner,
+  cleaner: require('../plugins/config-cleaner.js'),
   enableMailbox: enableMailbox,
+  mailbox: require('../plugins/config-mailbox.js'),
   enableRatelimiter: enableRatelimiter,
+  ratelimiter: require('../plugins/config-ratelimiter.js'),
   loggerLevel: loggerLevel,
   enableHTTPS: enableHTTPS,
   version: version,

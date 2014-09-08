@@ -108,6 +108,23 @@ describe('MessageDb', function() {
       done();
     });
   });
+  it('should be able #removeUpTo', function(done) {
+    var mdb = sharedMDB;
+    var upper_ts = microtime.now();
+    mdb.addMessage(message, function(err) {
+      expect(err).to.not.exist;
+      mdb.removeUpTo(upper_ts, function(err, n) {
+        expect(err).to.not.exist;
+        n.should.equal(4);
+        mdb.getAll(function(error, all) {
+          expect(error).to.not.exist;
+          all.length.should.equal(1);
+          done();
+        });
+
+      });
+    });
+  });
   it('should be able to close instance', function() {
     var mdb = new MessageDb(opts);
     mdb.close();
