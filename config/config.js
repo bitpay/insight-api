@@ -1,8 +1,10 @@
 'use strict';
 
-var path = require('path'),
-  fs = require('fs'),
-  rootPath = path.normalize(__dirname + '/..'),
+var path = require('path');
+var fs = require('fs');
+var mkdirp = require('mkdirp');
+
+var rootPath = path.normalize(__dirname + '/..'),
   env,
   db,
   port,
@@ -84,13 +86,7 @@ var loggerLevel = process.env.LOGGER_LEVEL || 'info';
 var enableHTTPS = process.env.ENABLE_HTTPS === 'true'; 
 
 if (!fs.existsSync(db)) {
-  var err = fs.mkdirSync(db);
-  if (err) {
-    console.log(err);
-    console.log("## ERROR! Can't create insight directory! \n");
-    console.log('\tPlease create it manually: ', db);
-    process.exit(-1);
-  }
+  mkdirp.sync(db);
 }
 
 module.exports = {
