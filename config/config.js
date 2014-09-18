@@ -11,7 +11,7 @@ var rootPath = path.normalize(__dirname + '/..'),
   b_port,
   p2p_port;
 
-var packageStr = fs.readFileSync('package.json');
+var packageStr = fs.readFileSync('../package.json');
 var version = JSON.parse(packageStr).version;
 
 
