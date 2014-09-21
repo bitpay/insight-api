@@ -83,8 +83,9 @@ var enableMonitor = process.env.ENABLE_MONITOR === 'true';
 var enableCleaner = process.env.ENABLE_CLEANER === 'true';
 var enableMailbox = process.env.ENABLE_MAILBOX === 'true';
 var enableRatelimiter = process.env.ENABLE_RATELIMITER === 'true';
+var enableCredentialstore = process.env.ENABLE_CREDSTORE === 'true';
 var loggerLevel = process.env.LOGGER_LEVEL || 'info';
-var enableHTTPS = process.env.ENABLE_HTTPS === 'true'; 
+var enableHTTPS = process.env.ENABLE_HTTPS === 'true';
 
 if (!fs.existsSync(db)) {
   mkdirp.sync(db);
@@ -99,6 +100,8 @@ module.exports = {
   mailbox: require('../plugins/config-mailbox.js'),
   enableRatelimiter: enableRatelimiter,
   ratelimiter: require('../plugins/config-ratelimiter.js'),
+  enableCredentialstore: enableCredentialstore,
+  credentialstore: require('../plugins/config-credentialstore'),
   loggerLevel: loggerLevel,
   enableHTTPS: enableHTTPS,
   version: version,
