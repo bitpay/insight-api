@@ -143,6 +143,9 @@ if (config.enableMonitor) {
   require('./plugins/monitor').init(config.monitor);
 }
 
+if (config.enableCredentialstore) {
+  require('./plugins/credentialstore').init(expressApp, config.credentialstore);
+}
 
 // express settings
 require('./config/express')(expressApp, historicSync, peerSync);
