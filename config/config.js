@@ -85,6 +85,7 @@ var enableMailbox = process.env.ENABLE_MAILBOX === 'true';
 var enableRatelimiter = process.env.ENABLE_RATELIMITER === 'true';
 var enableCredentialstore = process.env.ENABLE_CREDSTORE === 'true';
 var enableEmailstore = process.env.ENABLE_EMAILSTORE === 'true';
+var enablePublicInfo = process.env.ENABLE_PUBLICINFO === 'true';
 var loggerLevel = process.env.LOGGER_LEVEL || 'info';
 var enableHTTPS = process.env.ENABLE_HTTPS === 'true';
 
@@ -105,6 +106,8 @@ module.exports = {
   credentialstore: require('../plugins/config-credentialstore'),
   enableEmailstore: enableEmailstore,
   emailstore: require('../plugins/config-emailstore'),
+  enablePublicInfo: enablePublicInfo,
+  publicInfo: require('../plugins/publicInfo/config'),
   loggerLevel: loggerLevel,
   enableHTTPS: enableHTTPS,
   version: version,
