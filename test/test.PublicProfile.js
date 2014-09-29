@@ -46,7 +46,7 @@ describe('public profile test', function() {
     ));
   });
 
-  it.only('writes a message correctly', function(done) {
+  it('writes a message correctly', function(done) {
 
     var privateKey = bitauth.generateSin();
     var protocol = 'https';
