@@ -54,6 +54,7 @@
     "async": "*",
     "base58-native": "0.1.2",
     "bignum": "*",
+    "bitauth": "^0.1.1",
     "bitcore": "git://github.com/bitpay/bitcore.git#aa41c70cff2583d810664c073a324376c39c8b36",
     "bufferput": "git://github.com/bitpay/node-bufferput.git",
     "buffertools": "*",

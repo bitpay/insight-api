@@ -85,7 +85,7 @@ describe('emailstore test', function() {
     it('should allow the user to retrieve credentials', function() {
       request.param.onFirstCall().returns('secret');
       leveldb_stub.get.reset();
-  
+
       var returnValue = '!@#$%';
       leveldb_stub.get.onFirstCall().callsArgWith(1, null, returnValue);
       response.send.returnsThis();
