@@ -4,7 +4,7 @@ var   chai = require('chai'),
     assert = require('assert'),
      sinon = require('sinon'),
     logger = require('../lib/logger').logger,
-    should = chai.should(),
+    should = chai.should,
     expect = chai.expect;
 
 logger.transports.console.level = 'warn';
