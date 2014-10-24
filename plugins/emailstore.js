@@ -35,7 +35,7 @@
  *   2. Send a GET request to resource /email/retrieve?secret=......
  *   3. Decrypt the data received
  */
-(function() {
+(function () {
 
 'use strict';
 
@@ -52,7 +52,7 @@ var emailPlugin = {};
 /**
  * Constant enum with the errors that the application may return
  */
-var errors = {
+emailPlugin.errors = {
   MISSING_PARAMETER: {
     code: 400,
     message: 'Missing required parameter'
@@ -64,6 +64,10 @@ var errors = {
   NOT_FOUND: {
     code: 404,
     message: 'Credentials were not found'
+  },
+  INTERNAL_ERROR: {
+    code: 500,
+    message: 'Unable to save to database'
   },
   EMAIL_TAKEN: {
     code: 409,
@@ -77,8 +81,9 @@ var errors = {
 
 var NAMESPACE = 'credentials-store-';
 var VALIDATION_NAMESPACE = 'validation-code-';
+var MAP_EMAIL_TO_SECRET = 'map-email-';
 var EMAIL_NAMESPACE = 'validated-email-';
-var MAX_ALLOWED_STORAGE = 1024 /* no more than 1 kb */;
+var MAX_ALLOWED_STORAGE = 1024 * 100 /* no more than 100 kb */;
 
 /**
  * Initializes the plugin
@@ -86,7 +91,7 @@ var MAX_ALLOWED_STORAGE = 1024 /* no more than 1 kb */;
  * @param {Express} expressApp
  * @param {Object} config
  */
-emailPlugin.init = function(expressApp, config) {
+emailPlugin.init = function (expressApp, config) {
   logger.info('Using emailstore plugin');
 
   var path = globalConfig.leveldb + '/emailstore' + (globalConfig.name ? ('-' + globalConfig.name) : '');
@@ -111,7 +116,7 @@ emailPlugin.init = function(expressApp, config) {
  * @param {Express.Response} response - the express.js response. the methods status, json, and end
  *                                      will be called, terminating the request.
  */
-var returnError = function(error, response) {
+emailPlugin.returnError = function (error, response) {
   response.status(error.code).json({error: error.message}).end();
 };
 
@@ -121,7 +126,7 @@ var returnError = function(error, response) {
  * @param {string} email - the user's email
  * @param {string} secret - the verification secret
  */
-var sendVerificationEmail = function(email, secret) {
+emailPlugin.sendVerificationEmail = function (email, secret) {
 
   var emailBody = 'Activation code is ' + secret; // TODO: Use a template!
   var emailBodyHTML = '<h1>Activation code is ' + secret + '</h1>'; // TODO: Use a template!
@@ -145,6 +150,65 @@ var sendVerificationEmail = function(email, secret) {
 };
 
 /**
+ * @param {string} email
+ * @param {Function(err, boolean)} callback
+ */
+emailPlugin.exists = function(email, callback) {
+  emailPlugin.db.get(EMAIL_NAMESPACE + email, function(err, value) {
+    if (err && err.notFound) {
+      return callback(null, false);
+    } else if (err) {
+      return callback(err);
+    }
+    return callback(null, true);
+  });
+};
+
+/**
+ * @param {string} email
+ * @param {string} passphrase
+ * @param {Function(err, boolean)} callback
+ */
+emailPlugin.checkPassphrase = function(email, passphrase, callback) {
+  emailPlugin.db.get(MAP_EMAIL_TO_SECRET + email, function(err, retrievedPassphrase) {
+    if (err) {
+      return callback(err);
+    }
+    return callback(err, passphrase === retrievedPassphrase);
+  });
+};
+
+/**
+ * @param {string} email
+ * @param {string} passphrase
+ * @param {Function(err)} callback
+ */
+emailPlugin.savePassphrase = function(email, passphrase, callback) {
+  emailPlugin.db.put(MAP_EMAIL_TO_SECRET + email, passphrase, callback);
+};
+
+/**
+ * @param {string} email
+ * @param {string} record
+ * @param {Function(err)} callback
+ */
+emailPlugin.saveEncryptedData = function(email, record, callback) {
+  emailPlugin.db.put(NAMESPACE + email, record, callback);
+};
+
+emailPlugin.createVerificationSecretAndSendEmail = function (email, callback) {
+  emailPlugin.createVerificationSecret(email, function(err, secret) {
+    if (err) {
+      return callback(err);
+    }
+    if (secret) {
+      emailPlugin.sendVerificationEmail(email, secret);
+    }
+    callback();
+  });
+};
+
+/**
  * Store a record in the database. The underlying database is merely a levelup instance (a key
  * value store) that uses the email concatenated with the secret as a key to store the record.
  * The request is expected to contain the parameters:
@@ -155,79 +219,91 @@ var sendVerificationEmail = function(email, secret) {
  * @param {Express.Request} request
  * @param {Express.Response} response
  */
-emailPlugin.post = function(request, response) {
+emailPlugin.post = function (request, response) {
 
   var queryData = '';
 
-  request.on('data', function(data) {
+  request.on('data', function (data) {
     queryData += data;
     if (queryData.length > MAX_ALLOWED_STORAGE) {
       queryData = '';
       response.writeHead(413, {'Content-Type': 'text/plain'}).end();
       request.connection.destroy();
     }
-  }).on('end', function() {
+  }).on('end', function () {
     var params = querystring.parse(queryData);
     var email = params.email;
     var secret = params.secret;
     var record = params.record;
     if (!email || !secret || !record) {
-      return returnError(errors.MISSING_PARAMETER, response);
+      return emailPlugin.returnError(emailPlugin.errors.MISSING_PARAMETER, response);
     }
 
-    async.series([
-      /**
-       * Try to fetch this user's email. If it exists, fail.
-       */
-      function (callback) {
-        emailPlugin.db.get(VALIDATION_NAMESPACE + email, function(err, dbValue) {
-          if (!dbValue) {
-            emailPlugin.db.get(EMAIL_NAMESPACE + email, function(err, dbValue) {
-              if (!dbValue) {
-                callback();
-              } else {
-                callback(errors.EMAIL_TAKEN);
-              }
-            });
-          } else {
-            callback(errors.EMAIL_TAKEN);
-          }
-        });
-      },
-      /**
-       * Save the encrypted private key in the storage.
-       */
-      function (callback) {
-        emailPlugin.db.put(NAMESPACE + secret, record, function (err) {
-          if (err) {
-            callback({code: 500, message: err});
-          } else {
-            callback();
-          }
-        });
-      },
-      /**
-       * Create and store the verification secret. If successful, send a verification email.
-       */
-      function(callback) {
-        emailPlugin.createVerificationSecret(email, function(err, secret) {
-          if (err) {
-            callback({code: 500, message: err});
-          } else {
-            sendVerificationEmail(email, secret);
-            callback();
-          }
-        });
-      }
-    ], function(err) {
-        if (err) {
-          returnError(err, response);
-        } else {
-          response.json({success: true}).end();
-        }
-      }
-    );
+    emailPlugin.processPost(request, response, email, secret, record);
   });
+};
+
+emailPlugin.processPost = function(request, response, email, secret, record) {
+  async.series([
+    /**
+     * Try to fetch this user's email. If it exists, check the secret is the same.
+     */
+    function (callback) {
+      emailPlugin.exists(email, function(err, exists) {
+        if (err) {
+          return callback({code: 500, message: err});
+        } else if (exists) {
+          emailPlugin.checkPassphrase(email, secret, function(err, match) {
+            if (err) {
+              return callback({code: 500, message: err});
+            }
+            if (match) {
+              return callback();
+            } else {
+              return callback(emailPlugin.errors.EMAIL_TAKEN);
+            }
+          });
+        } else {
+          emailPlugin.savePassphrase(email, secret, function(err) {
+            if (err) {
+              return callback({code: 500, message: err});
+            }
+            return callback();
+          });
+        }
+      });
+    },
+    /**
+     * Save the encrypted private key in the storage.
+     */
+    function (callback) {
+      emailPlugin.saveEncryptedData(email, record, function(err) {
+        if (err) {
+          return callback({code: 500, message: err});
+        }
+        return callback();
+      });
+    },
+    /**
+     * Create and store the verification secret. If successful, send a verification email.
+     */
+    function (callback) {
+      emailPlugin.createVerificationSecretAndSendEmail(email, function (err) {
+        if (err) {
+          callback({code: 500, message: err});
+        } else {
+          callback();
+        }
+      });
+    }
+  ], function (err) {
+      if (err) {
+        emailPlugin.returnError(err, response);
+      } else {
+        response.json({success: true}).end();
+      }
+    }
+  );
 };
 
 /**
@@ -236,13 +312,41 @@ emailPlugin.post = function(request, response) {
  * @param {string} email - the user's email
  * @param {Function} callback - will be called with params (err, secret)
  */
-emailPlugin.createVerificationSecret = function(email, callback) {
-  var secret = crypto.randomBytes(16).toString('hex');
-  emailPlugin.db.put(VALIDATION_NAMESPACE + email, secret, function(err, value) {
+emailPlugin.createVerificationSecret = function (email, callback) {
+  emailPlugin.db.get(VALIDATION_NAMESPACE + email, function(err, value) {
+    if (err && err.notFound) {
+      var secret = crypto.randomBytes(16).toString('hex');
+      emailPlugin.db.put(VALIDATION_NAMESPACE + email, secret, function (err, value) {
+        if (err) {
+          return callback(err);
+        }
+        callback(err, secret);
+      });
+    } else {
+      callback(err, null);
+    }
+  });
+};
+
+
+/**
+ * @param {string} email
+ * @param {Function(err)} callback
+ */
+emailPlugin.retrieveByEmail = function(email, callback) {
+  emailPlugin.db.get(NAMESPACE + email, callback);
+};
+
+emailPlugin.retrieveDataByEmailAndPassphrase = function(email, passphrase, callback) {
+  emailPlugin.checkPassphrase(email, passphrase, function(err, matches) {
     if (err) {
       return callback(err);
     }
-    callback(err, secret);
+    if (matches) {
+      return emailPlugin.retrieveByEmail(email, callback);
+    } else {
+      return callback(emailPlugin.errors.INVALID_CODE);
+    }
   });
 };
 
@@ -255,18 +359,19 @@ emailPlugin.createVerificationSecret = function(email, callback) {
  * @param {Express.Request} request
  * @param {Express.Response} response
  */
-emailPlugin.get = function(request, response) {
+emailPlugin.get = function (request, response) {
+  var email = request.param('email');
   var secret = request.param('secret');
   if (!secret) {
-    return returnError(errors.MISSING_PARAMETER, response);
+    return emailPlugin.returnError(emailPlugin.errors.MISSING_PARAMETER, response);
   }
 
-  emailPlugin.db.get(NAMESPACE + secret, function (err, value) {
+  emailPlugin.retrieveDataByEmailAndPassphrase(email, secret, function (err, value) {
     if (err) {
       if (err.notFound) {
-        return returnError(errors.NOT_FOUND, response);
+        return emailPlugin.returnError(emailPlugin.errors.NOT_FOUND, response);
       }
-      return returnError({code: 500, message: err}, response);
+      return emailPlugin.returnError({code: 500, message: err}, response);
     }
     response.send(value).end();
   });
@@ -282,26 +387,26 @@ emailPlugin.get = function(request, response) {
  * @param {Express.Request} request
  * @param {Express.Response} response
  */
-emailPlugin.validate = function(request, response) {
+emailPlugin.validate = function (request, response) {
   var email = request.param('email');
   var secret = request.param('verification_code');
   if (!email || !secret) {
-    return returnError(errors.MISSING_PARAMETER, response);
+    return emailPlugin.returnError(emailPlugin.errors.MISSING_PARAMETER, response);
   }
 
   emailPlugin.db.get(VALIDATION_NAMESPACE + email, function (err, value) {
     logger.info('Recibido: ' + value);
     if (err) {
       if (err.notFound) {
-        return returnError(errors.NOT_FOUND, response);
+        return emailPlugin.returnError(emailPlugin.errors.NOT_FOUND, response);
       }
-      return returnError({code: 500, message: err}, response);
+      return emailPlugin.returnError({code: 500, message: err}, response);
     } else if (value !== secret) {
-      return returnError(errors.INVALID_CODE, response);
+      return emailPlugin.returnError(emailPlugin.errors.INVALID_CODE, response);
     } else {
-      emailPlugin.db.put(EMAIL_NAMESPACE + email, true, function(err, value) {
+      emailPlugin.db.put(EMAIL_NAMESPACE + email, true, function (err, value) {
         if (err) {
-          return returnError({code: 500, message: err}, response);
+          return emailPlugin.returnError({code: 500, message: err}, response);
         } else {
           response.json({success: true}).end();
         }
