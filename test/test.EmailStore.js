@@ -9,7 +9,7 @@ var   chai = require('chai'),
 
 logger.transports.console.level = 'warn';
 
-describe('emailstore test', function() {
+describe.only('emailstore test', function() {
 
   var globalConfig = require('../config/config');
 
@@ -52,9 +52,11 @@ describe('emailstore test', function() {
 
     var emailParam = 'email';
     var secretParam = 'secret';
+    var keyParam = 'key';
     var recordParam = 'record';
     beforeEach(function() {
-      var data = 'email=' + emailParam + '&secret=' + secretParam + '&record=' + recordParam;
+      var data = ('email=' + emailParam + '&secret=' + secretParam
+                  + '&record=' + recordParam + '&key=' + keyParam);
       request.on.onFirstCall().callsArgWith(1, data);
       request.on.onFirstCall().returnsThis();
       request.on.onSecondCall().callsArg(1);
@@ -67,7 +69,7 @@ describe('emailstore test', function() {
       plugin.savePassphrase = sinon.stub();
       plugin.savePassphrase.onFirstCall().callsArg(2);
       plugin.saveEncryptedData = sinon.stub();
-      plugin.saveEncryptedData.onFirstCall().callsArg(2);
+      plugin.saveEncryptedData.onFirstCall().callsArg(3);
       plugin.createVerificationSecretAndSendEmail = sinon.stub();
       plugin.createVerificationSecretAndSendEmail.onFirstCall().callsArg(1);
       response.send.onFirstCall().returnsThis();
@@ -78,7 +80,8 @@ describe('emailstore test', function() {
       assert(plugin.savePassphrase.firstCall.args[0] === emailParam);
       assert(plugin.savePassphrase.firstCall.args[1] === secretParam);
       assert(plugin.saveEncryptedData.firstCall.args[0] === emailParam);
-      assert(plugin.saveEncryptedData.firstCall.args[1] === recordParam);
+      assert(plugin.saveEncryptedData.firstCall.args[1] === keyParam);
+      assert(plugin.saveEncryptedData.firstCall.args[2] === recordParam);
       assert(plugin.createVerificationSecretAndSendEmail.firstCall.args[0] === emailParam);
     });
 
@@ -88,7 +91,7 @@ describe('emailstore test', function() {
       plugin.checkPassphrase = sinon.stub();
       plugin.checkPassphrase.onFirstCall().callsArgWith(2, null, true);
       plugin.saveEncryptedData = sinon.stub();
-      plugin.saveEncryptedData.onFirstCall().callsArg(2);
+      plugin.saveEncryptedData.onFirstCall().callsArg(3);
       plugin.createVerificationSecretAndSendEmail = sinon.stub();
       plugin.createVerificationSecretAndSendEmail.onFirstCall().callsArg(1);
       response.send.onFirstCall().returnsThis();
@@ -99,7 +102,8 @@ describe('emailstore test', function() {
       assert(plugin.checkPassphrase.firstCall.args[0] === emailParam);
       assert(plugin.checkPassphrase.firstCall.args[1] === secretParam);
       assert(plugin.saveEncryptedData.firstCall.args[0] === emailParam);
-      assert(plugin.saveEncryptedData.firstCall.args[1] === recordParam);
+      assert(plugin.saveEncryptedData.firstCall.args[1] === keyParam);
+      assert(plugin.saveEncryptedData.firstCall.args[2] === recordParam);
       assert(plugin.createVerificationSecretAndSendEmail.firstCall.args[0] === emailParam);
     });
   });
@@ -144,17 +148,20 @@ describe('emailstore test', function() {
 
     it('should validate the secret and return the data', function() {
       request.param.onFirstCall().returns('email');
-      request.param.onSecondCall().returns('secret');
+      request.param.onSecondCall().returns('key');
+      request.param.onThirdCall().returns('secret');
       plugin.retrieveDataByEmailAndPassphrase = sinon.stub();
-      plugin.retrieveDataByEmailAndPassphrase.onFirstCall().callsArgWith(2, null, 'encrypted');
+      plugin.retrieveDataByEmailAndPassphrase.onFirstCall().callsArgWith(3, null, 'encrypted');
       response.send.onFirstCall().returnsThis();
 
       plugin.get(request, response);
 
       assert(request.param.firstCall.args[0] === 'email');
-      assert(request.param.secondCall.args[0] === 'secret');
+      assert(request.param.secondCall.args[0] === 'key');
+      assert(request.param.thirdCall.args[0] === 'secret');
       assert(plugin.retrieveDataByEmailAndPassphrase.firstCall.args[0] === 'email');
-      assert(plugin.retrieveDataByEmailAndPassphrase.firstCall.args[1] === 'secret');
+      assert(plugin.retrieveDataByEmailAndPassphrase.firstCall.args[1] === 'key');
+      assert(plugin.retrieveDataByEmailAndPassphrase.firstCall.args[2] === 'secret');
       assert(response.send.firstCall.args[0] === 'encrypted');
       assert(response.end.calledOnce);
     });

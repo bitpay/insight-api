@@ -80,10 +80,15 @@ emailPlugin.errors = {
 };
 
 var NAMESPACE = 'credentials-store-';
+var SEPARATOR = '#';
 var VALIDATION_NAMESPACE = 'validation-code-';
 var MAP_EMAIL_TO_SECRET = 'map-email-';
 var EMAIL_NAMESPACE = 'validated-email-';
 var MAX_ALLOWED_STORAGE = 1024 * 100 /* no more than 100 kb */;
+
+var makeKey = function(email, key) {
+  return NAMESPACE + email + SEPARATOR + key;
+}
 
 /**
  * Initializes the plugin
@@ -189,11 +194,12 @@ emailPlugin.savePassphrase = function(email, passphrase, callback) {
 
 /**
  * @param {string} email
+ * @param {string} key
  * @param {string} record
  * @param {Function(err)} callback
  */
-emailPlugin.saveEncryptedData = function(email, record, callback) {
-  emailPlugin.db.put(NAMESPACE + email, record, callback);
+emailPlugin.saveEncryptedData = function(email, key, record, callback) {
+  emailPlugin.db.put(makeKey(email, key), record, callback);
 };
 
 emailPlugin.createVerificationSecretAndSendEmail = function (email, callback) {
@@ -233,17 +239,18 @@ emailPlugin.post = function (request, response) {
   }).on('end', function () {
     var params = querystring.parse(queryData);
     var email = params.email;
+    var key = params.key;
     var secret = params.secret;
     var record = params.record;
-    if (!email || !secret || !record) {
+    if (!email || !secret || !record || !key) {
       return emailPlugin.returnError(emailPlugin.errors.MISSING_PARAMETER, response);
     }
 
-    emailPlugin.processPost(request, response, email, secret, record);
+    emailPlugin.processPost(request, response, email, key, secret, record);
   });
 };
 
-emailPlugin.processPost = function(request, response, email, secret, record) {
+emailPlugin.processPost = function(request, response, email, key, secret, record) {
   async.series([
     /**
      * Try to fetch this user's email. If it exists, check the secret is the same.
@@ -277,7 +284,7 @@ emailPlugin.processPost = function(request, response, email, secret, record) {
      * Save the encrypted private key in the storage.
      */
     function (callback) {
-      emailPlugin.saveEncryptedData(email, record, function(err) {
+      emailPlugin.saveEncryptedData(email, key, record, function(err) {
         if (err) {
           return callback({code: 500, message: err});
         }
@@ -328,22 +335,21 @@ emailPlugin.createVerificationSecret = function (email, callback) {
   });
 };
 
-
 /**
  * @param {string} email
  * @param {Function(err)} callback
  */
-emailPlugin.retrieveByEmail = function(email, callback) {
-  emailPlugin.db.get(NAMESPACE + email, callback);
+emailPlugin.retrieveByEmailAndKey = function(email, key, callback) {
+  emailPlugin.db.get(makeKey(email, key), callback);
 };
 
-emailPlugin.retrieveDataByEmailAndPassphrase = function(email, passphrase, callback) {
+emailPlugin.retrieveDataByEmailAndPassphrase = function(email, key, passphrase, callback) {
   emailPlugin.checkPassphrase(email, passphrase, function(err, matches) {
     if (err) {
       return callback(err);
     }
     if (matches) {
-      return emailPlugin.retrieveByEmail(email, callback);
+      return emailPlugin.retrieveByEmailAndKey(email, key, callback);
     } else {
       return callback(emailPlugin.errors.INVALID_CODE);
     }
@@ -361,12 +367,13 @@ emailPlugin.retrieveDataByEmailAndPassphrase = function(email, passphrase, callb
  */
 emailPlugin.get = function (request, response) {
   var email = request.param('email');
+  var key = request.param('key');
   var secret = request.param('secret');
   if (!secret) {
     return emailPlugin.returnError(emailPlugin.errors.MISSING_PARAMETER, response);
   }
 
-  emailPlugin.retrieveDataByEmailAndPassphrase(email, secret, function (err, value) {
+  emailPlugin.retrieveDataByEmailAndPassphrase(email, key, secret, function (err, value) {
     if (err) {
       if (err.notFound) {
         return emailPlugin.returnError(emailPlugin.errors.NOT_FOUND, response);
