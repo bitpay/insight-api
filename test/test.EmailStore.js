@@ -9,7 +9,7 @@ var   chai = require('chai'),
 
 logger.transports.console.level = 'warn';
 
-describe.only('emailstore test', function() {
+describe('emailstore test', function() {
 
   var globalConfig = require('../config/config');
 
