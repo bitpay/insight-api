@@ -39,13 +39,15 @@
 
 'use strict';
 
-var     logger = require('../lib/logger').logger,
-       levelup = require('levelup'),
-         async = require('async'),
-        crypto = require('crypto'),
-   querystring = require('querystring'),
-    nodemailer = require('nodemailer'),
-  globalConfig = require('../config/config');
+var logger = require('../lib/logger').logger;
+var levelup = require('levelup');
+var async = require('async');
+var crypto = require('crypto');
+var querystring = require('querystring');
+var nodemailer = require('nodemailer');
+var globalConfig = require('../config/config');
+var _ = require('lodash');
+var fs = require('fs');
 
 var emailPlugin = {};
 
@@ -104,6 +106,14 @@ emailPlugin.init = function (expressApp, config) {
 
   emailPlugin.email = config.emailTransport || nodemailer.createTransport(config.email);
 
+  emailPlugin.textTemplate = config.textTemplate || 'copay.plain';
+  emailPlugin.htmlTemplate = config.htmlTemplate || 'copay.html';
+  emailPlugin.confirmUrl = (
+    (config.confirmEmailHost || 'https://insight.bitpay.com')
+    + globalConfig.apiPrefix
+    + '/email/validate'
+  );
+
   expressApp.post(globalConfig.apiPrefix + '/email/register', emailPlugin.post);
   expressApp.get(globalConfig.apiPrefix + '/email/retrieve/:email', emailPlugin.get);
   expressApp.post(globalConfig.apiPrefix + '/email/validate', emailPlugin.validate);
@@ -133,26 +143,62 @@ emailPlugin.returnError = function (error, response) {
  */
 emailPlugin.sendVerificationEmail = function (email, secret) {
 
-  var emailBody = 'Activation code is ' + secret; // TODO: Use a template!
-  var emailBodyHTML = '<h1>Activation code is ' + secret + '</h1>'; // TODO: Use a template!
-
-  var mailOptions = {
-      from: 'Insight Services <insight@bitpay.com>',
-      to: email,
-      subject: 'Your Insight account has been created',
-      text: emailBody,
-      html: emailBodyHTML
-  };
-
-  // send mail with defined transport object
-  emailPlugin.email.sendMail(mailOptions, function (err, info) {
-    if (err) {
-      logger.error('An error occurred when trying to send email to ' + email, err);
-    } else {
-      logger.debug('Message sent: ' + info.response);
+  async.series([
+    function(callback) {
+      emailPlugin.makeEmailBody({
+        email: email,
+        confirm_url: emailPlugin.makeConfirmUrl(secret)
+      }, callback);
+    },
+    function(callback) {
+      emailPlugin.makeEmailHTMLBody({
+        email: email,
+        confirm_url: emailPlugin.makeConfirmUrl(secret),
+        title: 'Your wallet backup needs confirmation'
+      }, callback);
     }
+  ], function(err, results) {
+    var emailBody = results[0];
+    var emailBodyHTML = results[1];
+    var mailOptions = {
+        from: 'Insight Services <insight@bitpay.com>',
+        to: email,
+        subject: '[Copay] Your wallet backup needs confirmation',
+        text: emailBody,
+        html: emailBodyHTML
+    };
+
+    // send mail with defined transport object
+    emailPlugin.email.sendMail(mailOptions, function (err, info) {
+      if (err) {
+        logger.error('An error occurred when trying to send email to ' + email, err);
+      } else {
+        logger.error('Message sent: ' + info.response);
+      }
+    });
   });
 };
+
+emailPlugin.makeConfirmUrl = function(secret) {
+  return emailPlugin.confirmUrl + '?secret='+secret;
+};
+
+/**
+ * Returns a function that reads an underscore template and uses the `opts` param
+ * to build an email body
+ */
+var applyTemplate = function(templateFilename) {
+  return function(opts, callback) {
+    fs.readFile(__dirname + '/emailTemplates/' + emailPlugin[templateFilename],
+      function(err, template) {
+        return callback(err, _.template(template, opts));
+      }
+    );
+  };
+};
+
+emailPlugin.makeEmailBody = applyTemplate('textTemplate');
+emailPlugin.makeEmailHTMLBody = applyTemplate('htmlTemplate');
 
 /**
  * @param {string} email
@@ -402,7 +448,6 @@ emailPlugin.validate = function (request, response) {
   }
 
   emailPlugin.db.get(VALIDATION_NAMESPACE + email, function (err, value) {
-    logger.info('Recibido: ' + value);
     if (err) {
       if (err.notFound) {
         return emailPlugin.returnError(emailPlugin.errors.NOT_FOUND, response);

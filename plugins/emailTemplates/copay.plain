@@ -1,0 +1,27 @@
+Hi, <%= email %>
+ 
+You are now using Insight to store an encrypted Copay backup. This is a free
+service that we are providing that you can turn off from Copay's preferences.
+ 
+In order to prevent abuse, we need you to confirm that this email is valid and
+that you requested this backup. Please follow this link if you agree on
+backing up your Copay profile within our servers:
+ 
+    <%= confirm_url %>
+ 
+We would also like you to take note of these:
+ 
+  * We only store information encrypted by your Copay app. We can't retrieve
+    your private keys, help you remember the password, or collect any information
+    about your wallet.
+ 
+  * In case of a service compromise, intruders may be able to brute-force their
+    way into your private keys. Please use a strong password to avoid this.
+ 
+  * Our code is open source and can be audited here:
+      https://github.com/bitpay/insight
+      https://github.com/bitpay/copay
+ 
+Thanks!
+ 
+The Copay Team
