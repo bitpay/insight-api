@@ -1,9 +1,10 @@
 module.exports = {
+  confirmEmailHost: 'https://insight.bitpay.com',
   email: {
     service: 'Gmail',
     auth: {
-      user: 'john@gmail.com',
-      pass: 'mypassword'
+      user: '',
+      pass: ''
     }
   }
 };
