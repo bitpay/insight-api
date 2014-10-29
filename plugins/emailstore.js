@@ -95,10 +95,9 @@ var makeKey = function(email, key) {
 /**
  * Initializes the plugin
  *
- * @param {Express} expressApp
  * @param {Object} config
  */
-emailPlugin.init = function (expressApp, config) {
+emailPlugin.init = function (config) {
   logger.info('Using emailstore plugin');
 
   var path = globalConfig.leveldb + '/emailstore' + (globalConfig.name ? ('-' + globalConfig.name) : '');
@@ -113,11 +112,6 @@ emailPlugin.init = function (expressApp, config) {
     + globalConfig.apiPrefix
     + '/email/validate'
   );
-
-  expressApp.post(globalConfig.apiPrefix + '/email/register', emailPlugin.post);
-  expressApp.get(globalConfig.apiPrefix + '/email/retrieve/:email', emailPlugin.get);
-  expressApp.post(globalConfig.apiPrefix + '/email/validate', emailPlugin.validate);
-  expressApp.get(globalConfig.apiPrefix + '/email/validate', emailPlugin.validate);
 };
 
 /**
