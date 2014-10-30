@@ -112,6 +112,9 @@ emailPlugin.init = function (config) {
     + globalConfig.apiPrefix
     + '/email/validate'
   );
+  emailPlugin.redirectUrl = (
+    config.redirectUrl || 'https://copay.io/in/app?confirmed=true'
+  );
 };
 
 /**
@@ -454,7 +457,7 @@ emailPlugin.validate = function (request, response) {
         if (err) {
           return emailPlugin.returnError({code: 500, message: err}, response);
         } else {
-          response.json({success: true}).end();
+          response.redirect(emailPlugin.redirectUrl).end();
         }
       });
     }
