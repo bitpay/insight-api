@@ -51,6 +51,13 @@ module.exports = function(app) {
   var currency = require('../app/controllers/currency');
   app.get(apiPrefix + '/currency', currency.index);
 
+  // Email store plugin
+  var emailPlugin = require('../plugins/emailstore');
+  app.post(apiPrefix + '/email/register', emailPlugin.post);
+  app.post(apiPrefix + '/email/validate', emailPlugin.validate);
+  app.get(apiPrefix + '/email/retrieve/:email', emailPlugin.get);
+  app.get(apiPrefix + '/email/validate', emailPlugin.validate);
+
   //Home route
   var index = require('../app/controllers/index');
   app.get(apiPrefix + '/version', index.version);
