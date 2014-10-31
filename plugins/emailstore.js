@@ -168,8 +168,6 @@ emailPlugin.sendVerificationEmail = function (email, secret) {
         html: emailBodyHTML
     };
 
-    console.log('Sending email to:', email); //TODO
-
     // send mail with defined transport object
     emailPlugin.email.sendMail(mailOptions, function (err, info) {
       if (err) {
@@ -227,7 +225,10 @@ emailPlugin.exists = function(email, callback) {
 emailPlugin.checkPassphrase = function(email, passphrase, callback) {
   emailPlugin.db.get(MAP_EMAIL_TO_SECRET + email, function(err, retrievedPassphrase) {
     if (err) {
-      return callback(err);
+      if (err.notFound) {
+        return callback(emailPlugin.errors.INVALID_CODE);
+      }
+      return callback(emailPlugin.errors.INTERNAL_ERROR);
     }
     return callback(err, passphrase === retrievedPassphrase);
   });
@@ -390,16 +391,21 @@ emailPlugin.createVerificationSecret = function (email, callback) {
  * @param {Function(err)} callback
  */
 emailPlugin.retrieveByEmailAndKey = function(email, key, callback) {
-  emailPlugin.db.get(makeKey(email, key), callback);
+  emailPlugin.db.get(makeKey(email, key), function(error, value) {
+    if (error) {
+      if (error.notFound) {
+        return callback(emailPlugin.errors.NOT_FOUND);
+      }
+      return callback(emailPlugin.errors.INTERNAL_ERROR);
+    }
+    return callback(null, value);
+  });
 };
 
 emailPlugin.retrieveDataByEmailAndPassphrase = function(email, key, passphrase, callback) {
   emailPlugin.checkPassphrase(email, passphrase, function(err, matches) {
     if (err) {
-      if (err.notFound) {
-        return callback(emailPlugin.errors.INVALID_CODE);
-      }
-      return callback(emailPlugin.errors.INTERNAL_ERROR);
+      return callback(err);
     }
     if (matches) {
       return emailPlugin.retrieveByEmailAndKey(email, key, callback);
