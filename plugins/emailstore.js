@@ -158,19 +158,21 @@ emailPlugin.sendVerificationEmail = function (email, secret) {
     var emailBody = results[0];
     var emailBodyHTML = results[1];
     var mailOptions = {
-        from: 'Insight Services <insight@bitpay.com>',
+        from: 'Insight Services <wallet@copay.io>',
         to: email,
         subject: '[Copay] Your wallet backup needs confirmation',
         text: emailBody,
         html: emailBodyHTML
     };
 
+    console.log('Sending email to:', email); //TODO
+
     // send mail with defined transport object
     emailPlugin.email.sendMail(mailOptions, function (err, info) {
       if (err) {
         logger.error('An error occurred when trying to send email to ' + email, err);
       } else {
-        logger.error('Message sent: ' + info.response);
+        logger.error('Message sent: ', info);
       }
     });
   });
