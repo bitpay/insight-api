@@ -76,7 +76,7 @@ emailPlugin.errors = {
     message: 'That email is already registered'
   },
   INVALID_CODE: {
-    code: 400,
+    code: 403,
     message: 'The provided code is invalid'
   }
 };
@@ -209,7 +209,7 @@ emailPlugin.makeEmailHTMLBody = applyTemplate('htmlTemplate');
  * @param {Function(err, boolean)} callback
  */
 emailPlugin.exists = function(email, callback) {
-  emailPlugin.db.get(EMAIL_NAMESPACE + email, function(err, value) {
+  emailPlugin.db.get(MAP_EMAIL_TO_SECRET + email, function(err, value) {
     if (err && err.notFound) {
       return callback(null, false);
     } else if (err) {
@@ -308,11 +308,11 @@ emailPlugin.processPost = function(request, response, email, key, secret, record
     function (callback) {
       emailPlugin.exists(email, function(err, exists) {
         if (err) {
-          return callback({code: 500, message: err});
+          return callback(err);
         } else if (exists) {
           emailPlugin.checkPassphrase(email, secret, function(err, match) {
             if (err) {
-              return callback({code: 500, message: err});
+              return callback(err);
             }
             if (match) {
               return callback();
@@ -336,7 +336,7 @@ emailPlugin.processPost = function(request, response, email, key, secret, record
     function (callback) {
       emailPlugin.saveEncryptedData(email, key, record, function(err) {
         if (err) {
-          return callback({code: 500, message: err});
+          return callback(err);
         }
         return callback();
       });
@@ -396,7 +396,10 @@ emailPlugin.retrieveByEmailAndKey = function(email, key, callback) {
 emailPlugin.retrieveDataByEmailAndPassphrase = function(email, key, passphrase, callback) {
   emailPlugin.checkPassphrase(email, passphrase, function(err, matches) {
     if (err) {
-      return callback(err);
+      if (err.notFound) {
+        return callback(emailPlugin.errors.INVALID_CODE);
+      }
+      return callback(emailPlugin.errors.INTERNAL_ERROR);
     }
     if (matches) {
       return emailPlugin.retrieveByEmailAndKey(email, key, callback);
@@ -425,10 +428,7 @@ emailPlugin.get = function (request, response) {
 
   emailPlugin.retrieveDataByEmailAndPassphrase(email, key, secret, function (err, value) {
     if (err) {
-      if (err.notFound) {
-        return emailPlugin.returnError(emailPlugin.errors.NOT_FOUND, response);
-      }
-      return emailPlugin.returnError({code: 500, message: err}, response);
+      return emailPlugin.returnError(err, response);
     }
     response.send(value).end();
   });
