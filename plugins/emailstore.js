@@ -158,7 +158,7 @@ emailPlugin.sendVerificationEmail = function (email, secret) {
     var emailBody = results[0];
     var emailBodyHTML = results[1];
     var mailOptions = {
-        from: 'Insight Services <insight@bitpay.com>',
+        from: 'Insight Services <wallet@copay.io>',
         to: email,
         subject: '[Copay] Your wallet backup needs confirmation',
         text: emailBody,
