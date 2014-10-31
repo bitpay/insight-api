@@ -165,6 +165,8 @@ emailPlugin.sendVerificationEmail = function (email, secret) {
         html: emailBodyHTML
     };
 
+    console.log('Sending email to:', email); //TODO
+
     // send mail with defined transport object
     emailPlugin.email.sendMail(mailOptions, function (err, info) {
       if (err) {
