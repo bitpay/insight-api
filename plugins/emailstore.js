@@ -139,18 +139,18 @@ emailPlugin.returnError = function (error, response) {
  * @param {string} secret - the verification secret
  */
 emailPlugin.sendVerificationEmail = function (email, secret) {
-
+  var confirmUrl = emailPlugin.makeConfirmUrl(email, secret);
   async.series([
     function(callback) {
       emailPlugin.makeEmailBody({
         email: email,
-        confirm_url: emailPlugin.makeConfirmUrl(secret)
+        confirm_url: confirmUrl
       }, callback);
     },
     function(callback) {
       emailPlugin.makeEmailHTMLBody({
         email: email,
-        confirm_url: emailPlugin.makeConfirmUrl(secret),
+        confirm_url: confirmUrl,
         title: 'Your wallet backup needs confirmation'
       }, callback);
     }
@@ -176,8 +176,10 @@ emailPlugin.sendVerificationEmail = function (email, secret) {
   });
 };
 
-emailPlugin.makeConfirmUrl = function(secret) {
-  return emailPlugin.confirmUrl + '?secret='+secret;
+emailPlugin.makeConfirmUrl = function(email, secret) {
+  return emailPlugin.confirmUrl + (
+    '?email=' + encodeURIComponent(email) + '&verification_code='+secret
+  );
 };
 
 /**
@@ -457,7 +459,7 @@ emailPlugin.validate = function (request, response) {
         if (err) {
           return emailPlugin.returnError({code: 500, message: err}, response);
         } else {
-          response.redirect(emailPlugin.redirectUrl).end();
+          response.redirect(emailPlugin.redirectUrl);
         }
       });
     }
