@@ -170,7 +170,7 @@ emailPlugin.sendVerificationEmail = function (email, secret) {
       if (err) {
         logger.error('An error occurred when trying to send email to ' + email, err);
       } else {
-        logger.error('Message sent: ' + info.response);
+        logger.error('Message sent: ', info);
       }
     });
   });
