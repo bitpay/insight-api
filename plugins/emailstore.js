@@ -158,7 +158,7 @@ emailPlugin.sendVerificationEmail = function (email, secret) {
     var emailBody = results[0];
     var emailBodyHTML = results[1];
     var mailOptions = {
-        from: 'Insight Services <wallet@copay.io>',
+        from: 'copay@copay.io',
         to: email,
         subject: '[Copay] Your wallet backup needs confirmation',
         text: emailBody,
@@ -172,7 +172,7 @@ emailPlugin.sendVerificationEmail = function (email, secret) {
       if (err) {
         logger.error('An error occurred when trying to send email to ' + email, err);
       } else {
-        logger.error('Message sent: ', info);
+        logger.info('Message sent: ', info ? info : '');
       }
     });
   });
