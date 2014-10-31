@@ -52,11 +52,13 @@ module.exports = function(app) {
   app.get(apiPrefix + '/currency', currency.index);
 
   // Email store plugin
-  var emailPlugin = require('../plugins/emailstore');
-  app.post(apiPrefix + '/email/register', emailPlugin.post);
-  app.post(apiPrefix + '/email/validate', emailPlugin.validate);
-  app.get(apiPrefix + '/email/retrieve/:email', emailPlugin.get);
-  app.get(apiPrefix + '/email/validate', emailPlugin.validate);
+  if (config.enableEmailstore) {
+    var emailPlugin = require('../plugins/emailstore');
+    app.post(apiPrefix + '/email/register', emailPlugin.post);
+    app.post(apiPrefix + '/email/validate', emailPlugin.validate);
+    app.get(apiPrefix + '/email/retrieve/:email', emailPlugin.get);
+    app.get(apiPrefix + '/email/validate', emailPlugin.validate);
+  }
 
   //Home route
   var index = require('../app/controllers/index');
