@@ -107,13 +107,16 @@ emailPlugin.init = function (config) {
 
   emailPlugin.textTemplate = config.textTemplate || 'copay.plain';
   emailPlugin.htmlTemplate = config.htmlTemplate || 'copay.html';
+
   emailPlugin.confirmUrl = (
-    (config.confirmEmailHost || 'https://insight.bitpay.com')
-    + globalConfig.apiPrefix
-    + '/email/validate'
-  );
+    process.env.INSIGHT_EMAIL_CONFIRM_HOST
+    || config.confirmUrl
+    || 'https://insight.bitpay.com'
+  ) + globalConfig.apiPrefix + '/email/validate';
+
   emailPlugin.redirectUrl = (
-    config.redirectUrl || 'https://copay.io/in/app?confirmed=true'
+    config.redirectUrl
+    || 'https://copay.io/in/app?confirmed=true'
   );
 };
 
