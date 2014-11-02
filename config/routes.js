@@ -60,6 +60,11 @@ module.exports = function(app) {
     app.get(apiPrefix + '/email/validate', emailPlugin.validate);
   }
 
+  // Address routes
+  var messages = require('../app/controllers/messages');
+  app.get(apiPrefix + '/messages/verify', messages.verify);
+  app.post(apiPrefix + '/messages/verify', messages.verify);
+
   //Home route
   var index = require('../app/controllers/index');
   app.get(apiPrefix + '/version', index.version);
