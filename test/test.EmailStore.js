@@ -125,6 +125,7 @@ describe('emailstore test', function() {
 
     it('should validate correctly an email if the secret matches', function() {
       leveldb_stub.get.onFirstCall().callsArgWith(1, null, secret);
+      response.redirect = sinon.stub();
 
       plugin.validate(request, response);
 
@@ -164,6 +165,40 @@ describe('emailstore test', function() {
       assert(plugin.retrieveDataByEmailAndPassphrase.firstCall.args[1] === 'key');
       assert(plugin.retrieveDataByEmailAndPassphrase.firstCall.args[2] === 'secret');
       assert(response.send.firstCall.args[0] === 'encrypted');
+      assert(response.end.calledOnce);
+    });
+  });
+
+  describe('changing the user password', function() {
+    it('should validate the previous passphrase', function() {
+      request.param = sinon.stub();
+      request.param.onFirstCall().returns('email');
+      request.param.onSecondCall().returns('oldSecret');
+      request.param.onThirdCall().returns('newSecret');
+      response.status.onFirstCall().returnsThis();
+      response.json.onFirstCall().returnsThis();
+
+      plugin.checkPassphrase = sinon.stub();
+      plugin.checkPassphrase.onFirstCall().callsArgWith(2, 'error');
+
+      plugin.changePassphrase(request, response);
+      assert(response.status.calledOnce);
+      assert(response.json.calledOnce);
+      assert(response.end.calledOnce);
+    });
+    it('should change the passphrase', function() {
+      request.param.onFirstCall().returns('email');
+      request.param.onSecondCall().returns('oldSecret');
+      request.param.onThirdCall().returns('newSecret');
+      response.json.onFirstCall().returnsThis();
+
+      plugin.checkPassphrase = sinon.stub();
+      plugin.checkPassphrase.onFirstCall().callsArgWith(2, null);
+      plugin.savePassphrase = sinon.stub();
+      plugin.savePassphrase.onFirstCall().callsArgWith(2, null);
+
+      plugin.changePassphrase(request, response);
+      assert(response.json.calledOnce);
       assert(response.end.calledOnce);
     });
   });

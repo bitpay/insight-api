@@ -240,7 +240,13 @@ emailPlugin.checkPassphrase = function(email, passphrase, callback) {
  * @param {Function(err)} callback
  */
 emailPlugin.savePassphrase = function(email, passphrase, callback) {
-  emailPlugin.db.put(MAP_EMAIL_TO_SECRET + email, passphrase, callback);
+  emailPlugin.db.put(MAP_EMAIL_TO_SECRET + email, passphrase, function(err) {
+    if (err) {
+      logger.error(err);
+      return callback(emailPlugin.errors.INTERNAL_ERROR);
+    }
+    return callback(null);
+  });
 };
 
 /**
@@ -324,7 +330,7 @@ emailPlugin.processPost = function(request, response, email, key, secret, record
         } else {
           emailPlugin.savePassphrase(email, secret, function(err) {
             if (err) {
-              return callback({code: 500, message: err});
+              return callback(err);
             }
             return callback();
           });
@@ -474,6 +480,44 @@ emailPlugin.validate = function (request, response) {
         }
       });
     }
+  });
+};
+
+/**
+ * Changes an user's passphrase
+ *
+ * @param {Express.Request} request
+ * @param {Express.Response} response
+ */
+emailPlugin.changePassphrase = function (request, response) {
+  var queryData = '';
+
+  request.on('data', function (data) {
+    queryData += data;
+    if (queryData.length > MAX_ALLOWED_STORAGE) {
+      queryData = '';
+      response.writeHead(413, {'Content-Type': 'text/plain'}).end();
+      request.connection.destroy();
+    }
+  }).on('end', function () {
+    var params = querystring.parse(queryData);
+    var email = params.email;
+    var oldSecret = params.secret;
+    var newSecret = params.newSecret;
+    if (!email || !oldSecret || !newSecret) {
+      return emailPlugin.returnError(emailPlugin.errors.INVALID_REQUEST, response);
+    }
+    emailPlugin.checkPassphrase(email, oldSecret, function (error) {
+      if (error) {
+        return emailPlugin.returnError(error, response);
+      }
+      emailPlugin.savePassphrase(email, newSecret, function (error) {
+        if (error) {
+          return emailPlugin.returnError(error, response);
+        }
+        return response.json({success: true}).end();
+      });
+    });
   });
 };
 
