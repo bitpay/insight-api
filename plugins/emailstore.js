@@ -422,11 +422,14 @@ emailPlugin.retrieveDataByEmailAndPassphrase = function(email, key, passphrase, 
 };
 
 /**
- * Retrieve a record from the database.
+ * Retrieve a record from the database (deprecated)
  *
  * The request is expected to contain the parameters:
+ * * email
  * * secret
+ * * key
  *
+ * @deprecated
  * @param {Express.Request} request
  * @param {Express.Response} response
  */
@@ -435,6 +438,34 @@ emailPlugin.get = function (request, response) {
   var key = request.param('key');
   var secret = request.param('secret');
   if (!secret) {
+    return emailPlugin.returnError(emailPlugin.errors.MISSING_PARAMETER, response);
+  }
+
+  emailPlugin.retrieveDataByEmailAndPassphrase(email, key, secret, function (err, value) {
+    if (err) {
+      return emailPlugin.returnError(err, response);
+    }
+    response.send(value).end();
+  });
+};
+
+/**
+ * Retrieve a record from the database
+ */
+emailPlugin.retrieve = function (request, response) {
+  if (!request.header('authorization')) {
+    return emailPlugin.returnError(emailPlugin.errors.INVALID_REQUEST, response);
+  }
+  var authHeader = new Buffer(request.header('authorization'), 'base64').toString('utf8');
+  var splitIndex = authHeader.indexOf(':');
+  if (splitIndex === -1) {
+    return emailPlugin.returnError(emailPlugin.errors.INVALID_REQUEST, response);
+  }
+  var email = authHeader.substr(0, splitIndex);
+  var secret = authHeader.substr(splitIndex + 1);
+
+  var key = request.param('key');
+  if (!secret || !email || !key) {
     return emailPlugin.returnError(emailPlugin.errors.MISSING_PARAMETER, response);
   }
 

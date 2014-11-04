@@ -57,6 +57,7 @@ module.exports = function(app) {
     app.post(apiPrefix + '/email/register', emailPlugin.post);
     app.post(apiPrefix + '/email/validate', emailPlugin.validate);
     app.get(apiPrefix + '/email/retrieve/:email', emailPlugin.get);
+    app.get(apiPrefix + '/email/retrieve', emailPlugin.retrieve);
     app.get(apiPrefix + '/email/validate', emailPlugin.validate);
     app.post(apiPrefix + '/email/change_passphrase', emailPlugin.changePassphrase);
   }
