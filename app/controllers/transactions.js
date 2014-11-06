@@ -6,6 +6,7 @@
 var Address     = require('../models/Address');
 var async       = require('async');
 var common      = require('./common');
+var util        = require('util');
 
 var Rpc           = require('../../lib/Rpc');
 
@@ -14,7 +15,21 @@ var bdb = require('../../lib/BlockDb').default();
 
 exports.send = function(req, res) {
   Rpc.sendRawTransaction(req.body.rawtx, function(err, txid) {
-    if (err) return common.handleErrors(err, res);
+    if (err) {
+      var message;
+      if(err.code == -25) {
+        message = util.format(
+          'Generic error %s (code %s)',
+          err.message, err.code);
+      } else if(err.code == -26) {
+        message = util.format(
+          'Transaction rejected by network (code %s). Reason: %s',
+          err.code, err.message);
+      } else {
+        message = util.format('%s (code %s)', err.message, err.code);
+      }
+      return res.status(400).send(message);
+    }
     res.json({'txid' : txid});
   });
 };
