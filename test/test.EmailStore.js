@@ -32,7 +32,7 @@ describe('emailstore test', function() {
     express_mock.post = sinon.stub();
     express_mock.get = sinon.stub();
 
-    plugin.init(express_mock, {db: leveldb_stub, emailTransport: email_stub});
+    plugin.init({db: leveldb_stub, emailTransport: email_stub});
 
     request = sinon.stub();
     request.on = sinon.stub();
@@ -42,6 +42,7 @@ describe('emailstore test', function() {
     response.status = sinon.stub();
     response.json = sinon.stub();
     response.end = sinon.stub();
+    response.redirect = sinon.stub();
   });
 
   it('initializes correctly', function() {
@@ -127,10 +128,10 @@ describe('emailstore test', function() {
 
       plugin.validate(request, response);
 
-      assert(response.json.firstCall.calledWith({success: true}));
+      assert(response.redirect.firstCall.calledWith(plugin.redirectUrl));
     });
 
-    it('should fail to validate an email if the secrent doesn\'t match', function() {
+    it('should fail to validate an email if the secret doesn\'t match', function() {
       var invalid = '3';
       leveldb_stub.get.onFirstCall().callsArgWith(1, null, invalid);
       response.status.returnsThis();
@@ -138,7 +139,7 @@ describe('emailstore test', function() {
 
       plugin.validate(request, response);
 
-      assert(response.status.firstCall.calledWith(400));
+      assert(response.status.firstCall.calledWith(plugin.errors.INVALID_CODE.code));
       assert(response.json.firstCall.calledWith({error: 'The provided code is invalid'}));
       assert(response.end.calledOnce);
     });
