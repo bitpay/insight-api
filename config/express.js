@@ -40,6 +40,12 @@ module.exports = function(app, historicSync, peerSync) {
       res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
       res.header('Access-Control-Allow-Headers', 'Content-Type,Authorization');
 
+
+      if ('OPTIONS' == req.method) {
+        res.send(200);
+        res.end();
+        return;
+      }
       next();
     }
     app.use(allowCopayCrossDomain);
