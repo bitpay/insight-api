@@ -585,7 +585,7 @@ emailPlugin.changePassphrase = function (request, response) {
     }
   }).on('end', function () {
     var params = querystring.parse(queryData);
-    var newPassphrase = params.passphrase;
+    var newPassphrase = params.newPassphrase;
     if (!email || !passphrase || !newPassphrase) {
       return emailPlugin.returnError(emailPlugin.errors.INVALID_REQUEST, response);
     }
