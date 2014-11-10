@@ -314,7 +314,7 @@ emailPlugin.createVerificationSecret = function (email, callback) {
         return callback(null, secret);
       });
     } else {
-      return callback(emailPlugin.errors.INTERNAL_ERROR);
+      return callback();
     }
   });
 };
