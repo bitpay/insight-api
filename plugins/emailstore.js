@@ -1,39 +1,5 @@
 /**
- * Email-credentials-storage service
- *
- * Allows users to store encrypted data on the server, useful to store the user's credentials.
- *
- * Triggers an email to the user's provided email account. Note that the service may decide to
- * remove information associated with unconfirmed email addresses!
- *
- * Steps for the user would be:
- *
- *   1. Select an email to use
- *   2. Choose a password
- *   3. Create a strong key for encryption using PBKDF2 or scrypt with the email and password
- *   4. Use that key to AES-CRT encrypt the private key
- *   5. Take the double SHA256 hash of "salt"+"email"+"password" and use that as a secret
- *   6. Send a POST request to resource /email/register with the params:
- *          email=johndoe@email.com
- *          secret=2413fb3709b05939f04cf2e92f7d0897fc2596f9ad0b8a9ea855c7bfebaae892
- *          record=YjU1MTI2YTM5ZjliMTE3MGEzMmU2ZjYxZTRhNjk0YzQ1MjM1ZTVhYzExYzA1ZWNkNmZm
- *          NjM5NWRlNmExMTE4NzIzYzYyYWMwODU1MTdkNWMyNjRiZTVmNmJjYTMxMGQyYmFiNjc4YzdiODV
- *          lZjg5YWIxYzQ4YjJmY2VkYWJjMDQ2NDYzODhkODFiYTU1NjZmMzgwYzhiODdiMzlmYjQ5ZTc1Nz
- *          FjYzQzYjk1YTEyYWU1OGMxYmQ3OGFhOTZmNGMz
- *
- * To verify an email:
- *
- *   1. Check the email sent by the insight server
- *   2. Click on the link provided, or take the verification secret to make a request
- *   3. The request done can be a POST or GET request to /email/validate with the params:
- *          email=johndoe@email.com
- *          verification_code=M5NWRlNmExMTE4NzIzYzYyYWMwODU1MT
- *
- * To retrieve data:
- *
- *   1. Recover the secret from the double sha256 of the salt, email, and password
- *   2. Send a GET request to resource /email/retrieve?secret=......
- *   3. Decrypt the data received
+ * GIST: https://gist.github.com/eordano/3e80ee3383554e94a08e
  */
 (function () {
 
@@ -252,6 +218,7 @@ emailPlugin.checkPassphrase = function(email, passphrase, callback) {
   });
 };
 
+
 /**
  * @param {string} email
  * @param {string} passphrase
@@ -359,7 +326,7 @@ emailPlugin.retrieveDataByEmailAndPassphrase = function(email, key, passphrase, 
  * @param {Express.Request} request
  * @param {Express.Response} response
  */
-emailPlugin.post = function (request, response) {
+emailPlugin.save = function (request, response) {
 
   var queryData = '';
   var credentials = emailPlugin.getCredentialsFromRequest(request);
@@ -451,33 +418,6 @@ emailPlugin.processPost = function(request, response, email, key, passphrase, re
   );
 };
 
-/**
- * Retrieve a record from the database (deprecated)
- *
- * The request is expected to contain the parameters:
- * * email
- * * secret
- * * key
- *
- * @deprecated
- * @param {Express.Request} request
- * @param {Express.Response} response
- */
-emailPlugin.get = function (request, response) {
-  var email = request.param('email');
-  var key = request.param('key');
-  var secret = request.param('secret');
-  if (!secret) {
-    return emailPlugin.returnError(emailPlugin.errors.MISSING_PARAMETER, response);
-  }
-
-  emailPlugin.retrieveDataByEmailAndPassphrase(email, key, secret, function (err, value) {
-    if (err) {
-      return emailPlugin.returnError(err, response);
-    }
-    response.send(value).end();
-  });
-};
 
 emailPlugin.getCredentialsFromRequest = function(request) {
   if (!request.header('authorization')) {
@@ -600,6 +540,49 @@ emailPlugin.changePassphrase = function (request, response) {
         return response.json({success: true}).end();
       });
     });
+  });
+};
+
+
+// Backwards compatibility
+
+emailPlugin.oldRetrieve = function (request, response) {
+  var email = request.param('email');
+  var key = request.param('key');
+  var secret = request.param('secret');
+  if (!secret) {
+    return emailPlugin.returnError(emailPlugin.errors.MISSING_PARAMETER, response);
+  }
+
+  emailPlugin.retrieveDataByEmailAndPassphrase(email, key, secret, function (err, value) {
+    if (err) {
+      return emailPlugin.returnError(err, response);
+    }
+    response.send(value).end();
+  });
+};
+
+emailPlugin.oldSave = function (request, response) {
+  var queryData = '';
+
+  request.on('data', function (data) {
+    queryData += data;
+    if (queryData.length > MAX_ALLOWED_STORAGE) {
+      queryData = '';
+      response.writeHead(413, {'Content-Type': 'text/plain'}).end();
+      request.connection.destroy();
+    }
+  }).on('end', function () {
+    var params = querystring.parse(queryData);
+    var email = params.email;
+    var passphrase = params.secret;
+    var key = params.key;
+    var record = params.record;
+    if (!email || !passphrase || !record || !key) {
+      return emailPlugin.returnError(emailPlugin.errors.MISSING_PARAMETER, response);
+    }
+
+    emailPlugin.processPost(request, response, email, key, passphrase, record);
   });
 };
 

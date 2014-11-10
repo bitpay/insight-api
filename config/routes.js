@@ -54,12 +54,15 @@ module.exports = function(app) {
   // Email store plugin
   if (config.enableEmailstore) {
     var emailPlugin = require('../plugins/emailstore');
-    app.post(apiPrefix + '/email/register', emailPlugin.post);
-    app.post(apiPrefix + '/email/validate', emailPlugin.validate);
-    app.get(apiPrefix + '/email/retrieve/:email', emailPlugin.get);
+    app.post(apiPrefix + '/email/save', emailPlugin.save);
     app.get(apiPrefix + '/email/retrieve', emailPlugin.retrieve);
-    app.get(apiPrefix + '/email/validate', emailPlugin.validate);
     app.post(apiPrefix + '/email/change_passphrase', emailPlugin.changePassphrase);
+
+    app.post(apiPrefix + '/email/validate', emailPlugin.validate);
+    app.get(apiPrefix + '/email/validate', emailPlugin.validate);
+
+    app.post(apiPrefix + '/email/register', emailPlugin.oldSave);
+    app.get(apiPrefix + '/email/retrieve/:email', emailPlugin.oldRetrieve);
   }
 
   // Address routes
