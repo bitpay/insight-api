@@ -19,7 +19,7 @@ describe('emailstore test', function() {
   var leveldb_stub = sinon.stub();
   leveldb_stub.put = sinon.stub();
   leveldb_stub.get = sinon.stub();
-  leveldb_stub.remove = sinon.stub();
+  leveldb_stub.del = sinon.stub();
   var email_stub = sinon.stub();
   email_stub.sendMail = sinon.stub();
 
@@ -45,7 +45,14 @@ describe('emailstore test', function() {
     request.param = sinon.stub();
     response = sinon.stub();
     response.send = sinon.stub();
-    response.status = sinon.stub();
+    response.status = sinon.stub().returns({
+      json: function() {
+        return {
+          end: function() {
+          }
+        }
+      }
+    });
     response.json = sinon.stub();
     response.end = sinon.stub();
     response.redirect = sinon.stub();
@@ -76,7 +83,9 @@ describe('emailstore test', function() {
       });
 
       it('returns false when an email doesn\'t exist', function(done) {
-        leveldb_stub.get.onFirstCall().callsArgWith(1, {notFound: true});
+        leveldb_stub.get.onFirstCall().callsArgWith(1, {
+          notFound: true
+        });
 
         plugin.exists(fakeEmail, function(err, exists) {
           leveldb_stub.get.firstCall.args[0].should.equal(fakeEmailKey);
@@ -162,8 +171,7 @@ describe('emailstore test', function() {
       var fakeEmail = 'fake@email.com';
       var fakeKey = 'nameForData';
       var fakeRecord = 'fakeRecord';
-      var expectedKey = 'emailstore-'
-                      + bitcore.util.twoSha256(fakeEmail + '#' + fakeKey).toString('hex');
+      var expectedKey = 'emailstore-' + bitcore.util.twoSha256(fakeEmail + '#' + fakeKey).toString('hex');
 
       beforeEach(function() {
         leveldb_stub.get.reset();
@@ -193,7 +201,11 @@ describe('emailstore test', function() {
       var sendVerificationEmail = sinon.stub(plugin, 'sendVerificationEmail');
       var fakeEmail = 'fake@email.com';
       var fakeRandom = 'fakerandom';
-      var randomBytes = {toString: function() { return fakeRandom; }};
+      var randomBytes = {
+        toString: function() {
+          return fakeRandom;
+        }
+      };
 
       beforeEach(function() {
         leveldb_stub.get.reset();
@@ -205,7 +217,9 @@ describe('emailstore test', function() {
       });
 
       var setupLevelDb = function() {
-        leveldb_stub.get.onFirstCall().callsArgWith(1, {notFound: true});
+        leveldb_stub.get.onFirstCall().callsArgWith(1, {
+          notFound: true
+        });
         leveldb_stub.put.onFirstCall().callsArg(2);
       };
 
@@ -226,7 +240,9 @@ describe('emailstore test', function() {
         });
       });
       it('returns internal error on put database error', function(done) {
-        leveldb_stub.get.onFirstCall().callsArgWith(1, {notFound: true});
+        leveldb_stub.get.onFirstCall().callsArgWith(1, {
+          notFound: true
+        });
         leveldb_stub.put.onFirstCall().callsArgWith(2, 'error');
         plugin.createVerificationSecretAndSendEmail(fakeEmail, function(err) {
           err.should.equal(plugin.errors.INTERNAL_ERROR);
@@ -254,8 +270,7 @@ describe('emailstore test', function() {
     var keyParam = 'key';
     var recordParam = 'record';
     beforeEach(function() {
-      var data = ('email=' + emailParam + '&secret=' + secretParam
-                  + '&record=' + recordParam + '&key=' + keyParam);
+      var data = ('email=' + emailParam + '&secret=' + secretParam + '&record=' + recordParam + '&key=' + keyParam);
       request.on.onFirstCall().callsArgWith(1, data);
       request.on.onFirstCall().returnsThis();
       request.on.onSecondCall().callsArg(1);
@@ -263,6 +278,7 @@ describe('emailstore test', function() {
     });
 
     it('should allow new registrations', function() {
+      var originalCredentials = plugin.getCredentialsFromRequest;
       plugin.getCredentialsFromRequest = sinon.mock();
       plugin.getCredentialsFromRequest.onFirstCall().returns({
         email: emailParam,
@@ -278,7 +294,7 @@ describe('emailstore test', function() {
       plugin.createVerificationSecretAndSendEmail.onFirstCall().callsArg(1);
       response.send.onFirstCall().returnsThis();
 
-      plugin.post(request, response);
+      plugin.save(request, response);
 
       assert(plugin.exists.firstCall.args[0] === emailParam);
       assert(plugin.savePassphrase.firstCall.args[0] === emailParam);
@@ -287,9 +303,11 @@ describe('emailstore test', function() {
       assert(plugin.saveEncryptedData.firstCall.args[1] === keyParam);
       assert(plugin.saveEncryptedData.firstCall.args[2] === recordParam);
       assert(plugin.createVerificationSecretAndSendEmail.firstCall.args[0] === emailParam);
+      plugin.getCredentialsFromRequest = originalCredentials;
     });
 
     it('should allow to overwrite data', function() {
+      var originalCredentials = plugin.getCredentialsFromRequest;
       plugin.getCredentialsFromRequest = sinon.mock();
       plugin.getCredentialsFromRequest.onFirstCall().returns({
         email: emailParam,
@@ -305,7 +323,7 @@ describe('emailstore test', function() {
       plugin.createVerificationSecretAndSendEmail.onFirstCall().callsArg(1);
       response.send.onFirstCall().returnsThis();
 
-      plugin.post(request, response);
+      plugin.save(request, response);
 
       assert(plugin.exists.firstCall.args[0] === emailParam);
       assert(plugin.checkPassphrase.firstCall.args[0] === emailParam);
@@ -314,6 +332,7 @@ describe('emailstore test', function() {
       assert(plugin.saveEncryptedData.firstCall.args[1] === keyParam);
       assert(plugin.saveEncryptedData.firstCall.args[2] === recordParam);
       assert(plugin.createVerificationSecretAndSendEmail.firstCall.args[0] === emailParam);
+      plugin.getCredentialsFromRequest = originalCredentials;
     });
   });
 
@@ -327,14 +346,14 @@ describe('emailstore test', function() {
       request.param.onSecondCall().returns(secret);
       leveldb_stub.put = sinon.stub();
       leveldb_stub.get = sinon.stub();
-      leveldb_stub.remove = sinon.stub();
       leveldb_stub.put.onFirstCall().callsArg(2);
-      leveldb_stub.remove.onFirstCall().callsArg(1);
+      leveldb_stub.del.onFirstCall().callsArg(1);
       response.json.returnsThis();
     });
 
     it('should validate correctly an email if the secret matches', function() {
       leveldb_stub.get.onFirstCall().callsArgWith(1, null, secret);
+      leveldb_stub.del = sinon.stub().yields(null);
       response.redirect = sinon.stub();
 
       plugin.validate(request, response);
@@ -351,7 +370,9 @@ describe('emailstore test', function() {
       plugin.validate(request, response);
 
       assert(response.status.firstCall.calledWith(plugin.errors.INVALID_CODE.code));
-      assert(response.json.firstCall.calledWith({error: 'The provided code is invalid'}));
+      assert(response.json.firstCall.calledWith({
+        error: 'The provided code is invalid'
+      }));
       assert(response.end.calledOnce);
     });
   });
@@ -359,21 +380,24 @@ describe('emailstore test', function() {
   describe('when retrieving data', function() {
 
     it('should validate the secret and return the data', function() {
-      request.param.onFirstCall().returns('email');
-      request.param.onSecondCall().returns('key');
-      request.param.onThirdCall().returns('secret');
+      request.header = sinon.stub();
+      request.header.onFirstCall().returns(new Buffer('email:pass', 'utf8').toString('base64'));
+      request.param.onFirstCall().returns('key');
+        
       plugin.retrieveDataByEmailAndPassphrase = sinon.stub();
       plugin.retrieveDataByEmailAndPassphrase.onFirstCall().callsArgWith(3, null, 'encrypted');
       response.send.onFirstCall().returnsThis();
+      plugin.addValidationHeader = sinon.stub().callsArg(2);
 
-      plugin.get(request, response);
+      plugin.retrieve(request, response);
 
-      assert(request.param.firstCall.args[0] === 'email');
-      assert(request.param.secondCall.args[0] === 'key');
-      assert(request.param.thirdCall.args[0] === 'secret');
+      request.header.calledOnce.should.equal(true);
+      response.send.calledOnce.should.equal(true);
+
+      assert(request.header.firstCall.args[0] === 'authorization');
       assert(plugin.retrieveDataByEmailAndPassphrase.firstCall.args[0] === 'email');
       assert(plugin.retrieveDataByEmailAndPassphrase.firstCall.args[1] === 'key');
-      assert(plugin.retrieveDataByEmailAndPassphrase.firstCall.args[2] === 'secret');
+      assert(plugin.retrieveDataByEmailAndPassphrase.firstCall.args[2] === 'pass');
       assert(response.send.firstCall.args[0] === 'encrypted');
       assert(response.end.calledOnce);
     });
@@ -425,4 +449,3 @@ describe('emailstore test', function() {
     });
   });
 });
-

@@ -281,7 +281,7 @@
           return callback(null, secret);
         });
       } else {
-        return callback();
+        return callback(err);
       }
     });
   };
@@ -426,10 +426,11 @@
 
 
   emailPlugin.getCredentialsFromRequest = function(request) {
-    if (!request.header('authorization')) {
+    var auth = request.header('authorization');
+    if (!auth) {
       return emailPlugin.errors.INVALID_REQUEST;
     }
-    var authHeader = new Buffer(request.header('authorization'), 'base64').toString('utf8');
+    var authHeader = new Buffer(auth, 'base64').toString('utf8');
     var splitIndex = authHeader.indexOf(':');
     if (splitIndex === -1) {
       return emailPlugin.errors.INVALID_REQUEST;
@@ -444,7 +445,10 @@
   };
 
 
-  emailPlugin.addNeedValidationHeader = function(response, email, callback) {
+
+  emailPlugin.addValidationHeader = function(response, email, callback) {
+
+console.log('[emailstore.js.450]'); //TODO
     emailPlugin.db.get(validatedKey(email), function(err, value) {
       if (err && !err.notFound)
         return callback(err);
@@ -464,6 +468,7 @@
     var credentialsResult = emailPlugin.getCredentialsFromRequest(request);
     if (_.contains(emailPlugin.errors, credentialsResult)) {
       return emailPlugin.returnError(credentialsResult);
+
     }
     var email = credentialsResult.email;
     var passphrase = credentialsResult.passphrase;
@@ -477,7 +482,7 @@
       if (err)
         return emailPlugin.returnError(err, response);
 
-      emailPlugin.addNeedValidationHeader(response, email, function(err) {
+      emailPlugin.addValidationHeader(response, email, function(err) {
         if (err)
           return emailPlugin.returnError(err, response);
 
