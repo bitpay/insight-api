@@ -448,7 +448,6 @@
 
   emailPlugin.addValidationHeader = function(response, email, callback) {
 
-console.log('[emailstore.js.450]'); //TODO
     emailPlugin.db.get(validatedKey(email), function(err, value) {
       if (err && !err.notFound)
         return callback(err);
