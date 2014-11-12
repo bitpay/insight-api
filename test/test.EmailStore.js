@@ -387,9 +387,12 @@ describe('emailstore test', function() {
       plugin.retrieveDataByEmailAndPassphrase = sinon.stub();
       plugin.retrieveDataByEmailAndPassphrase.onFirstCall().callsArgWith(3, null, 'encrypted');
       response.send.onFirstCall().returnsThis();
+      plugin.addValidationHeader = sinon.stub().callsArg(2);
 
       plugin.retrieve(request, response);
+
       request.header.calledOnce.should.equal(true);
+      response.send.calledOnce.should.equal(true);
 
       assert(request.header.firstCall.args[0] === 'authorization');
       assert(plugin.retrieveDataByEmailAndPassphrase.firstCall.args[0] === 'email');
