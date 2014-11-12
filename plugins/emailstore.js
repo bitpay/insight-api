@@ -281,7 +281,7 @@ emailPlugin.createVerificationSecret = function (email, callback) {
         return callback(null, secret);
       });
     } else {
-      return callback();
+      return callback(err);
     }
   });
 };
@@ -420,10 +420,11 @@ emailPlugin.processPost = function(request, response, email, key, passphrase, re
 
 
 emailPlugin.getCredentialsFromRequest = function(request) {
-  if (!request.header('authorization')) {
+  var auth =request.header('authorization'); 
+  if (! auth) {
     return emailPlugin.errors.INVALID_REQUEST;
   }
-  var authHeader = new Buffer(request.header('authorization'), 'base64').toString('utf8');
+  var authHeader = new Buffer(auth, 'base64').toString('utf8');
   var splitIndex = authHeader.indexOf(':');
   if (splitIndex === -1) {
     return emailPlugin.errors.INVALID_REQUEST;
@@ -438,18 +439,21 @@ emailPlugin.getCredentialsFromRequest = function(request) {
  * Retrieve a record from the database
  */
 emailPlugin.retrieve = function (request, response) {
+
   var credentialsResult = emailPlugin.getCredentialsFromRequest(request);
   if (_.contains(emailPlugin.errors, credentialsResult)) {
-    return emailPlugin.returnError(credentialsResult);
+    return emailPlugin.returnError(credentialsResult, response);
   }
   var email = credentialsResult.email;
   var passphrase = credentialsResult.passphrase;
 
   var key = request.param('key');
+console.log('[emailstore.js.450:key:]',key); //TODO
   if (!passphrase || !email || !key) {
     return emailPlugin.returnError(emailPlugin.errors.MISSING_PARAMETER, response);
   }
 
+console.log('[emailstore.js.453]'); //TODO
   emailPlugin.retrieveDataByEmailAndPassphrase(email, key, passphrase, function (err, value) {
     if (err) {
       return emailPlugin.returnError(err, response);
