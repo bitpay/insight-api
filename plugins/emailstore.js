@@ -488,7 +488,7 @@ emailPlugin.validate = function (request, response) {
         if (err) {
           return emailPlugin.returnError({code: 500, message: err}, response);
         } else {
-          emailPlugin.db.remove(validatedKey(email), function (err, value) {
+          emailPlugin.db.del(pendingKey(email), function (err, value) {
             if (err) {
               return emailPlugin.returnError({code: 500, message: err}, response);
             } else {
