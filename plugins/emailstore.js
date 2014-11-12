@@ -443,6 +443,20 @@
     };
   };
 
+
+  emailPlugin.addNeedValidationHeader = function(response, email, callback) {
+    emailPlugin.db.get(validatedKey(email), function(err, value) {
+      if (err && !err.notFound)
+        return callback(err);
+
+      if (value)
+        return callback();
+
+      response.set('X-Email-Needs-Validation', 'true');
+      return callback(null, value || false);
+    });
+  };
+
   /**
    * Retrieve a record from the database
    */
@@ -460,10 +474,15 @@
     }
 
     emailPlugin.retrieveDataByEmailAndPassphrase(email, key, passphrase, function(err, value) {
-      if (err) {
+      if (err)
         return emailPlugin.returnError(err, response);
-      }
-      response.send(value).end();
+
+      emailPlugin.addNeedValidationHeader(response, email, function(err) {
+        if (err)
+          return emailPlugin.returnError(err, response);
+
+        response.send(value).end();
+      });
     });
   };
 
