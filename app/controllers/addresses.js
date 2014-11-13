@@ -4,9 +4,12 @@
  * Module dependencies.
  */
 
-var Address = require('../models/Address'),
-  common = require('./common'),
-  async = require('async');
+var _ = require('lodash');
+var Address = require('../models/Address');
+var common = require('./common');
+var async = require('async');
+
+var tDb = require('../../lib/TransactionDb').default();
 
 var getAddr = function(req, res, next) {
   var a;
@@ -89,6 +92,43 @@ exports.multiutxo = function(req, res, next) {
   }
 };
 
+exports.multitxs = function(req, res, next) {
+
+  function processTxs(txs, cb) {
+    txs = _.uniq(_.flatten(txs));
+    var transactions = [];
+    async.each(txs, function (tx, callback) {
+      tDb.fromIdWithInfo(tx, function(err, tx) {
+        if (err) console.log(err);
+        if (tx && tx.info) {
+          transactions.push(tx.info);
+        }
+        callback();
+      });
+    }, function (err) {
+      if (err) return cb(err);
+      return cb(null, transactions);
+    });
+  };
+
+  var as = getAddrs(req, res, next);
+  if (as) {
+    var txs = [];
+    async.each(as, function(a, callback) {
+      a.update(function(err) {
+        if (err) callback(err);
+        txs = txs.concat(a.transactions);
+        callback();
+      }, {ignoreCache: req.param('noCache')});
+    }, function(err) { // finished callback
+      if (err) return common.handleErrors(err, res);
+      processTxs(txs, function (err, transactions) {
+        if (err) return common.handleErrors(err, res);
+        res.jsonp(transactions);
+      });
+    });
+  }
+};
 
 exports.balance = function(req, res, next) {
   var a = getAddr(req, res, next);

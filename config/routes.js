@@ -32,6 +32,7 @@ module.exports = function(app) {
   app.get(apiPrefix + '/addr/:addr', addresses.show);
   app.get(apiPrefix + '/addr/:addr/utxo', addresses.utxo);
   app.get(apiPrefix + '/addrs/:addrs/utxo', addresses.multiutxo);
+  app.post(apiPrefix + '/addrs/txs', addresses.multitxs);
   app.post(apiPrefix + '/addrs/utxo', addresses.multiutxo);
 
   // Address property routes
