@@ -251,6 +251,24 @@ addrs: 2NF2baYuJAkCKo5onjUKEPdARQkZ6SYyKd5,2NAre8sX2povnjy4aeiHKeEh97Qhn97tB1f
   /api/txs/?address=ADDR
   /api/txs/?address=mmhmMNfBiZZ37g1tgg2t8DDbNoEdqKVxAL
 ```
+
+### Transactions for multiple addresses
+GET method:
+```
+  /api/addrs/[:addrs]/txs
+  /api/addrs/2NF2baYuJAkCKo5onjUKEPdARQkZ6SYyKd5,2NAre8sX2povnjy4aeiHKeEh97Qhn97tB1f/txs
+```
+
+POST method:
+```
+  /api/addrs/txs
+```
+
+POST params:
+```
+addrs: 2NF2baYuJAkCKo5onjUKEPdARQkZ6SYyKd5,2NAre8sX2povnjy4aeiHKeEh97Qhn97tB1f
+```
+
 ### Transaction broadcasting
 POST method:
 ```
