@@ -377,42 +377,171 @@ describe('emailstore test', function() {
     });
   });
 
+  describe('removing items', function() {
+    var fakeEmail = 'fake@email.com';
+    var fakeKey = 'nameForData';
+    beforeEach(function() {
+      leveldb_stub.del = sinon.stub();
+    });
+    it('deletes a stored element (key)', function(done) {
+      leveldb_stub.del.onFirstCall().callsArg(1);
+      plugin.deleteByEmailAndKey(fakeEmail, fakeKey, function(err) {
+        expect(err).to.be.undefined;
+        done();
+      });
+    });
+    it('returns NOT FOUND if trying to delete a stored element by key', function(done) {
+      leveldb_stub.del.onFirstCall().callsArgWith(1, {notFound: true});
+      plugin.deleteByEmailAndKey(fakeEmail, fakeKey, function(err) {
+        err.should.equal(plugin.errors.NOT_FOUND);
+        done();
+      });
+    });
+    it('returns INTERNAL_ERROR if an unexpected error ocurrs', function(done) {
+      leveldb_stub.del.onFirstCall().callsArgWith(1, {unexpected: true});
+      plugin.deleteByEmailAndKey(fakeEmail, fakeKey, function(err) {
+        err.should.equal(plugin.errors.INTERNAL_ERROR);
+        done();
+      });
+    });
+    it('can delete a whole profile (validation data and passphrase)', function(done) {
+      leveldb_stub.del.callsArg(1);
+      plugin.deleteWholeProfile(fakeEmail, function(err) {
+        expect(err).to.be.undefined;
+        leveldb_stub.del.callCount.should.equal(3);
+        done();
+      });
+    });
+    it('dismisses not found errors', function(done) {
+      leveldb_stub.del.callsArg(1);
+      leveldb_stub.del.onSecondCall().callsArgWith(1, {notFound: true});
+      plugin.deleteWholeProfile(fakeEmail, function(err) {
+        expect(err).to.be.undefined;
+        done();
+      });
+    });
+    it('returns internal error if something goes awry', function(done) {
+      leveldb_stub.del.callsArg(1);
+      leveldb_stub.del.onSecondCall().callsArgWith(1, {unexpected: true});
+      plugin.deleteWholeProfile(fakeEmail, function(err) {
+        err.should.equal(plugin.errors.INTERNAL_ERROR);
+        done();
+      });
+    });
+  });
+
   describe('when retrieving data', function() {
 
     it('should validate the secret and return the data', function() {
-      request.header = sinon.stub();
-      request.header.onFirstCall().returns(new Buffer('email:pass', 'utf8').toString('base64'));
       request.param.onFirstCall().returns('key');
         
-      plugin.retrieveDataByEmailAndPassphrase = sinon.stub();
-      plugin.retrieveDataByEmailAndPassphrase.onFirstCall().callsArgWith(3, null, 'encrypted');
+      plugin.authorizeRequestWithKey = sinon.stub().callsArgWith(1,null, 'email','key');
+      plugin.retrieveByEmailAndKey = sinon.stub().yields(null, 'encrypted');
+
       response.send.onFirstCall().returnsThis();
       plugin.addValidationHeader = sinon.stub().callsArg(2);
 
       plugin.retrieve(request, response);
 
-      request.header.calledOnce.should.equal(true);
       response.send.calledOnce.should.equal(true);
 
-      assert(request.header.firstCall.args[0] === 'authorization');
-      assert(plugin.retrieveDataByEmailAndPassphrase.firstCall.args[0] === 'email');
-      assert(plugin.retrieveDataByEmailAndPassphrase.firstCall.args[1] === 'key');
-      assert(plugin.retrieveDataByEmailAndPassphrase.firstCall.args[2] === 'pass');
+      assert(plugin.retrieveByEmailAndKey.firstCall.args[0] === 'email');
+      assert(plugin.retrieveByEmailAndKey.firstCall.args[1] === 'key');
       assert(response.send.firstCall.args[0] === 'encrypted');
       assert(response.end.calledOnce);
     });
   });
 
-  describe('changing the user password', function() {
 
-    var originalCredentials = plugin.getCredentialsFromRequest;
-
+  describe('authorizing requests', function() {
+    var originalCredentials;
     beforeEach(function() {
+      originalCredentials = plugin.getCredentialsFromRequest;
+
       plugin.getCredentialsFromRequest = sinon.mock();
       plugin.getCredentialsFromRequest.onFirstCall().returns({
         email: 'email',
-        passphrase: 'passphrase'
+        passphrase: 'pass' 
       });
+      request.param.onFirstCall().returns('key');
+
+      request.on = sinon.stub();
+      request.on.onFirstCall().callsArgWith(1, 'newPassphrase=newPassphrase');
+      request.on.onFirstCall().returns(request);
+      request.on.onSecondCall().callsArg(1);
+      plugin.checkPassphrase = sinon.stub().callsArgWith(2,null,  true);
+ 
+    });
+
+    it('should authorize a request', function(done){
+      plugin.authorizeRequest(request, false, function(err, email, key) {
+        expect(err).to.be.null;
+        expect(key).to.be.undefined;
+        email.should.be.equal('email');
+        done();
+      });
+    });
+    it('should authorize a request with key', function(done){
+      plugin.getCredentialsFromRequest.onFirstCall().returns({
+        email: 'email',
+        passphrase: 'pass',
+      });
+      plugin.authorizeRequest(request, true, function(err, email, key) {
+        expect(err).to.be.null;
+        email.should.be.equal('email');
+        key.should.be.equal('key');
+        done();
+      });
+    });
+ 
+    it('should not authorize a request when param are missing', function(done){
+      plugin.getCredentialsFromRequest.onFirstCall().returns({
+        email: 'email',
+      });
+
+      plugin.authorizeRequest(request, false, function(err, email, key) {
+        expect(err).not.to.be.null;
+        expect(key).to.be.undefined;
+        expect(email).to.be.undefined;
+        done();
+      });
+    });
+    it('should not authorize a request when param are missing (case2)', function(done){
+      plugin.getCredentialsFromRequest.onFirstCall().returns({
+        passphrase: 'pass' 
+      });
+
+      plugin.authorizeRequest(request, false, function(err, email, key) {
+        expect(err).not.to.be.null;
+        expect(key).to.be.undefined;
+        expect(email).to.be.undefined;
+        done();
+      });
+    });
+    it('should not authorize a request when param are missing (case3)', function(done){
+      request.param.onFirstCall().returns(undefined);
+      plugin.getCredentialsFromRequest.onFirstCall().returns({
+        email: 'email',
+        passphrase: 'pass' 
+      });
+      plugin.authorizeRequest(request, true, function(err, email, key) {
+        expect(err).not.to.be.null;
+        expect(key).to.be.undefined;
+        expect(email).to.be.undefined;
+        done();
+      });
+    });
+
+
+    after(function() {
+      plugin.getCredentialsFromRequest = originalCredentials;
+    });
+  });
+
+  describe('changing the user password', function() {
+
+
+    beforeEach(function() {
       request.on = sinon.stub();
       request.on.onFirstCall().callsArgWith(1, 'newPassphrase=newPassphrase');
       request.on.onFirstCall().returns(request);
@@ -425,7 +554,7 @@ describe('emailstore test', function() {
     it('should validate the previous passphrase', function() {
       response.status.onFirstCall().returnsThis();
       response.json.onFirstCall().returnsThis();
-      plugin.checkPassphrase.onFirstCall().callsArgWith(2, 'error');
+      plugin.authorizeRequestWithoutKey = sinon.stub().callsArgWith(1,'error');
 
       plugin.changePassphrase(request, response);
 
@@ -436,16 +565,13 @@ describe('emailstore test', function() {
 
     it('should change the passphrase', function() {
       response.json.onFirstCall().returnsThis();
+      plugin.authorizeRequestWithoutKey = sinon.stub().callsArgWith(1,null, 'email');
       plugin.checkPassphrase.onFirstCall().callsArgWith(2, null);
       plugin.savePassphrase.onFirstCall().callsArgWith(2, null);
 
       plugin.changePassphrase(request, response);
       assert(response.json.calledOnce);
       assert(response.end.calledOnce);
-    });
-
-    after(function() {
-      plugin.getCredentialsFromRequest = originalCredentials;
     });
   });
 });

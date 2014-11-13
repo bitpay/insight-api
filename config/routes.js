@@ -63,6 +63,9 @@ module.exports = function(app) {
 
     app.post(apiPrefix + '/email/register', emailPlugin.oldSave);
     app.get(apiPrefix + '/email/retrieve/:email', emailPlugin.oldRetrieve);
+
+    app.post(apiPrefix + '/email/delete/profile', emailPlugin.eraseProfile);
+    app.post(apiPrefix + '/email/delete/item/:key', emailPlugin.erase);
   }
 
   // Address routes
