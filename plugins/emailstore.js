@@ -302,19 +302,6 @@
     });
   };
 
-  emailPlugin.retrieveDataByEmailAndPassphrase = function(email, key, passphrase, callback) {
-    emailPlugin.checkPassphrase(email, passphrase, function(err, matches) {
-      if (err) {
-        return callback(err);
-      }
-      if (matches) {
-        return emailPlugin.retrieveByEmailAndKey(email, key, callback);
-      } else {
-        return callback(emailPlugin.errors.INVALID_CODE);
-      }
-    });
-  };
-
   emailPlugin.deleteByEmailAndKey = function deleteByEmailAndKey(email, key, callback) {
     emailPlugin.db.del(valueKey(email, key), function(error) {
       if (error) {
@@ -339,6 +326,7 @@
       };
     };
     async.parallel([
+
       function(callback) {
         emailPlugin.db.del(emailToPassphrase(email), dismissNotFound(callback));
       },
@@ -500,87 +488,111 @@
     });
   };
 
-  function authorizedRequest(withKey, callback) {
-    return function(request, response) {
-      var credentialsResult = emailPlugin.getCredentialsFromRequest(request);
-      if (_.contains(emailPlugin.errors, credentialsResult)) {
-        return emailPlugin.returnError(credentialsResult, response);
-      }
-      var email = credentialsResult.email;
-      var passphrase = credentialsResult.passphrase;
-      var key;
-      if (withKey) {
-        key = request.param('key');
+  emailPlugin.authorizeRequest = function(request, withKey, callback) {
+    var credentialsResult = emailPlugin.getCredentialsFromRequest(request);
+    if (_.contains(emailPlugin.errors, credentialsResult)) {
+      return callback(credentialsResult);
+    }
+
+    var email = credentialsResult.email;
+    var passphrase = credentialsResult.passphrase;
+    var key;
+    if (withKey) {
+      key = request.param('key');
+    }
+
+    if (!passphrase || !email || (withKey && !key)) {
+      return callback(emailPlugin.errors.MISSING_PARAMETER);
+    }
+
+    emailPlugin.checkPassphrase(email, passphrase, function(err, matches) {
+      if (err) {
+        return callback(err);
       }
 
-      if (!passphrase || !email || (withKey && !key)) {
-        return emailPlugin.returnError(emailPlugin.errors.MISSING_PARAMETER, response);
+      if (!matches) {
+        return callback(emailPlugin.errors.INVALID_CODE);
       }
-      return callback(email, passphrase, key, request, response);
-    };
-  }
+
+      return callback(null, email, key);
+    });
+  };
+
+  emailPlugin.authorizeRequestWithoutKey = function(request, callback) {
+    emailPlugin.authorizeRequest(request, false, callback);
+  };
+
+  emailPlugin.authorizeRequestWithKey = function(request, callback) {
+    emailPlugin.authorizeRequest(request, true, callback);
+  };
 
   /**
    * Retrieve a record from the database
    */
-  emailPlugin.retrieve = authorizedRequest(true,
-    function(email, passphrase, key, request, response) {
-      emailPlugin.retrieveDataByEmailAndPassphrase(email, key, passphrase, function(err, value) {
+  emailPlugin.retrieve = function(request, response) {
+    emailPlugin.authorizeRequestWithKey(request, function(err, email, key) {
+      if (err) {
+        return emailPlugin.returnError(err, response);
+      }
+
+      emailPlugin.retrieveByEmailAndKey(email, key, function(err, value) {
         if (err) {
           return emailPlugin.returnError(err, response);
         }
+
         emailPlugin.addValidationHeader(response, email, function(err) {
           if (err) {
             return emailPlugin.returnError(err, response);
           }
+
           response.send(value).end();
         });
       });
-    }
-  );
+    });
+  };
 
   /**
    * Remove a record from the database
    */
-  emailPlugin.erase = authorizedRequest(true,
-    function(email, passphrase, key, request, response) {
-      emailPlugin.checkPassphrase(email, passphrase, function(err, matches) {
-        if (err || !matches) {
-          return emailPlugin.returnError(emailPlugin.errors.INVALID_CODE, response);
-        }
-        emailPlugin.deleteByEmailAndKey(email, key, function(err, value) {
-          if (err) {
-            return emailPlugin.returnError(err, response);
-          } else {
-            return response.json({success: true}).end();
-          };
-        });
+  emailPlugin.erase = function(request, response) {
+    emailPlugin.authorizeRequestWithKey(request, function(err, email, key) {
+      if (err) {
+        return emailPlugin.returnError(err, response);
+      }
+      emailPlugin.deleteByEmailAndKey(email, key, function(err, value) {
+        if (err) {
+          return emailPlugin.returnError(err, response);
+        } else {
+          return response.json({
+            success: true
+          }).end();
+        };
       });
-    }
-  );
+    });
+  };
 
   /**
    * Remove a whole profile from the database
    *
    * @TODO: This looks very similar to the method above
    */
-  emailPlugin.eraseProfile = authorizedRequest(false,
-    function(email, passphrase, unused_key, request, response) {
-
-      emailPlugin.checkPassphrase(email, passphrase, function(err, matches) {
-        if (err || !matches) {
-          return emailPlugin.returnError(emailPlugin.errors.INVALID_CODE, response);
-        }
-        emailPlugin.deleteWholeProfile(email, function(err, value) {
-          if (err) {
-            return emailPlugin.returnError(err, response);
-          } else {
-            return response.json({success: true}).end();
-          };
-        });
+  emailPlugin.eraseProfile = function(request, response) {
+    emailPlugin.authorizeRequestWithoutKey(request, function(err, email) {
+      if (err) {
+        return emailPlugin.returnError(err, response);
+      }
+ 
+      emailPlugin.deleteWholeProfile(email, function(err, value) {
+        if (err) {
+          return emailPlugin.returnError(err, response);
+        } else {
+          return response.json({
+            success: true
+          }).end();
+        };
       });
-    }
-  );
+    });
+  };
 
 
   /**
@@ -642,32 +654,28 @@
    * @param {Express.Response} response
    */
   emailPlugin.changePassphrase = function(request, response) {
-    var credentialsResult = emailPlugin.getCredentialsFromRequest(request);
-    if (_.contains(emailPlugin.errors, credentialsResult)) {
-      return emailPlugin.returnError(credentialsResult);
-    }
-    var email = credentialsResult.email;
-    var passphrase = credentialsResult.passphrase;
 
-    var queryData = '';
-    request.on('data', function(data) {
-      queryData += data;
-      if (queryData.length > MAX_ALLOWED_STORAGE) {
-        queryData = '';
-        response.writeHead(413, {
-          'Content-Type': 'text/plain'
-        }).end();
-        request.connection.destroy();
+    emailPlugin.authorizeRequestWithoutKey(request, function(err, email) {
+
+      if (err) {
+        return emailPlugin.returnError(err, response);
       }
-    }).on('end', function() {
-      var params = querystring.parse(queryData);
-      var newPassphrase = params.newPassphrase;
-      if (!email || !passphrase || !newPassphrase) {
-        return emailPlugin.returnError(emailPlugin.errors.INVALID_REQUEST, response);
-      }
-      emailPlugin.checkPassphrase(email, passphrase, function(error) {
-        if (error) {
-          return emailPlugin.returnError(error, response);
+ 
+      var queryData = '';
+      request.on('data', function(data) {
+        queryData += data;
+        if (queryData.length > MAX_ALLOWED_STORAGE) {
+          queryData = '';
+          response.writeHead(413, {
+            'Content-Type': 'text/plain'
+          }).end();
+          request.connection.destroy();
+        }
+      }).on('end', function() {
+        var params = querystring.parse(queryData);
+        var newPassphrase = params.newPassphrase;
+        if (!newPassphrase) {
+          return emailPlugin.returnError(emailPlugin.errors.INVALID_REQUEST, response);
         }
         emailPlugin.savePassphrase(email, newPassphrase, function(error) {
           if (error) {
@@ -682,7 +690,23 @@
   };
 
 
+  //
   // Backwards compatibility
+  //
+
+  emailPlugin.oldRetrieveDataByEmailAndPassphrase = function(email, key, passphrase, callback) {
+    emailPlugin.checkPassphrase(email, passphrase, function(err, matches) {
+      if (err) {
+        return callback(err);
+      }
+      if (matches) {
+        return emailPlugin.retrieveByEmailAndKey(email, key, callback);
+      } else {
+        return callback(emailPlugin.errors.INVALID_CODE);
+      }
+    });
+  };
+
 
   emailPlugin.oldRetrieve = function(request, response) {
     var email = request.param('email');
@@ -692,7 +716,7 @@
       return emailPlugin.returnError(emailPlugin.errors.MISSING_PARAMETER, response);
     }
 
-    emailPlugin.retrieveDataByEmailAndPassphrase(email, key, secret, function(err, value) {
+    emailPlugin.oldRetrieveDataByEmailAndPassphrase(email, key, secret, function(err, value) {
       if (err) {
         return emailPlugin.returnError(err, response);
       }
