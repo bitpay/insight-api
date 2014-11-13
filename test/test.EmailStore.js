@@ -377,6 +377,59 @@ describe('emailstore test', function() {
     });
   });
 
+  describe('removing items', function() {
+    var fakeEmail = 'fake@email.com';
+    var fakeKey = 'nameForData';
+    beforeEach(function() {
+      leveldb_stub.del = sinon.stub();
+    });
+    it('deletes a stored element (key)', function(done) {
+      leveldb_stub.del.onFirstCall().callsArg(1);
+      plugin.deleteByEmailAndKey(fakeEmail, fakeKey, function(err) {
+        expect(err).to.be.undefined;
+        done();
+      });
+    });
+    it('returns NOT FOUND if trying to delete a stored element by key', function(done) {
+      leveldb_stub.del.onFirstCall().callsArgWith(1, {notFound: true});
+      plugin.deleteByEmailAndKey(fakeEmail, fakeKey, function(err) {
+        err.should.equal(plugin.errors.NOT_FOUND);
+        done();
+      });
+    });
+    it('returns INTERNAL_ERROR if an unexpected error ocurrs', function(done) {
+      leveldb_stub.del.onFirstCall().callsArgWith(1, {unexpected: true});
+      plugin.deleteByEmailAndKey(fakeEmail, fakeKey, function(err) {
+        err.should.equal(plugin.errors.INTERNAL_ERROR);
+        done();
+      });
+    });
+    it('can delete a whole profile (validation data and passphrase)', function(done) {
+      leveldb_stub.del.callsArg(1);
+      plugin.deleteWholeProfile(fakeEmail, function(err) {
+        expect(err).to.be.undefined;
+        leveldb_stub.del.callCount.should.equal(3);
+        done();
+      });
+    });
+    it('dismisses not found errors', function(done) {
+      leveldb_stub.del.callsArg(1);
+      leveldb_stub.del.onSecondCall().callsArgWith(1, {notFound: true});
+      plugin.deleteWholeProfile(fakeEmail, function(err) {
+        expect(err).to.be.undefined;
+        done();
+      });
+    });
+    it('returns internal error if something goes awry', function(done) {
+      leveldb_stub.del.callsArg(1);
+      leveldb_stub.del.onSecondCall().callsArgWith(1, {unexpected: true});
+      plugin.deleteWholeProfile(fakeEmail, function(err) {
+        err.should.equal(plugin.errors.INTERNAL_ERROR);
+        done();
+      });
+    });
+  });
+
   describe('when retrieving data', function() {
 
     it('should validate the secret and return the data', function() {
