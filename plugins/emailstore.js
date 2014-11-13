@@ -305,36 +305,24 @@
   emailPlugin.deleteByEmailAndKey = function deleteByEmailAndKey(email, key, callback) {
     emailPlugin.db.del(valueKey(email, key), function(error) {
       if (error) {
-        if (error.notFound) {
-          return callback(emailPlugin.errors.NOT_FOUND);
-        } else {
-          logger.error(error);
-          return callback(emailPlugin.errors.INTERNAL_ERROR);
-        }
+        logger.error(error);
+        return callback(emailPlugin.errors.INTERNAL_ERROR);
       }
       return callback();
     });
   };
 
   emailPlugin.deleteWholeProfile = function deleteWholeProfile(email, callback) {
-    var dismissNotFound = function(callback) {
-      return function(error, result) {
-        if (error && error.notFound) {
-          return callback();
-        }
-        return callback(error, result);
-      };
-    };
     async.parallel([
 
-      function(callback) {
-        emailPlugin.db.del(emailToPassphrase(email), dismissNotFound(callback));
+      function(cb) {
+        emailPlugin.db.del(emailToPassphrase(email), cb);
       },
-      function(callback) {
-        emailPlugin.db.del(pendingKey(email), dismissNotFound(callback));
+      function(cb) {
+        emailPlugin.db.del(pendingKey(email), cb);
       },
-      function(callback) {
-        emailPlugin.db.del(validatedKey(email), dismissNotFound(callback));
+      function(cb) {
+        emailPlugin.db.del(validatedKey(email), cb);
       }
     ], function(err) {
       if (err) {
@@ -581,7 +569,7 @@
       if (err) {
         return emailPlugin.returnError(err, response);
       }
- 
+
       emailPlugin.deleteWholeProfile(email, function(err, value) {
         if (err) {
           return emailPlugin.returnError(err, response);
@@ -660,7 +648,7 @@
       if (err) {
         return emailPlugin.returnError(err, response);
       }
- 
+
       var queryData = '';
       request.on('data', function(data) {
         queryData += data;
