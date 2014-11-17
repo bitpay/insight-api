@@ -94,8 +94,23 @@ exports.multiutxo = function(req, res, next) {
 
 exports.multitxs = function(req, res, next) {
 
-  function processTxs(txs, cb) {
-    txs = _.uniq(_.flatten(txs));
+  function processTxs(txs, from, to, cb) {
+    txs = _.uniq(_.flatten(txs), 'txid');
+
+    var nbTxs = txs.length;
+    var paginated = !_.isUndefined(from) || !_.isUndefined(to);
+
+    if (paginated) {
+      txs.sort(function(a, b) {
+        return (b.ts || b.ts) - (a.ts || a.ts);
+      });
+      var start = Math.max(from || 0, 0);
+      var end = Math.min(to || txs.length, txs.length);
+      txs = txs.slice(start, end);
+    }
+
+    txs = _.pluck(txs, 'txid');
+
     var transactions = [];
     async.each(txs, function (tx, callback) {
       tDb.fromIdWithInfo(tx, function(err, tx) {
@@ -107,9 +122,21 @@ exports.multitxs = function(req, res, next) {
       });
     }, function (err) {
       if (err) return cb(err);
+
+      if (paginated) {
+        transactions = {
+          nbItems: nbTxs,
+          from: +from,
+          to: +to,
+          data: transactions,
+        };
+      }
       return cb(null, transactions);
     });
   };
+
+  var from = req.query.from;
+  var to = req.query.to;
 
   var as = getAddrs(req, res, next);
   if (as) {
@@ -119,10 +146,10 @@ exports.multitxs = function(req, res, next) {
         if (err) callback(err);
         txs = txs.concat(a.transactions);
         callback();
-      }, {ignoreCache: req.param('noCache')});
+      }, {ignoreCache: req.param('noCache'), includeTxInfo: true});
     }, function(err) { // finished callback
       if (err) return common.handleErrors(err, res);
-      processTxs(txs, function (err, transactions) {
+      processTxs(txs, from, to, function (err, transactions) {
         if (err) return common.handleErrors(err, res);
         res.jsonp(transactions);
       });
