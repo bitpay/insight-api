@@ -125,10 +125,10 @@ exports.multitxs = function(req, res, next) {
 
       if (paginated) {
         transactions = {
-          nbItems: nbTxs,
+          totalItems: nbTxs,
           from: +from,
           to: +to,
-          data: transactions,
+          items: transactions,
         };
       }
       return cb(null, transactions);
