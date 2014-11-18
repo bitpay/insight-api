@@ -22,8 +22,9 @@ module.exports.init = function(ext_io, config) {
       var upper_ts = Math.round(microtime.now());
       logger.debug('    to timestamp ' + upper_ts);
       mdb.getMessages(to, ts, upper_ts, function(err, messages) {
+        // TODO: return error to the user
         if (err) {
-          throw new Error('Couldn\'t get messages on sync request: ' + err);
+          logger.debug('Couldn\'t get messages on sync request: ' + err);
         }
         logger.verbose('\tFound ' + messages.length + ' message' + (messages.length !== 1 ? 's' : ''));
 
@@ -41,8 +42,9 @@ module.exports.init = function(ext_io, config) {
     socket.on('message', function(m) {
       logger.debug('Message sent from ' + m.pubkey + ' to ' + m.to);
       mdb.addMessage(m, function(err) {
+        // TODO: return error to the user
         if (err) {
-          throw new Error('Couldn\'t add message to database: ' + err);
+          logger.debug('Couldn\'t add message to database: ' + err);
         }
       });
     });
