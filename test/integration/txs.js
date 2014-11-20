@@ -34,22 +34,19 @@ describe('Transactions for multiple addresses', function() {
   beforeEach(function(c) {
     req = {};
     res = {};
-    req.query = {};
     res.jsonp = sinon.spy();
     return c();
   });
 
-  describe('All', function () {
+  describe('Transactions from multiple addresses', function () {
     _.each(fixture, function (f) {
       it(f.test, function (done) {
-        req.param = sinon.stub().withArgs('addrs').returns(f.addrs.join(','));
+        req.param = sinon.stub();
+        req.param.withArgs('addrs').returns(f.addrs.join(','));
+        req.param.withArgs('from').returns(f.from);
+        req.param.withArgs('to').returns(f.to);
+
         var paginated = !_.isUndefined(f.from) || !_.isUndefined(f.to);
-        if (paginated) {
-          req.query = {
-            from: f.from,
-            to: f.to
-          };
-        }
         addresses.multitxs(req, res, function() {
           var txs = res.jsonp.getCall(0).args[0];
           txs.should.exist;
