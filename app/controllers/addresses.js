@@ -132,8 +132,8 @@ exports.multitxs = function(req, res, next) {
     });
   };
 
-  var from = req.query.from;
-  var to = req.query.to;
+  var from = req.param('from');
+  var to = req.param('to');
 
   var as = getAddrs(req, res, next);
   if (as) {
