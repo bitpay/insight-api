@@ -360,7 +360,8 @@
         queryData = '';
         response.writeHead(413, {
           'Content-Type': 'text/plain'
-        }).end();
+        });
+        response.end();
         request.connection.destroy();
       }
     }).on('end', function() {
