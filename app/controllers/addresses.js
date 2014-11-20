@@ -152,7 +152,6 @@ exports.multitxs = function(req, res, next) {
       processTxs(txs, from, to, function (err, transactions) {
         if (err) return common.handleErrors(err, res);
         res.jsonp(transactions);
-        return next();
       });
     });
   }
