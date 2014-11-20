@@ -108,11 +108,14 @@ exports.multitxs = function(req, res, next) {
       txs = txs.slice(start, end);
     }
 
+    var txIndex = {};
+    _.each(txs, function (tx) { txIndex[tx.txid] = tx; });
+
     async.each(txs, function (tx, callback) {
       tDb.fromIdWithInfo(tx.txid, function(err, tx) {
         if (err) console.log(err);
         if (tx && tx.info) {
-          _.find(txs, { txid: tx.txid }).info = tx.info;
+          txIndex[tx.txid].info = tx.info;
         }
         callback();
       });
