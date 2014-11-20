@@ -96,7 +96,6 @@ exports.multitxs = function(req, res, next) {
 
   function processTxs(txs, from, to, cb) {
     txs = _.uniq(_.flatten(txs), 'txid');
-
     var nbTxs = txs.length;
     var paginated = !_.isUndefined(from) || !_.isUndefined(to);
 
@@ -109,20 +108,18 @@ exports.multitxs = function(req, res, next) {
       txs = txs.slice(start, end);
     }
 
-    txs = _.pluck(txs, 'txid');
-
-    var transactions = [];
     async.each(txs, function (tx, callback) {
-      tDb.fromIdWithInfo(tx, function(err, tx) {
+      tDb.fromIdWithInfo(tx.txid, function(err, tx) {
         if (err) console.log(err);
         if (tx && tx.info) {
-          transactions.push(tx.info);
+          _.find(txs, { txid: tx.txid }).info = tx.info;
         }
         callback();
       });
     }, function (err) {
       if (err) return cb(err);
-
+      
+      var transactions = _.pluck(txs, 'info');
       if (paginated) {
         transactions = {
           totalItems: nbTxs,
@@ -144,7 +141,7 @@ exports.multitxs = function(req, res, next) {
     async.each(as, function(a, callback) {
       a.update(function(err) {
         if (err) callback(err);
-        txs = txs.concat(a.transactions);
+        txs.push(a.transactions);
         callback();
       }, {ignoreCache: req.param('noCache'), includeTxInfo: true});
     }, function(err) { // finished callback
@@ -152,6 +149,7 @@ exports.multitxs = function(req, res, next) {
       processTxs(txs, from, to, function (err, transactions) {
         if (err) return common.handleErrors(err, res);
         res.jsonp(transactions);
+        return next();
       });
     });
   }
