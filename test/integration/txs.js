@@ -34,21 +34,14 @@ describe('Transactions for multiple addresses', function() {
   beforeEach(function(c) {
     req = {};
     res = {};
-    res.jsonp = sinon.spy();
     return c();
   });
 
   describe('Transactions from multiple addresses', function () {
     _.each(fixture, function (f) {
       it(f.test, function (done) {
-        req.param = sinon.stub();
-        req.param.withArgs('addrs').returns(f.addrs.join(','));
-        req.param.withArgs('from').returns(f.from);
-        req.param.withArgs('to').returns(f.to);
-
-        var paginated = !_.isUndefined(f.from) || !_.isUndefined(f.to);
-        addresses.multitxs(req, res, function() {
-          var txs = res.jsonp.getCall(0).args[0];
+        var checkResult = function(txs) {
+          var paginated = !_.isUndefined(f.from) || !_.isUndefined(f.to);
           txs.should.exist;
           if (paginated) {
             txs.totalItems.should.equal(f.totalTransactions);
@@ -61,7 +54,15 @@ describe('Transactions for multiple addresses', function() {
             txs.length.should.equal(f.returnedTransactions);
           }
           done();
-        });
+        };
+
+        res.jsonp = checkResult;
+        req.param = sinon.stub();
+        req.param.withArgs('addrs').returns(f.addrs.join(','));
+        req.param.withArgs('from').returns(f.from);
+        req.param.withArgs('to').returns(f.to);
+
+        addresses.multitxs(req, res);
       });
     });
   });

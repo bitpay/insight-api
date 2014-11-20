@@ -141,7 +141,7 @@ exports.multitxs = function(req, res, next) {
   var as = getAddrs(req, res, next);
   if (as) {
     var txs = [];
-    async.each(as, function(a, callback) {
+    async.eachLimit(as, 10, function(a, callback) {
       a.update(function(err) {
         if (err) callback(err);
         txs.push(a.transactions);
@@ -152,7 +152,6 @@ exports.multitxs = function(req, res, next) {
       processTxs(txs, from, to, function (err, transactions) {
         if (err) return common.handleErrors(err, res);
         res.jsonp(transactions);
-        return next();
       });
     });
   }
