@@ -94,22 +94,46 @@ exports.multiutxo = function(req, res, next) {
 
 exports.multitxs = function(req, res, next) {
 
-  function processTxs(txs, cb) {
-    txs = _.uniq(_.flatten(txs));
-    var transactions = [];
+  function processTxs(txs, from, to, cb) {
+    txs = _.uniq(_.flatten(txs), 'txid');
+    var nbTxs = txs.length;
+    var paginated = !_.isUndefined(from) || !_.isUndefined(to);
+
+    if (paginated) {
+      txs.sort(function(a, b) {
+        return (b.ts || b.ts) - (a.ts || a.ts);
+      });
+      var start = Math.max(from || 0, 0);
+      var end = Math.min(to || txs.length, txs.length);
+      txs = txs.slice(start, end);
+    }
+
     async.each(txs, function (tx, callback) {
-      tDb.fromIdWithInfo(tx, function(err, tx) {
+      tDb.fromIdWithInfo(tx.txid, function(err, tx) {
         if (err) console.log(err);
         if (tx && tx.info) {
-          transactions.push(tx.info);
+          _.find(txs, { txid: tx.txid }).info = tx.info;
         }
         callback();
       });
     }, function (err) {
       if (err) return cb(err);
+      
+      var transactions = _.pluck(txs, 'info');
+      if (paginated) {
+        transactions = {
+          totalItems: nbTxs,
+          from: +from,
+          to: +to,
+          items: transactions,
+        };
+      }
       return cb(null, transactions);
     });
   };
+
+  var from = req.query.from;
+  var to = req.query.to;
 
   var as = getAddrs(req, res, next);
   if (as) {
@@ -117,14 +141,15 @@ exports.multitxs = function(req, res, next) {
     async.each(as, function(a, callback) {
       a.update(function(err) {
         if (err) callback(err);
-        txs = txs.concat(a.transactions);
+        txs.push(a.transactions);
         callback();
-      }, {ignoreCache: req.param('noCache')});
+      }, {ignoreCache: req.param('noCache'), includeTxInfo: true});
     }, function(err) { // finished callback
       if (err) return common.handleErrors(err, res);
-      processTxs(txs, function (err, transactions) {
+      processTxs(txs, from, to, function (err, transactions) {
         if (err) return common.handleErrors(err, res);
         res.jsonp(transactions);
+        return next();
       });
     });
   }

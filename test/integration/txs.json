@@ -1,0 +1,32 @@
+[{
+  "test": "should return non-paginated txs for single address",
+  "addrs": ["mtA6woo1wjCeu1dLkWgpSD3tRnRfrHt3FL"],
+  "totalTransactions": 13,
+  "returnedTransactions": 13
+},{
+  "test": "should return paginated txs for single address",
+  "addrs": ["mtA6woo1wjCeu1dLkWgpSD3tRnRfrHt3FL"],
+  "totalTransactions": 13,
+  "from": 8,
+  "to": 12,
+  "returnedTransactions": 4
+},{
+  "test": "should return non-paginated txs for multiple addresses",
+  "addrs": ["mqtYvjsUg59XpngBAYjFF51Xauc28a6Ckd","myDZmGN9euuRhM1mniSaXhQjNdqFmUzUkj"],
+  "totalTransactions": 4,
+  "returnedTransactions": 4
+},{
+  "test": "should return paginated txs for multiple addresses",
+  "addrs": ["mqtYvjsUg59XpngBAYjFF51Xauc28a6Ckd","myDZmGN9euuRhM1mniSaXhQjNdqFmUzUkj", "n2NbTWCuUyTvpA2YKTpVD4SmCouFLcm8rS"],
+  "totalTransactions": 6,
+  "from": 2,
+  "to": 6,
+  "returnedTransactions": 4,
+  "transactions": [
+    "3e81723d069b12983b2ef694c9782d32fca26cc978de744acbc32c3d3496e915",
+    "b701b0680bc2b6f8b58f13d035a754486ecefd2438e3495cd8f395ab7f5e7ba9",
+    "80fb4fd2a6e5e795a4f30aebeda49424e7ed4d3630b128efb946aa964e0bc9c0",
+    "855e881892d7cd4a8fa81dbd8f6e9d142d02bffc10ffbe5428036ee55c3e3e0f"
+  ]
+}
+]

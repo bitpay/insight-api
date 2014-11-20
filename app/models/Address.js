@@ -93,25 +93,31 @@ Address.prototype.getObj = function() {
   };
 };
 
-Address.prototype._addTxItem = function(txItem, txList) {
+Address.prototype._addTxItem = function(txItem, txList, includeInfo) {
+  function addTx(data) {
+    if (!txList) return;
+    if (includeInfo) {
+      txList.push(data);
+    } else {
+      txList.push(data.txid);
+    }
+  };
+
   var add=0, addSpend=0;
   var v = txItem.value_sat;
   var seen = this.seen;
 
   // Founding tx
-  if ( !seen[txItem.txid] ) {
-    seen[txItem.txid]=1;
-    add=1;
+  if (!seen[txItem.txid]) {
+    seen[txItem.txid] = 1;
+    add = 1;
 
-    if (txList)
-      txList.push(txItem.txid);
+    addTx({ txid: txItem.txid, ts: txItem.ts });
   }
 
   // Spent tx
   if (txItem.spentTxId && !seen[txItem.spentTxId]  ) {
-    if (txList) {
-      txList.push(txItem.spentTxId);
-    }
+    addTx({ txid: txItem.spentTxId, ts: txItem.spentTs });
     seen[txItem.spentTxId]=1;
     addSpend=1;
   }
@@ -143,6 +149,7 @@ Address.prototype._addTxItem = function(txItem, txList) {
 // opts are
 // .onlyUnspent
 // .txLimit     (=0 -> no txs, => -1 no limit)
+// .includeTxInfo
 // 
 Address.prototype.update = function(next, opts) {
   var self = this;
@@ -188,7 +195,7 @@ Address.prototype.update = function(next, opts) {
         }
         else {
           txOut.forEach(function(txItem){
-            self._addTxItem(txItem, txList);
+            self._addTxItem(txItem, txList, opts.includeTxInfo);
           });
           if (txList) 
             self.transactions = txList;
