@@ -49,6 +49,8 @@
     currencyRatesPlugin.request = config.request || request;
     currencyRatesPlugin.defaultSource = config.defaultSource || globalConfig.defaultSource;
 
+    currencyRatesPlugin.initialized = true;
+
     var interval = config.fetchIntervalInMinutes || globalConfig.fetchIntervalInMinutes;
     if (interval) {
       currencyRatesPlugin._fetch();
@@ -56,7 +58,6 @@
         currencyRatesPlugin._fetch();
       }, interval * 60 * 1000);
     }
-    currencyRatesPlugin.initialized = true;
   };
 
   currencyRatesPlugin._retrieve = function(source, cb) {
