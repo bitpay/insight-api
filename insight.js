@@ -147,6 +147,10 @@ if (config.enableEmailstore) {
   require('./plugins/emailstore').init(config.emailstore);
 }
 
+if (config.enableCurrencyRates) {
+  require('./plugins/currencyrates').init(config.currencyrates);
+}
+
 // express settings
 require('./config/express')(expressApp, historicSync, peerSync);
 require('./config/routes')(expressApp);

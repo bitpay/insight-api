@@ -70,6 +70,12 @@ module.exports = function(app) {
     app.post(apiPrefix + '/email/delete/item/:key', emailPlugin.erase);
   }
 
+  // Currency rates plugin
+  if (config.enableCurrencyRates) {
+    var currencyRatesPlugin = require('../plugins/currencyrates');
+    app.get(apiPrefix + '/rates/:code', currencyRatesPlugin.getRate);
+  }
+
   // Address routes
   var messages = require('../app/controllers/messages');
   app.get(apiPrefix + '/messages/verify', messages.verify);

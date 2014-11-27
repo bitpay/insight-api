@@ -88,6 +88,7 @@ var enableEmailstore = process.env.ENABLE_EMAILSTORE === 'true';
 var enablePublicInfo = process.env.ENABLE_PUBLICINFO === 'true';
 var loggerLevel = process.env.LOGGER_LEVEL || 'info';
 var enableHTTPS = process.env.ENABLE_HTTPS === 'true';
+var enableCurrencyRates = process.env.ENABLE_CURRENCYRATES === 'true';
 
 if (!fs.existsSync(db)) {
   mkdirp.sync(db);
@@ -106,6 +107,8 @@ module.exports = {
   credentialstore: require('../plugins/config-credentialstore'),
   enableEmailstore: enableEmailstore,
   emailstore: require('../plugins/config-emailstore'),
+  enableCurrencyRates: enableCurrencyRates,
+  currencyrates: require('../plugins/config-currencyrates'),
   enablePublicInfo: enablePublicInfo,
   publicInfo: require('../plugins/publicInfo/config'),
   loggerLevel: loggerLevel,
