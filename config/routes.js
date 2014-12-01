@@ -67,7 +67,7 @@ module.exports = function(app) {
     app.get(apiPrefix + '/email/retrieve/:email', emailPlugin.oldRetrieve);
 
     app.post(apiPrefix + '/email/delete/profile', emailPlugin.eraseProfile);
-    app.post(apiPrefix + '/email/delete/item/:key', emailPlugin.erase);
+    app.get(apiPrefix + '/email/delete/item', emailPlugin.erase);
   }
 
   // Currency rates plugin
