@@ -396,6 +396,9 @@
     emailPlugin.db.del(valueKey(email, key), function(error) {
       if (error) {
         logger.error(error);
+        if (error.notFound) {
+          return callback(emailPlugin.errors.NOT_FOUND);
+        }
         return callback(emailPlugin.errors.INTERNAL_ERROR);
       }
       return emailPlugin.checkAndUpdateItemCounter(email, null, null, callback);
@@ -415,7 +418,7 @@
         emailPlugin.db.del(validatedKey(email), cb);
       }
     ], function(err) {
-      if (err) {
+      if (err && !err.notFound) {
         logger.error(err);
         return callback(emailPlugin.errors.INTERNAL_ERROR);
       }
