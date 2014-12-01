@@ -8,8 +8,13 @@ var _getVersion = function() {
 };
 
 exports.render = function(req, res) {
+
   if (config.publicPath) {
-    return res.sendfile(config.publicPath + '/index.html');
+    return res.sendfile(config.publicPath + '/index.html', {}, function(err) {
+      res.status(404).json({
+        error: err
+      }).end();
+    });
   }
 
   var version = _getVersion();
@@ -18,6 +23,7 @@ exports.render = function(req, res) {
 
 exports.version = function(req, res) {
   var version = _getVersion();
-  res.json({ version: version });
+  res.json({
+    version: version
+  });
 };
-
