@@ -288,6 +288,12 @@ describe('emailstore test', function() {
       plugin.exists.onFirstCall().callsArgWith(1, null, false);
       plugin.savePassphrase = sinon.stub();
       plugin.savePassphrase.onFirstCall().callsArg(2);
+      plugin.isConfirmed = sinon.stub();
+      plugin.isConfirmed.onFirstCall().callsArgWith(1, null, false);
+      plugin.checkSizeQuota = sinon.stub();
+      plugin.checkSizeQuota.onFirstCall().callsArgWith(3, null);
+      plugin.checkAndUpdateItemQuota = sinon.stub();
+      plugin.checkAndUpdateItemQuota.onFirstCall().callsArgWith(3, null);
       plugin.saveEncryptedData = sinon.stub();
       plugin.saveEncryptedData.onFirstCall().callsArg(3);
       plugin.createVerificationSecretAndSendEmail = sinon.stub();
@@ -317,6 +323,12 @@ describe('emailstore test', function() {
       plugin.exists.onFirstCall().callsArgWith(1, null, true);
       plugin.checkPassphrase = sinon.stub();
       plugin.checkPassphrase.onFirstCall().callsArgWith(2, null, true);
+      plugin.isConfirmed = sinon.stub();
+      plugin.isConfirmed.onFirstCall().callsArgWith(1, null, false);
+      plugin.checkSizeQuota = sinon.stub();
+      plugin.checkSizeQuota.onFirstCall().callsArgWith(3, null);
+      plugin.checkAndUpdateItemQuota = sinon.stub();
+      plugin.checkAndUpdateItemQuota.onFirstCall().callsArgWith(3, null);
       plugin.saveEncryptedData = sinon.stub();
       plugin.saveEncryptedData.onFirstCall().callsArg(3);
       plugin.createVerificationSecretAndSendEmail = sinon.stub();
@@ -385,6 +397,10 @@ describe('emailstore test', function() {
     });
     it('deletes a stored element (key)', function(done) {
       leveldb_stub.del.onFirstCall().callsArg(1);
+
+      plugin.checkAndUpdateItemCounter = sinon.stub();
+      plugin.checkAndUpdateItemCounter.onFirstCall().callsArg(3);
+
       plugin.deleteByEmailAndKey(fakeEmail, fakeKey, function(err) {
         expect(err).to.be.undefined;
         done();
@@ -440,6 +456,7 @@ describe('emailstore test', function() {
 
       response.send.onFirstCall().returnsThis();
       plugin.addValidationHeader = sinon.stub().callsArg(2);
+      plugin.addValidationAndQuotaHeader = sinon.stub().callsArg(2);
 
       plugin.retrieve(request, response);
 
