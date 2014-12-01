@@ -46,19 +46,36 @@
     INVALID_CODE: {
       code: 403,
       message: 'The provided code is invalid'
+    },
+    OVER_QUOTA: {
+      code: 406,
+      message: 'User quota exceeded',
     }
   };
 
   var EMAIL_TO_PASSPHRASE = 'email-to-passphrase-';
   var STORED_VALUE = 'emailstore-';
+  var ITEMS_COUNT = 'itemscount-';
   var PENDING = 'pending-';
   var VALIDATED = 'validated-';
 
   var SEPARATOR = '#';
-  var MAX_ALLOWED_STORAGE = 1024 * 100 /* no more than 100 kb */ ;
+
+  var UNCONFIRMED_PER_ITEM_QUOTA = 1024 * 50; /*  50 kb */
+  var CONFIRMED_PER_ITEM_QUOTA = 1024 * 250; /* 250 kb */
+
+  var UNCONFIRMED_ITEMS_LIMIT = 5;
+  var CONFIRMED_ITEMS_LIMIT = 20;
+
+  var POST_LIMIT = 1024 * 250 /* Max POST 250 kb */ ;
 
   var valueKey = function(email, key) {
     return STORED_VALUE + bitcore.util.twoSha256(email + SEPARATOR + key).toString('hex');
+  };
+
+
+  var countKey = function(email) {
+    return ITEMS_COUNT + bitcore.util.twoSha256(email).toString('hex');
   };
 
   var pendingKey = function(email) {
@@ -234,6 +251,79 @@
     });
   };
 
+
+  /**
+   * checkSizeQuota
+   *
+   * @param email
+   * @param size
+   * @param isConfirmed
+   * @param callback
+   */
+  emailPlugin.checkSizeQuota = function(email, size, isConfirmed, callback) {
+    var err;
+
+    if (size > (isConfirmed ? CONFIRMED_PER_ITEM_QUOTA : UNCONFIRMED_PER_ITEM_QUOTA))
+      err = emailPlugin.errors.OVER_QUOTA;
+
+    logger.info('Storage size:', size);
+    return callback(err);
+  };
+
+
+  emailPlugin.checkAndUpdateItemCounter = function(email, isConfirmed, isAdd, callback) {
+    // this is a new item... Check User's Items quota.
+    emailPlugin.db.get(countKey(email), function(err, counter) {
+      if (err && !err.notFound) {
+        return callback(emailPlugin.errors.INTERNAL_ERROR);
+      }
+      counter = (parseInt(counter) || 0)
+
+      if (isAdd) {
+        counter++;
+        logger.info('User counter quota:', counter);
+        if (counter > (isConfirmed ? CONFIRMED_ITEMS_LIMIT : UNCONFIRMED_ITEMS_LIMIT)) {
+          return callback(emailPlugin.errors.OVER_QUOTA);
+        }
+      } else {
+        if (counter > 0) counter--;
+      }
+
+
+      emailPlugin.db.put(countKey(email), counter, function(err) {
+        if (err) {
+          logger.error('error saving counter');
+          return callback(emailPlugin.errors.INTERNAL_ERROR);
+        }
+        return callback();
+      });
+    });
+  };
+
+
+  /**
+   * @param {string} email
+   * @param {string} key
+   * @param {Function(err)} callback
+   */
+  emailPlugin.checkAndUpdateItemQuota = function(email, key, isConfirmed, callback) {
+
+    emailPlugin.db.get(valueKey(email, key), function(err) {
+
+      //existing item?
+      if (!err)
+        return callback();
+
+      if (err.notFound) {
+        //new item
+        return emailPlugin.checkAndUpdateItemCounter(email, isConfirmed, 1, callback);
+      } else {
+        return callback(emailPlugin.errors.INTERNAL_ERROR);
+      }
+    });
+  };
+
+
   /**
    * @param {string} email
    * @param {string} key
@@ -308,7 +398,7 @@
         logger.error(error);
         return callback(emailPlugin.errors.INTERNAL_ERROR);
       }
-      return callback();
+      return emailPlugin.checkAndUpdateItemCounter(email, null, null, callback);
     });
   };
 
@@ -356,7 +446,7 @@
 
     request.on('data', function(data) {
       queryData += data;
-      if (queryData.length > MAX_ALLOWED_STORAGE) {
+      if (queryData.length > POST_LIMIT) {
         queryData = '';
         response.writeHead(413, {
           'Content-Type': 'text/plain'
@@ -377,70 +467,87 @@
   };
 
   emailPlugin.processPost = function(request, response, email, key, passphrase, record) {
+    var isConfirmed = false;
+
     async.series([
-      /**
-       * Try to fetch this user's email. If it exists, check the secret is the same.
-       */
-      function(callback) {
-        emailPlugin.exists(email, function(err, exists) {
-          if (err) {
-            return callback(err);
-          } else if (exists) {
-            emailPlugin.checkPassphrase(email, passphrase, function(err, match) {
-              if (err) {
+        /**
+         * Try to fetch this user's email. If it exists, check the secret is the same.
+         */
+        function(callback) {
+          emailPlugin.exists(email, function(err, exists) {
+            if (err) {
+              return callback(err);
+            } else if (exists) {
+              emailPlugin.checkPassphrase(email, passphrase, function(err, match) {
+                if (err) {
+                  return callback(err);
+                }
+                if (match) {
+                  return callback();
+                } else {
+                  return callback(emailPlugin.errors.EMAIL_TAKEN);
+                }
+              });
+            } else {
+              emailPlugin.savePassphrase(email, passphrase, function(err) {
                 return callback(err);
-              }
-              if (match) {
-                return callback();
-              } else {
-                return callback(emailPlugin.errors.EMAIL_TAKEN);
-              }
-            });
-          } else {
-            emailPlugin.savePassphrase(email, passphrase, function(err) {
-              if (err) {
-                return callback(err);
-              }
-              return callback();
-            });
-          }
-        });
-      },
-      /**
-       * Save the encrypted private key in the storage.
-       */
-      function(callback) {
-        emailPlugin.saveEncryptedData(email, key, record, function(err) {
-          if (err) {
+              });
+            }
+          });
+        },
+        function(callback) {
+          emailPlugin.isConfirmed(email, function(err, inIsConfirmed) {
+            if (err) return callback(err);
+            isConfirmed = inIsConfirmed;
+            return callback();
+          });
+        },
+        function(callback) {
+          emailPlugin.checkSizeQuota(email, record.length, isConfirmed, function(err) {
             return callback(err);
-          }
-          return callback();
-        });
-      },
-      /**
-       * Create and store the verification secret. If successful, send a verification email.
-       */
-      function(callback) {
-        emailPlugin.createVerificationSecretAndSendEmail(email, function(err) {
-          if (err) {
-            callback({
-              code: 500,
-              message: err
-            });
-          } else {
-            callback();
-          }
-        });
-      }
-    ], function(err) {
-      if (err) {
-        emailPlugin.returnError(err, response);
-      } else {
-        response.json({
-          success: true
-        }).end();
-      }
-    });
+          });
+        },
+        function(callback) {
+          emailPlugin.checkAndUpdateItemQuota(email, key, isConfirmed, function(err) {
+            return callback(err);
+          });
+        },
+        /**
+         * Save the encrypted private key in the storage.
+         */
+        function(callback) {
+          emailPlugin.saveEncryptedData(email, key, record, function(err) {
+            if (err) {
+              return callback(err);
+            }
+            return callback();
+          });
+        },
+        /**
+         * Create and store the verification secret. If successful, send a verification email.
+         */
+        function(callback) {
+          emailPlugin.createVerificationSecretAndSendEmail(email, function(err) {
+            if (err) {
+              callback({
+                code: 500,
+                message: err
+              });
+            } else {
+              callback();
+            }
+          });
+        }
+      ],
+      function(err) {
+        if (err) {
+          emailPlugin.returnError(err, response);
+        } else {
+          response.json({
+            success: true
+          }).end();
+        }
+      });
   };
 
   emailPlugin.getCredentialsFromRequest = function(request) {
@@ -462,18 +569,41 @@
     };
   };
 
-  emailPlugin.addValidationHeader = function(response, email, callback) {
-    emailPlugin.db.get(validatedKey(email), function(err, value) {
-      if (err && !err.notFound) {
-        return callback(err);
+
+  /**
+   * @param {string} email
+   * @param {Function(err, boolean)} callback
+   */
+  emailPlugin.isConfirmed = function(email, callback) {
+    emailPlugin.db.get(validatedKey(email), function(err, isConfirmed) {
+      if (err && err.notFound) {
+        return callback(null, false);
+      } else if (err) {
+        return callback(emailPlugin.errors.INTERNAL_ERROR);
+      }
+      return callback(null, !!isConfirmed);
+    });
+  };
+
+
+  /**
+   * addValidationAndQuotaHeader
+   *
+   * @param response
+   * @param email
+   * @param {Function(err, boolean)} callback
+   */
+  emailPlugin.addValidationAndQuotaHeader = function(response, email, callback) {
+    emailPlugin.isConfirmed(email, function(err, isConfirmed) {
+      if (err) return callback(err);
+
+      if (!isConfirmed) {
+        response.set('X-Email-Needs-Validation', 'true');
       }
 
-      if (value) {
-        return callback();
-      }
-
-      response.set('X-Email-Needs-Validation', 'true');
-      return callback(null, value);
+      response.set('X-Quota-Per-Item', isConfirmed ? CONFIRMED_PER_ITEM_QUOTA : UNCONFIRMED_PER_ITEM_QUOTA);
+      response.set('X-Quota-Items-Limit', isConfirmed ? CONFIRMED_ITEMS_LIMIT : UNCONFIRMED_ITEMS_LIMIT);
+      return callback();
     });
   };
 
@@ -520,19 +650,17 @@
    */
   emailPlugin.retrieve = function(request, response) {
     emailPlugin.authorizeRequestWithKey(request, function(err, email, key) {
-      if (err) {
+      if (err)
         return emailPlugin.returnError(err, response);
-      }
 
       emailPlugin.retrieveByEmailAndKey(email, key, function(err, value) {
-        if (err) {
+        if (err)
           return emailPlugin.returnError(err, response);
-        }
 
-        emailPlugin.addValidationHeader(response, email, function(err) {
-          if (err) {
+
+        emailPlugin.addValidationAndQuotaHeader(response, email, function(err) {
+          if (err)
             return emailPlugin.returnError(err, response);
-          }
 
           response.send(value).end();
         });
@@ -653,7 +781,7 @@
       var queryData = '';
       request.on('data', function(data) {
         queryData += data;
-        if (queryData.length > MAX_ALLOWED_STORAGE) {
+        if (queryData.length > POST_LIMIT) {
           queryData = '';
           response.writeHead(413, {
             'Content-Type': 'text/plain'
@@ -718,7 +846,7 @@
 
     request.on('data', function(data) {
       queryData += data;
-      if (queryData.length > MAX_ALLOWED_STORAGE) {
+      if (queryData.length > UNCONFIRMED_PER_ITEM_QUOTA) {
         queryData = '';
         response.writeHead(413, {
           'Content-Type': 'text/plain'
