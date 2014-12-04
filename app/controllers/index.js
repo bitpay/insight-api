@@ -7,13 +7,11 @@ var _getVersion = function() {
   return pjson.version;
 };
 
-exports.render = function(req, res) {
+exports.render = function(req, res, next) {
 
   if (config.publicPath) {
     return res.sendfile(config.publicPath + '/index.html', {}, function(err) {
-      res.status(404).json({
-        error: err
-      }).end();
+      return next();
     });
   }
 
