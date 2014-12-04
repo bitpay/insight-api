@@ -60,16 +60,6 @@ module.exports = function(app, historicSync, peerSync) {
   //routes should be at the last
   app.use(app.router);
 
-  //Assume "not found" in the error msgs is a 404
-  app.use(function(err, req, res, next) {
-    if (~err.message.indexOf('not found')) return next();
-    console.error(err.stack);
-    res.status(500).jsonp({
-      status: 500,
-      error: err.stack
-    });
-  });
-
   //Assume 404 since no middleware responded
   app.use(function(req, res) {
     res.status(404).jsonp({
