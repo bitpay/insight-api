@@ -61,13 +61,13 @@
 
   var SEPARATOR = '#';
 
-  var UNCONFIRMED_PER_ITEM_QUOTA = 1024 * 50; /*  50 kb */
-  var CONFIRMED_PER_ITEM_QUOTA = 1024 * 250; /* 250 kb */
+  var UNCONFIRMED_PER_ITEM_QUOTA = 1024 * 150; /*  150 kb */
+  var CONFIRMED_PER_ITEM_QUOTA = 1024 * 300; /* 300 kb */
 
-  var UNCONFIRMED_ITEMS_LIMIT = 5;
-  var CONFIRMED_ITEMS_LIMIT = 20;
+  var UNCONFIRMED_ITEMS_LIMIT = 6;
+  var CONFIRMED_ITEMS_LIMIT = 11;
 
-  var POST_LIMIT = 1024 * 250 /* Max POST 250 kb */ ;
+  var POST_LIMIT = 1024 * 300 /* Max POST 300 kb */ ;
 
   var valueKey = function(email, key) {
     return STORED_VALUE + bitcore.util.twoSha256(email + SEPARATOR + key).toString('hex');
