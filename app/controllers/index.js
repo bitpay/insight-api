@@ -7,7 +7,7 @@ var _getVersion = function() {
   return pjson.version;
 };
 
-exports.render = function(req, res, next) {
+exports.render = function(req, res) {
 
   if (config.publicPath) {
     return res.sendfile(config.publicPath + '/index.html');
