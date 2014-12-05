@@ -10,13 +10,12 @@ var _getVersion = function() {
 exports.render = function(req, res, next) {
 
   if (config.publicPath) {
-    return res.sendfile(config.publicPath + '/index.html', {}, function(err) {
-      return next();
-    });
+    return res.sendfile(config.publicPath + '/index.html');
   }
-
-  var version = _getVersion();
-  res.send('insight API v' + version);
+  else {
+    var version = _getVersion();
+    res.send('insight API v' + version);
+  }
 };
 
 exports.version = function(req, res) {
