@@ -371,7 +371,7 @@
       var available = false;
 
       var notFound = err && err.notFound;
-      var expired = !err && _.isObject(value) && moment().isAfter(value.expires);
+      var expired = !err && _.isObject(value) && moment().unix() > value.expires;
 
       var available = notFound || expired;
 
@@ -379,7 +379,7 @@
         var secret = emailPlugin.crypto.randomBytes(16).toString('hex');
         var value = {
           secret: secret,
-          expires: moment().add(DAYS_TO_EXPIRATION, 'days'),
+          expires: moment().add(DAYS_TO_EXPIRATION, 'days').unix(),
         };
         emailPlugin.db.put(pendingKey(email), value, function(err) {
           if (err) {
@@ -762,7 +762,7 @@
       }
 
       if (_.isObject(value)) {
-        if (moment().isAfter(value.expires)) {
+        if (moment().unix() > value.expires) {
           return emailPlugin.returnError(emailPlugin.errors.REGISTRATION_EXPIRED, response);
         } else {
           value = value.secret;

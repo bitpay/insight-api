@@ -230,7 +230,7 @@ describe('emailstore test', function() {
         plugin.createVerificationSecretAndSendEmail(fakeEmail, function(err) {
           var arg = leveldb_stub.put.firstCall.args[1];
           arg.secret.should.equal(fakeRandom);
-          arg.expires.isSame(moment().add(7, 'days')).should.be.true;
+          arg.expires.should.equal(moment().add(7, 'days').unix());
           clock.restore();
           done();
         });
@@ -380,7 +380,7 @@ describe('emailstore test', function() {
     it('should validate correctly an email if the secret matches (using expiration date)', function() {
       leveldb_stub.get.onFirstCall().callsArgWith(1, null, {
         secret: secret,
-        expires: moment().add(7, 'days')
+        expires: moment().add(7, 'days').unix(),
       });
       leveldb_stub.del = sinon.stub().yields(null);
       response.redirect = sinon.stub();
@@ -408,7 +408,7 @@ describe('emailstore test', function() {
     it('should fail to validate an email if the secret has expired', function() {
       leveldb_stub.get.onFirstCall().callsArgWith(1, null, {
         secret: secret,
-        expires: moment().subtract(2, 'days')
+        expires: moment().subtract(2, 'days').unix(),
       });
       response.status.returnsThis();
       response.json.returnsThis();
