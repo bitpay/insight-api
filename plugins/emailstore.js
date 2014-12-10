@@ -761,7 +761,6 @@
         }, response);
       }
 
-      var secret;
       if (_.isObject(value)) {
         if (moment().isAfter(value.expires)) {
           return emailPlugin.returnError(emailPlugin.errors.REGISTRATION_EXPIRED, response);
