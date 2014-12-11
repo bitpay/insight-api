@@ -8,6 +8,7 @@ var bitcore = require('bitcore');
 var logger = require('../lib/logger').logger;
 var should = chai.should;
 var expect = chai.expect;
+var moment = require('moment');
 
 logger.transports.console.level = 'non';
 
@@ -225,9 +226,12 @@ describe('emailstore test', function() {
 
       it('saves data under the expected key', function(done) {
         setupLevelDb();
-
+        var clock = sinon.useFakeTimers();
         plugin.createVerificationSecretAndSendEmail(fakeEmail, function(err) {
-          leveldb_stub.put.firstCall.args[1].should.equal(fakeRandom);
+          var arg = leveldb_stub.put.firstCall.args[1];
+          arg.secret.should.equal(fakeRandom);
+          arg.expires.should.equal(moment().add(7, 'days').unix());
+          clock.restore();
           done();
         });
       });
@@ -363,8 +367,21 @@ describe('emailstore test', function() {
       response.json.returnsThis();
     });
 
-    it('should validate correctly an email if the secret matches', function() {
+    it('should validate correctly an email if the secret matches (without expiration date)', function() {
       leveldb_stub.get.onFirstCall().callsArgWith(1, null, secret);
+      leveldb_stub.del = sinon.stub().yields(null);
+      response.redirect = sinon.stub();
+
+      plugin.validate(request, response);
+
+      assert(response.redirect.firstCall.calledWith(plugin.redirectUrl));
+    });
+
+    it('should validate correctly an email if the secret matches (using expiration date)', function() {
+      leveldb_stub.get.onFirstCall().callsArgWith(1, null, {
+        secret: secret,
+        expires: moment().add(7, 'days').unix(),
+      });
       leveldb_stub.del = sinon.stub().yields(null);
       response.redirect = sinon.stub();
 
@@ -387,6 +404,23 @@ describe('emailstore test', function() {
       }));
       assert(response.end.calledOnce);
     });
+
+    it('should fail to validate an email if the secret has expired', function() {
+      leveldb_stub.get.onFirstCall().callsArgWith(1, null, {
+        secret: secret,
+        expires: moment().subtract(2, 'days').unix(),
+      });
+      response.status.returnsThis();
+      response.json.returnsThis();
+
+      plugin.validate(request, response);
+
+      assert(response.status.firstCall.calledWith(plugin.errors.REGISTRATION_EXPIRED.code));
+      assert(response.json.firstCall.calledWith({
+        error: 'Registration expired'
+      }));
+      assert(response.end.calledOnce);
+    });    
   });
 
   describe('removing items', function() {

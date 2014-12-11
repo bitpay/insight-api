@@ -13,6 +13,7 @@
   var levelup = require('levelup');
   var nodemailer = require('nodemailer');
   var querystring = require('querystring');
+  var moment = require('moment');
 
   var logger = require('../lib/logger').logger;
   var globalConfig = require('../config/config');
@@ -50,7 +51,11 @@
     OVER_QUOTA: {
       code: 406,
       message: 'User quota exceeded',
-    }
+    },
+    REGISTRATION_EXPIRED: {
+      code: 400,
+      message: 'Registration expired',
+    },
   };
 
   var EMAIL_TO_PASSPHRASE = 'email-to-passphrase-';
@@ -68,6 +73,8 @@
   var CONFIRMED_ITEMS_LIMIT = 11;
 
   var POST_LIMIT = 1024 * 300 /* Max POST 300 kb */ ;
+
+  var DAYS_TO_EXPIRATION = 7; // An email can be awaiting validation for this long before expiring
 
   var valueKey = function(email, key) {
     return STORED_VALUE + bitcore.util.twoSha256(email + SEPARATOR + key).toString('hex');
@@ -361,9 +368,20 @@
    */
   emailPlugin.createVerificationSecret = function(email, callback) {
     emailPlugin.db.get(pendingKey(email), function(err, value) {
-      if (err && err.notFound) {
+      var available = false;
+
+      var notFound = err && err.notFound;
+      var expired = !err && _.isObject(value) && moment().unix() > value.expires;
+
+      var available = notFound || expired;
+
+      if (available) {
         var secret = emailPlugin.crypto.randomBytes(16).toString('hex');
-        emailPlugin.db.put(pendingKey(email), secret, function(err) {
+        var value = {
+          secret: secret,
+          expires: moment().add(DAYS_TO_EXPIRATION, 'days').unix(),
+        };
+        emailPlugin.db.put(pendingKey(email), value, function(err) {
           if (err) {
             logger.error('error saving pending data:', email, secret);
             return callback(emailPlugin.errors.INTERNAL_ERROR);
@@ -741,29 +759,39 @@
           code: 500,
           message: err
         }, response);
-      } else if (value !== secret) {
-        return emailPlugin.returnError(emailPlugin.errors.INVALID_CODE, response);
-      } else {
-        emailPlugin.db.put(validatedKey(email), true, function(err, value) {
-          if (err) {
-            return emailPlugin.returnError({
-              code: 500,
-              message: err
-            }, response);
-          } else {
-            emailPlugin.db.del(pendingKey(email), function(err, value) {
-              if (err) {
-                return emailPlugin.returnError({
-                  code: 500,
-                  message: err
-                }, response);
-              } else {
-                response.redirect(emailPlugin.redirectUrl);
-              }
-            });
-          }
-        });
       }
+
+      if (_.isObject(value)) {
+        if (moment().unix() > value.expires) {
+          return emailPlugin.returnError(emailPlugin.errors.REGISTRATION_EXPIRED, response);
+        } else {
+          value = value.secret;
+        }
+      }
+
+      if (value !== secret) {
+        return emailPlugin.returnError(emailPlugin.errors.INVALID_CODE, response);
+      }
+
+      emailPlugin.db.put(validatedKey(email), true, function(err, value) {
+        if (err) {
+          return emailPlugin.returnError({
+            code: 500,
+            message: err
+          }, response);
+        } else {
+          emailPlugin.db.del(pendingKey(email), function(err, value) {
+            if (err) {
+              return emailPlugin.returnError({
+                code: 500,
+                message: err
+              }, response);
+            } else {
+              response.redirect(emailPlugin.redirectUrl);
+            }
+          });
+        }
+      });
     });
   };
 
