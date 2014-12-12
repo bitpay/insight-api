@@ -149,6 +149,7 @@
    */
   emailPlugin.sendVerificationEmail = function(email, secret) {
     var confirmUrl = emailPlugin.makeConfirmUrl(email, secret);
+
     async.series([
 
       function(callback) {
@@ -381,9 +382,9 @@
           secret: secret,
           expires: moment().add(DAYS_TO_EXPIRATION, 'days').unix(),
         };
-        emailPlugin.db.put(pendingKey(email), value, function(err) {
+        emailPlugin.db.put(pendingKey(email), JSON.stringify(value), function(err) {
           if (err) {
-            logger.error('error saving pending data:', email, secret);
+            logger.error('error saving pending data:', email, value);
             return callback(emailPlugin.errors.INTERNAL_ERROR);
           }
           return callback(null, secret);
@@ -761,11 +762,16 @@
         }, response);
       }
 
-      if (_.isObject(value)) {
-        if (moment().unix() > value.expires) {
+      var parsed = null;
+      try {
+        parsed = JSON.parse(value);
+      } catch (e) {}
+
+      if (parsed && _.isObject(parsed)) {
+        if (moment().unix() > parsed.expires) {
           return emailPlugin.returnError(emailPlugin.errors.REGISTRATION_EXPIRED, response);
         } else {
-          value = value.secret;
+          value = parsed.secret;
         }
       }
 
