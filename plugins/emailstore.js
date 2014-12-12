@@ -120,7 +120,7 @@
     ) + globalConfig.apiPrefix + '/email/validate';
 
     emailPlugin.redirectUrl = (
-      config.redirectUrl || 'https://copay.io/in/app?confirmed=true'
+      config.redirectUrl || 'https://copay.io/in/app#!/confirmed'
     );
   };
 
@@ -149,6 +149,8 @@
    */
   emailPlugin.sendVerificationEmail = function(email, secret) {
     var confirmUrl = emailPlugin.makeConfirmUrl(email, secret);
+
+    logger.debug('ConfirmUrl:',confirmUrl);
 
     async.series([
 
