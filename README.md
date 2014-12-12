@@ -76,11 +76,12 @@ INSIGHT_IGNORE_CACHE  # True to ignore cache of spents in transaction, with more
 ENABLE_MAILBOX # if "true" will enable mailbox plugin
 ENABLE_CLEANER # if "true" will enable message db cleaner plugin
 ENABLE_MONITOR # if "true" will enable message db monitor plugin
-ENABLE_EMAILSTORE # if "true" will enable a plugin to store data with a validated email address
 ENABLE_CURRENCYRATES # if "true" will enable a plugin to obtain historic conversion rates for various currencies
 ENABLE_RATELIMITER # if "true" will enable the ratelimiter plugin
 LOGGER_LEVEL # defaults to 'info', can be 'debug','verbose','error', etc.
 ENABLE_HTTPS # if "true" it will server using SSL/HTTPS
+ENABLE_EMAILSTORE # if "true" will enable a plugin to store data with a validated email address
+INSIGHT_EMAIL_CONFIRM_HOST # Only meanfull if ENABLE_EMAILSTORE is enable. Hostname for the confirm URLs. E.g: 'https://insight.bitpay.com'
 
 ```
 
