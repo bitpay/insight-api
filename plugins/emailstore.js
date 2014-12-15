@@ -52,10 +52,6 @@
       code: 406,
       message: 'User quota exceeded',
     },
-    REGISTRATION_EXPIRED: {
-      code: 400,
-      message: 'Registration expired',
-    },
   };
 
   var EMAIL_TO_PASSPHRASE = 'email-to-passphrase-';
@@ -73,8 +69,6 @@
   var CONFIRMED_ITEMS_LIMIT = 11;
 
   var POST_LIMIT = 1024 * 300 /* Max POST 300 kb */ ;
-
-  var DAYS_TO_EXPIRATION = 7; // An email can be awaiting validation for this long before expiring
 
   var valueKey = function(email, key) {
     return STORED_VALUE + bitcore.util.twoSha256(email + SEPARATOR + key).toString('hex');
@@ -371,18 +365,11 @@
    */
   emailPlugin.createVerificationSecret = function(email, callback) {
     emailPlugin.db.get(pendingKey(email), function(err, value) {
-      var available = false;
-
-      var notFound = err && err.notFound;
-      var expired = !err && _.isObject(value) && moment().unix() > value.expires;
-
-      var available = notFound || expired;
-
-      if (available) {
+      if (err && err.notFound) {
         var secret = emailPlugin.crypto.randomBytes(16).toString('hex');
         var value = {
           secret: secret,
-          expires: moment().add(DAYS_TO_EXPIRATION, 'days').unix(),
+          created: moment().unix(),
         };
         emailPlugin.db.put(pendingKey(email), JSON.stringify(value), function(err) {
           if (err) {
@@ -770,11 +757,7 @@
       } catch (e) {}
 
       if (parsed && _.isObject(parsed)) {
-        if (moment().unix() > parsed.expires) {
-          return emailPlugin.returnError(emailPlugin.errors.REGISTRATION_EXPIRED, response);
-        } else {
-          value = parsed.secret;
-        }
+        value = parsed.secret;
       }
 
       if (value !== secret) {

@@ -230,7 +230,7 @@ describe('emailstore test', function() {
         plugin.createVerificationSecretAndSendEmail(fakeEmail, function(err) {
           var arg = JSON.parse(leveldb_stub.put.firstCall.args[1]);
           arg.secret.should.equal(fakeRandom);
-          arg.expires.should.equal(moment().add(7, 'days').unix());
+          arg.created.should.equal(moment().unix());
           clock.restore();
           done();
         });
@@ -367,7 +367,7 @@ describe('emailstore test', function() {
       response.json.returnsThis();
     });
 
-    it('should validate correctly an email if the secret matches (without expiration date)', function() {
+    it('should validate correctly an email if the secret matches (secret only)', function() {
       leveldb_stub.get.onFirstCall().callsArgWith(1, null, secret);
       leveldb_stub.del = sinon.stub().yields(null);
       response.redirect = sinon.stub();
@@ -377,10 +377,10 @@ describe('emailstore test', function() {
       assert(response.redirect.firstCall.calledWith(plugin.redirectUrl));
     });
 
-    it('should validate correctly an email if the secret matches (using expiration date)', function() {
+    it('should validate correctly an email if the secret matches (secret + creation date)', function() {
       leveldb_stub.get.onFirstCall().callsArgWith(1, null, JSON.stringify({
         secret: secret,
-        expires: moment().add(7, 'days').unix(),
+        created: moment().unix(),
       }));
       leveldb_stub.del = sinon.stub().yields(null);
       response.redirect = sinon.stub();
@@ -404,23 +404,6 @@ describe('emailstore test', function() {
       }));
       assert(response.end.calledOnce);
     });
-
-    it('should fail to validate an email if the secret has expired', function() {
-      leveldb_stub.get.onFirstCall().callsArgWith(1, null, JSON.stringify({
-        secret: secret,
-        expires: moment().subtract(2, 'days').unix(),
-      }));
-      response.status.returnsThis();
-      response.json.returnsThis();
-
-      plugin.validate(request, response);
-
-      assert(response.status.firstCall.calledWith(plugin.errors.REGISTRATION_EXPIRED.code));
-      assert(response.json.firstCall.calledWith({
-        error: 'Registration expired'
-      }));
-      assert(response.end.calledOnce);
-    });    
   });
 
   describe('removing items', function() {
