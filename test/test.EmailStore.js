@@ -406,6 +406,25 @@ describe('emailstore test', function() {
     });
   });
 
+  describe.only('resend validation email', function () {
+    var email = 'fake@email.com';
+    var secret = '123';
+    beforeEach(function() {
+      request.param.onFirstCall().returns(email);
+      response.json.returnsThis();
+      response.redirect = sinon.stub();
+    });
+
+    it('should resend validation email when pending', function () {
+      plugin.authorizeRequestWithoutKey = sinon.stub().callsArgWith(1, null, email);
+      leveldb_stub.get.onFirstCall().callsArgWith(1, null, JSON.stringify({ secret: secret, created: new Date() }));
+      plugin.sendVerificationEmail = sinon.spy();
+      plugin.resendEmail(request, response);
+      plugin.sendVerificationEmail.calledOnce.should.be.true;
+      plugin.sendVerificationEmail.calledWith(email, secret).should.be.true;
+    });
+  });
+
   describe('removing items', function() {
     var fakeEmail = 'fake@email.com';
     var fakeKey = 'nameForData';
