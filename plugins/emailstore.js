@@ -34,7 +34,7 @@
     },
     NOT_FOUND: {
       code: 404,
-      message: 'Credentials were not found'
+      message: 'Email already confirmed or credentials were not found '
     },
     INTERNAL_ERROR: {
       code: 500,
