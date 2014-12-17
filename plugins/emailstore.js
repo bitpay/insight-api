@@ -722,6 +722,39 @@
     });
   };
 
+  emailPlugin._parseSecret = function (value) {
+    var obj = null;
+    try {
+      obj = JSON.parse(value);
+    } catch (e) {}
+
+    if (obj && _.isObject(obj)) {
+      return obj.secret;
+    }
+
+    return value;
+  };
+
+  emailPlugin.resendEmail = function(request, response) {
+    emailPlugin.authorizeRequestWithoutKey(request, function(err, email) {
+      if (err) {
+        return emailPlugin.returnError(err, response);
+      }
+      emailPlugin.db.get(pendingKey(email), function(err, value) {
+        if (err) {
+          logger.error('error retrieving secret for email', email, err);
+          return emailPlugin.returnError(err, response);
+        }
+
+        var secret = emailPlugin._parseSecret(value);
+
+        emailPlugin.sendVerificationEmail(email, secret);
+        return response.json({
+            success: true
+          }).end();
+      });
+    });
+  };
 
   /**
    * Marks an email as validated
@@ -751,14 +784,7 @@
         }, response);
       }
 
-      var parsed = null;
-      try {
-        parsed = JSON.parse(value);
-      } catch (e) {}
-
-      if (parsed && _.isObject(parsed)) {
-        value = parsed.secret;
-      }
+      value = emailPlugin._parseSecret(value);
 
       if (value !== secret) {
         return emailPlugin.returnError(emailPlugin.errors.INVALID_CODE, response);

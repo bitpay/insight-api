@@ -406,6 +406,43 @@ describe('emailstore test', function() {
     });
   });
 
+  describe('resend validation email', function () {
+    var email = 'fake@email.com';
+    var secret = '123';
+    beforeEach(function() {
+      leveldb_stub.get.reset();
+      request.param.onFirstCall().returns(email);
+      response.json.returnsThis();
+      response.redirect = sinon.stub();
+    });
+
+    it('should resend validation email when pending', function () {
+      plugin.authorizeRequestWithoutKey = sinon.stub().callsArgWith(1, null, email);
+      leveldb_stub.get.onFirstCall().callsArgWith(1, null, JSON.stringify({ secret: secret, created: new Date() }));
+      plugin.sendVerificationEmail = sinon.spy();
+      plugin.resendEmail(request, response);
+      plugin.sendVerificationEmail.calledOnce.should.be.true;
+      plugin.sendVerificationEmail.calledWith(email, secret).should.be.true;
+    });
+
+    it('should resend validation email when pending (old style secret)', function () {
+      plugin.authorizeRequestWithoutKey = sinon.stub().callsArgWith(1, null, email);
+      leveldb_stub.get.onFirstCall().callsArgWith(1, null, secret);
+      plugin.sendVerificationEmail = sinon.spy();
+      plugin.resendEmail(request, response);
+      plugin.sendVerificationEmail.calledOnce.should.be.true;
+      plugin.sendVerificationEmail.calledWith(email, secret).should.be.true;
+    });
+
+    it('should not resend when email is no longer pending', function () {
+      plugin.authorizeRequestWithoutKey = sinon.stub().callsArgWith(1, null, email);
+      leveldb_stub.get.onFirstCall().callsArgWith(1, { notFound: true });
+      plugin.sendVerificationEmail = sinon.spy();
+      plugin.resendEmail(request, response);
+      plugin.sendVerificationEmail.should.not.be.called;
+    });
+  });
+
   describe('removing items', function() {
     var fakeEmail = 'fake@email.com';
     var fakeKey = 'nameForData';
