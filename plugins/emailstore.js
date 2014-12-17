@@ -52,6 +52,10 @@
       code: 406,
       message: 'User quota exceeded',
     },
+    COULD_NOT_CREATE: {
+      code: 500,
+      message: 'Could not create profile',
+    },
   };
 
   var EMAIL_TO_PASSPHRASE = 'email-to-passphrase-';
@@ -141,7 +145,7 @@
    * @param {string} email - the user's email
    * @param {string} secret - the verification secret
    */
-  emailPlugin.sendVerificationEmail = function(email, secret) {
+  emailPlugin.sendVerificationEmail = function(email, secret, callback) {
     var confirmUrl = emailPlugin.makeConfirmUrl(email, secret);
 
     logger.debug('ConfirmUrl:',confirmUrl);
@@ -176,9 +180,10 @@
       emailPlugin.email.sendMail(mailOptions, function(err, info) {
         if (err) {
           logger.error('An error occurred when trying to send email to ' + email, err);
-        } else {
-          logger.info('Message sent: ', info ? info : '');
+          return callback(err);
         }
+        logger.info('Message sent: ', info ? info : '');
+        return callback(err, info);
       });
     });
   };
@@ -351,7 +356,12 @@
         return callback(emailPlugin.errors.INTERNAL_ERROR);
       }
       if (secret) {
-        emailPlugin.sendVerificationEmail(email, secret);
+        emailPlugin.sendVerificationEmail(email, secret, function (err, res) {
+          if (err) {
+            logger.error('error sending verification email', email, secret, err);
+            return callback(emailPlugin.errors.INTERNAL_ERROR);
+          }
+        });
       }
       callback();
     });
@@ -478,7 +488,9 @@
   };
 
   emailPlugin.processPost = function(request, response, email, key, passphrase, record) {
+    var isNewProfile = true;
     var isConfirmed = false;
+    var errorCreating = false;
 
     async.series([
         /**
@@ -486,18 +498,14 @@
          */
         function(callback) {
           emailPlugin.exists(email, function(err, exists) {
-            if (err) {
-              return callback(err);
-            } else if (exists) {
+            if (err) return callback(err);
+            
+            if (exists) {
               emailPlugin.checkPassphrase(email, passphrase, function(err, match) {
-                if (err) {
-                  return callback(err);
-                }
-                if (match) {
-                  return callback();
-                } else {
-                  return callback(emailPlugin.errors.EMAIL_TAKEN);
-                }
+                if (err) return callback(err);
+                if (!match) return callback(emailPlugin.errors.EMAIL_TAKEN);
+                isNewProfile = false;
+                return callback();
               });
             } else {
               emailPlugin.savePassphrase(email, passphrase, function(err) {
@@ -538,20 +546,25 @@
          * Create and store the verification secret. If successful, send a verification email.
          */
         function(callback) {
+          if (!isNewProfile || isConfirmed) return callback();
+
           emailPlugin.createVerificationSecretAndSendEmail(email, function(err) {
             if (err) {
-              callback({
-                code: 500,
-                message: err
-              });
-            } else {
-              callback();
+              errorCreating = true;
+              return callback(err);
             }
+            return callback();
           });
-        }
+        },
       ],
       function(err) {
         if (err) {
+          if (isNewProfile && !isConfirmed && errorCreating) {
+            emailPlugin.deleteWholeProfile(email, function(err) {
+              return emailPlugin.returnError(emailPlugin.errors.COULD_NOT_CREATE, response);
+            });
+          }
+
           emailPlugin.returnError(err, response);
         } else {
           response.json({
