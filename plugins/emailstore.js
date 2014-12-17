@@ -52,9 +52,9 @@
       code: 406,
       message: 'User quota exceeded',
     },
-    COULD_NOT_CREATE: {
-      code: 500,
-      message: 'Could not create profile',
+    ERROR_SENDING_EMAIL: {
+      code: 501,
+      message: 'Could not send verification email',
     },
   };
 
@@ -359,11 +359,11 @@
         emailPlugin.sendVerificationEmail(email, secret, function (err, res) {
           if (err) {
             logger.error('error sending verification email', email, secret, err);
-            return callback(emailPlugin.errors.INTERNAL_ERROR);
+            return callback(emailPlugin.errors.ERROR_SENDING_EMAIL);
           }
+          return callback();
         });
       }
-      callback();
     });
   };
 
@@ -536,10 +536,7 @@
          */
         function(callback) {
           emailPlugin.saveEncryptedData(email, key, record, function(err) {
-            if (err) {
-              return callback(err);
-            }
-            return callback();
+            return callback(err);
           });
         },
         /**
@@ -551,17 +548,16 @@
           emailPlugin.createVerificationSecretAndSendEmail(email, function(err) {
             if (err) {
               errorCreating = true;
-              return callback(err);
             }
-            return callback();
+            return callback(err);
           });
         },
       ],
       function(err) {
         if (err) {
           if (isNewProfile && !isConfirmed && errorCreating) {
-            emailPlugin.deleteWholeProfile(email, function(err) {
-              return emailPlugin.returnError(emailPlugin.errors.COULD_NOT_CREATE, response);
+            emailPlugin.deleteWholeProfile(email, function() {
+              return emailPlugin.returnError(err, response);
             });
           }
 
