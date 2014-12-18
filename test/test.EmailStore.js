@@ -22,7 +22,7 @@ describe('emailstore test', function() {
   leveldb_stub.get = sinon.stub();
   leveldb_stub.del = sinon.stub();
   var email_stub = sinon.stub();
-  email_stub.sendMail = sinon.stub();
+  email_stub.sendMail = sinon.stub().callsArg(1);
 
   var cryptoMock = {
     randomBytes: sinon.stub()
@@ -199,7 +199,6 @@ describe('emailstore test', function() {
     });
 
     describe('creating verification secret', function() {
-      var sendVerificationEmail = sinon.stub(plugin, 'sendVerificationEmail');
       var fakeEmail = 'fake@email.com';
       var fakeRandom = 'fakerandom';
       var randomBytes = {
@@ -211,8 +210,8 @@ describe('emailstore test', function() {
       beforeEach(function() {
         leveldb_stub.get.reset();
         leveldb_stub.put.reset();
+        plugin.email.sendMail.reset();
 
-        sendVerificationEmail.reset();
         cryptoMock.randomBytes = sinon.stub();
         cryptoMock.randomBytes.onFirstCall().returns(randomBytes);
       });
@@ -235,11 +234,11 @@ describe('emailstore test', function() {
           done();
         });
       });
-      it('calls the function to verify the email', function(done) {
+      it('sends verification email', function(done) {
         setupLevelDb();
 
         plugin.createVerificationSecretAndSendEmail(fakeEmail, function(err) {
-          sendVerificationEmail.calledOnce;
+          plugin.email.sendMail.calledOnce.should.be.true;
           done();
         });
       });
@@ -260,15 +259,10 @@ describe('emailstore test', function() {
           done();
         });
       });
-
-      after(function() {
-        plugin.sendVerificationEmail.restore();
-      });
     });
   });
 
   describe('on registration', function() {
-
     var emailParam = 'email';
     var secretParam = 'secret';
     var keyParam = 'key';
@@ -336,7 +330,6 @@ describe('emailstore test', function() {
       plugin.saveEncryptedData = sinon.stub();
       plugin.saveEncryptedData.onFirstCall().callsArg(3);
       plugin.createVerificationSecretAndSendEmail = sinon.stub();
-      plugin.createVerificationSecretAndSendEmail.onFirstCall().callsArg(1);
       response.send.onFirstCall().returnsThis();
 
       plugin.save(request, response);
@@ -347,8 +340,50 @@ describe('emailstore test', function() {
       assert(plugin.saveEncryptedData.firstCall.args[0] === emailParam);
       assert(plugin.saveEncryptedData.firstCall.args[1] === keyParam);
       assert(plugin.saveEncryptedData.firstCall.args[2] === recordParam);
-      assert(plugin.createVerificationSecretAndSendEmail.firstCall.args[0] === emailParam);
+      plugin.createVerificationSecretAndSendEmail.called.should.be.false;
       plugin.getCredentialsFromRequest = originalCredentials;
+    });
+
+    it('should delete profile on error sending verification email', function() {
+      var originalCredentials = plugin.getCredentialsFromRequest;
+      plugin.getCredentialsFromRequest = sinon.mock();
+      plugin.getCredentialsFromRequest.onFirstCall().returns({
+        email: emailParam,
+        passphrase: secretParam
+      });
+      plugin.exists = sinon.stub();
+      plugin.exists.onFirstCall().callsArgWith(1, null, false);
+      plugin.savePassphrase = sinon.stub();
+      plugin.savePassphrase.onFirstCall().callsArg(2);
+      plugin.isConfirmed = sinon.stub();
+      plugin.isConfirmed.onFirstCall().callsArgWith(1, null, false);
+      plugin.checkSizeQuota = sinon.stub();
+      plugin.checkSizeQuota.onFirstCall().callsArgWith(3, null);
+      plugin.checkAndUpdateItemQuota = sinon.stub();
+      plugin.checkAndUpdateItemQuota.onFirstCall().callsArgWith(3, null);
+      plugin.saveEncryptedData = sinon.stub();
+      plugin.saveEncryptedData.onFirstCall().callsArg(3);
+      plugin.createVerificationSecretAndSendEmail = sinon.stub();
+      plugin.createVerificationSecretAndSendEmail.onFirstCall().callsArgWith(1, 'error');
+      var deleteWholeProfile = sinon.stub(plugin, 'deleteWholeProfile');
+      deleteWholeProfile.onFirstCall().callsArg(1);
+      response.send.onFirstCall().returnsThis();
+
+      plugin.save(request, response);
+
+      assert(plugin.exists.firstCall.args[0] === emailParam);
+      assert(plugin.savePassphrase.firstCall.args[0] === emailParam);
+      assert(plugin.savePassphrase.firstCall.args[1] === secretParam);
+      assert(plugin.saveEncryptedData.firstCall.args[0] === emailParam);
+      assert(plugin.saveEncryptedData.firstCall.args[1] === keyParam);
+      assert(plugin.saveEncryptedData.firstCall.args[2] === recordParam);
+      assert(plugin.createVerificationSecretAndSendEmail.firstCall.args[0] === emailParam);
+      assert(deleteWholeProfile.firstCall.args[0] === emailParam);
+      plugin.getCredentialsFromRequest = originalCredentials;
+    });
+
+    after(function () {
+      plugin.deleteWholeProfile.restore();
     });
   });
 
