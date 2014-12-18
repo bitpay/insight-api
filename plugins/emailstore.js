@@ -755,10 +755,16 @@
 
         var secret = emailPlugin._parseSecret(value);
 
-        emailPlugin.sendVerificationEmail(email, secret);
-        return response.json({
-            success: true
-          }).end();
+        emailPlugin.sendVerificationEmail(email, secret, function (err) {
+          if (err) {
+            logger.error('error resending verification email', email, secret, err);
+            return emailPlugin.returnError(emailPlugin.errors.ERROR_SENDING_EMAIL, response);
+          }
+          return response.json({
+              success: true
+            }).end();
+
+        });
       });
     });
   };
