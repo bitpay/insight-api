@@ -351,19 +351,17 @@
 
   emailPlugin.createVerificationSecretAndSendEmail = function(email, callback) {
     emailPlugin.createVerificationSecret(email, function(err, secret) {
-      if (err) {
+      if (err || !secret) {
         logger.error('error saving verification secret', email, secret, err);
         return callback(emailPlugin.errors.INTERNAL_ERROR);
       }
-      if (secret) {
-        emailPlugin.sendVerificationEmail(email, secret, function (err, res) {
-          if (err) {
-            logger.error('error sending verification email', email, secret, err);
-            return callback(emailPlugin.errors.ERROR_SENDING_EMAIL);
-          }
-          return callback();
-        });
-      }
+      emailPlugin.sendVerificationEmail(email, secret, function (err, res) {
+        if (err) {
+          logger.error('error sending verification email', email, secret, err);
+          return callback(emailPlugin.errors.ERROR_SENDING_EMAIL);
+        }
+        return callback();
+      });
     });
   };
 

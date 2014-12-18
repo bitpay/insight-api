@@ -22,7 +22,7 @@ describe('emailstore test', function() {
   leveldb_stub.get = sinon.stub();
   leveldb_stub.del = sinon.stub();
   var email_stub = sinon.stub();
-  email_stub.sendMail = sinon.stub();
+  email_stub.sendMail = sinon.stub().callsArg(1);
 
   var cryptoMock = {
     randomBytes: sinon.stub()
@@ -199,7 +199,6 @@ describe('emailstore test', function() {
     });
 
     describe('creating verification secret', function() {
-      var sendVerificationEmail = sinon.stub(plugin, 'sendVerificationEmail');
       var fakeEmail = 'fake@email.com';
       var fakeRandom = 'fakerandom';
       var randomBytes = {
@@ -211,8 +210,8 @@ describe('emailstore test', function() {
       beforeEach(function() {
         leveldb_stub.get.reset();
         leveldb_stub.put.reset();
+        plugin.email.sendMail.reset();
 
-        sendVerificationEmail.reset();
         cryptoMock.randomBytes = sinon.stub();
         cryptoMock.randomBytes.onFirstCall().returns(randomBytes);
       });
@@ -235,11 +234,11 @@ describe('emailstore test', function() {
           done();
         });
       });
-      it('calls the function to verify the email', function(done) {
+      it('sends verification email', function(done) {
         setupLevelDb();
 
         plugin.createVerificationSecretAndSendEmail(fakeEmail, function(err) {
-          sendVerificationEmail.calledOnce;
+          plugin.email.sendMail.calledOnce.should.be.true;
           done();
         });
       });
@@ -259,10 +258,6 @@ describe('emailstore test', function() {
           err.should.equal(plugin.errors.INTERNAL_ERROR);
           done();
         });
-      });
-
-      after(function() {
-        plugin.sendVerificationEmail.restore();
       });
     });
   });
