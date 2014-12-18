@@ -488,8 +488,8 @@
   };
 
   emailPlugin.processPost = function(request, response, email, key, passphrase, record) {
-    var isNewProfile = true;
-    var isConfirmed = false;
+    var isNewProfile = false;
+    var isConfirmed = true;
     var errorCreating = false;
 
     async.series([
@@ -504,10 +504,10 @@
               emailPlugin.checkPassphrase(email, passphrase, function(err, match) {
                 if (err) return callback(err);
                 if (!match) return callback(emailPlugin.errors.EMAIL_TAKEN);
-                isNewProfile = false;
                 return callback();
               });
             } else {
+              isNewProfile = true;
               emailPlugin.savePassphrase(email, passphrase, function(err) {
                 return callback(err);
               });
