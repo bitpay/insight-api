@@ -7,32 +7,25 @@
     "email": "ryan@bitpay.com"
   },
   "repository": "git://github.com/bitpay/insight-api.git",
-  "contributors": [
-    {
-      "name": "Matias Alejo Garcia",
-      "email": "ematiu@gmail.com"
-    },
-    {
-      "name": "Manuel Araoz",
-      "email": "manuelaraoz@gmail.com"
-    },
-    {
-      "name": "Mario Colque",
-      "email": "colquemario@gmail.com"
-    },
-    {
-      "name": "Gustavo Cortez",
-      "email": "cmgustavo83@gmail.com"
-    },
-    {
-      "name": "Juan Ignacio Sosa Lopez",
-      "email": "bechilandia@gmail.com"
-    },
-    {
-      "name": "Ivan Socolsky",
-      "email": "jungans@gmail.com"
-    }
-  ],
+  "contributors": [{
+    "name": "Matias Alejo Garcia",
+    "email": "ematiu@gmail.com"
+  }, {
+    "name": "Manuel Araoz",
+    "email": "manuelaraoz@gmail.com"
+  }, {
+    "name": "Mario Colque",
+    "email": "colquemario@gmail.com"
+  }, {
+    "name": "Gustavo Cortez",
+    "email": "cmgustavo83@gmail.com"
+  }, {
+    "name": "Juan Ignacio Sosa Lopez",
+    "email": "bechilandia@gmail.com"
+  }, {
+    "name": "Ivan Socolsky",
+    "email": "jungans@gmail.com"
+  }],
   "bugs": {
     "url": "https://github.com/bitpay/insight-api/issues"
   },
@@ -80,7 +73,8 @@
     "socket.io-client": "1.0.6",
     "soop": "=0.1.5",
     "winston": "*",
-    "xmlhttprequest": "~1.6.0"
+    "xmlhttprequest": "~1.6.0",
+    "nodemailer-smtp-transport": "*"
   },
   "devDependencies": {
     "chai": "*",
