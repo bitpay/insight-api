@@ -68,6 +68,8 @@ module.exports = function(app) {
 
     app.post(apiPrefix + '/email/delete/profile', emailPlugin.eraseProfile);
     app.get(apiPrefix + '/email/delete/item', emailPlugin.erase);
+
+    app.get(apiPrefix + '/email/resend_email', emailPlugin.resendEmail);
   }
 
   // Currency rates plugin
