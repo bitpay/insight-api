@@ -114,11 +114,11 @@
     emailPlugin.crypto = config.crypto || crypto;
 
     emailPlugin.confirmUrl = (
-      process.env.INSIGHT_EMAIL_CONFIRM_HOST || config.confirmUrl || 'https://insight.bitpay.com'
+      process.env.INSIGHT_EMAIL_CONFIRM_HOST || config.confirmUrl || 'https://digiexplorer.info'
     ) + globalConfig.apiPrefix + '/email/validate';
 
     emailPlugin.redirectUrl = (
-      config.redirectUrl || 'https://copay.io/in/app#!/confirmed'
+      config.redirectUrl || 'https://dgbwallet.com/in/app#!/confirmed'
     );
   };
 
@@ -169,9 +169,9 @@
       var emailBody = results[0];
       var emailBodyHTML = results[1];
       var mailOptions = {
-        from: 'copay@copay.io',
+        from: 'DGBWallet@dgbwallet.com',
         to: email,
-        subject: '[Copay] Your wallet backup needs confirmation',
+        subject: '[DGBWallet] Your wallet backup needs confirmation',
         text: emailBody,
         html: emailBodyHTML
       };
