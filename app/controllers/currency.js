@@ -5,7 +5,7 @@ var config = require('../../config/config');
 // Set the initial vars
 var timestamp = +new Date(),
     delay = config.currencyRefresh * 60000,
-    bitstampRate = 0;
+    usdRate = 0;
 
 exports.index = function(req, res) {
 
@@ -40,21 +40,21 @@ exports.index = function(req, res) {
 
   // Init
   var currentTime = +new Date();
-  if (bitstampRate === 0 || currentTime >= (timestamp + delay)) {
+  if (usdRate === 0 || currentTime >= (timestamp + delay)) {
     timestamp = currentTime;
 
-    _request('https://www.bitstamp.net/api/ticker/', function(err, data) {
-      if (!err) bitstampRate = parseFloat(JSON.parse(data).last);
+    _request('http://coinmarketcap-nexuist.rhcloud.com/api/dgb', function(err, data) {
+      if (!err) usdRate = parseFloat(JSON.parse(data).price.usd);
 
       res.jsonp({
         status: 200,
-        data: { bitstamp: bitstampRate }
+        data: { bitstamp: usdRate }
       });
     });
   } else {
     res.jsonp({
       status: 200,
-      data: { bitstamp: bitstampRate }
+      data: { bitstamp: usdRate }
     });
   }
 };
