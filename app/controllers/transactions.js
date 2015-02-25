@@ -10,6 +10,12 @@ var util        = require('util');
 
 var Rpc           = require('../../lib/Rpc');
 
+var imports         = require('soop').imports(),
+    bitcore         = require('bitcore'),
+    RpcClient       = bitcore.RpcClient,
+    config          = require('../config/config'),
+    bitcoreRpc      = imports.bitcoreRpc || new RpcClient(config.bitcoind);
+
 var tDb = require('../../lib/TransactionDb').default();
 var bdb = require('../../lib/BlockDb').default();
 
@@ -34,6 +40,16 @@ exports.send = function(req, res) {
   });
 };
 
+exports.getRaw = function(req, res) {
+  bitcoreRpc.getRawTransaction(req.query.txid, function(err, transaction) {
+    if (err || !transaction)
+      return common.handleErrors(err, res);
+    else {
+      res.write(transaction);
+      res.end();
+    }
+  });
+};
 
 /**
  * Find transaction by hash ...
