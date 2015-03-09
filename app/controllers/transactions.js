@@ -41,7 +41,6 @@ exports.send = function(req, res) {
 };
 
 exports.rawTransaction = function (req, res, next, txid) {
-  console.log(txid);
     bitcoreRpc.getRawTransaction(txid, function (err, transaction) {
         if (err || !transaction)
             return common.handleErrors(err, res);
