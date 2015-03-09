@@ -1,12 +1,12 @@
 # *insight API*
 
 *insight API* is an open-source bitcoin blockchain REST
-and websocket API. Insight API runs in NodeJS and uses LevelDB for storage. 
+and websocket API. Insight API runs in NodeJS and uses LevelDB for storage.
 
 This is a backend-only service. If you're looking for the web frontend application,
 take a look at https://github.com/bitpay/insight.
 
-*Insight API* allows to develop bitcoin-related applications (such as wallets) that 
+*Insight API* allows to develop bitcoin-related applications (such as wallets) that
 require certain information from the blockchain that bitcoind does not provide.
 
 A blockchain explorer front-end has been developed on top of *Insight API*. It can
@@ -71,7 +71,7 @@ BITCOIND_DATADIR      # bitcoind datadir. 'testnet3' will be appended automatica
 INSIGHT_NETWORK [= 'livenet' | 'testnet']
 INSIGHT_PORT          # insight api port
 INSIGHT_DB            # Path where to store insight's internal DB. (defaults to $HOME/.insight)
-INSIGHT_SAFE_CONFIRMATIONS=6  # Nr. of confirmation needed to start caching transaction information   
+INSIGHT_SAFE_CONFIRMATIONS=6  # Nr. of confirmation needed to start caching transaction information
 INSIGHT_IGNORE_CACHE  # True to ignore cache of spents in transaction, with more than INSIGHT_SAFE_CONFIRMATIONS confirmations. This is useful for tracking double spents for old transactions.
 ENABLE_MAILBOX # if "true" will enable mailbox plugin
 ENABLE_CLEANER # if "true" will enable message db cleaner plugin
@@ -96,7 +96,7 @@ The initial synchronization process scans the blockchain from the paired bitcoin
 
 While *insight* is synchronizing the website can be accessed (the sync process is embedded in the webserver), but there may be missing data or incorrect balances for addresses. The 'sync' status is shown at the `/api/sync` endpoint.
 
-The blockchain can be read from bitcoind's raw `.dat` files or RPC interface. 
+The blockchain can be read from bitcoind's raw `.dat` files or RPC interface.
 Reading the information from the `.dat` files is much faster so it's the
 recommended (and default) alternative. `.dat` files are scanned in the default
 location for each platform (for example, `~/.bitcoin` on Linux). In case a
@@ -153,14 +153,14 @@ Contributions and suggestions are welcome at [insight-api github repository](htt
 ## Caching schema
 
 Since v0.2 a new cache schema has been introduced. Only information from transactions with
-INSIGHT_SAFE_CONFIRMATIONS settings will be cached (by default SAFE_CONFIRMATIONS=6). There 
+INSIGHT_SAFE_CONFIRMATIONS settings will be cached (by default SAFE_CONFIRMATIONS=6). There
 are 3 different caches:
- * Number of confirmations 
+ * Number of confirmations
  * Transaction output spent/unspent status
  * scriptPubKey for unspent transactions
 
 Cache data is only populated on request, i.e., only after accessing the required data for
-the first time, the information is cached, there is not pre-caching procedure.  To ignore 
+the first time, the information is cached, there is not pre-caching procedure.  To ignore
 cache by default, use INSIGHT_IGNORE_CACHE. Also, address related calls support `?noCache=1`
 to ignore the cache in a particular API request.
 
@@ -180,6 +180,8 @@ The end-points are:
 ```
   /api/tx/[:txid]
   /api/tx/525de308971eabd941b139f46c7198b5af9479325c2395db7f2fb5ae8562556c
+  /api/raw/[:rawid]
+  /api/raw/525de308971eabd941b139f46c7198b5af9479325c2395db7f2fb5ae8562556c
 ```
 ### Address
 ```
@@ -217,7 +219,7 @@ Sample return:
       ts: 1401226410,
       scriptPubKey: "76a914e50575162795cd77366fb80d728e3216bd52deac88ac",
       amount: 0.001,
-      confirmation: 6    
+      confirmation: 6
       confirmationsFromCache: true,
     }
 ]
@@ -297,7 +299,7 @@ Sample output:
       { ... },
       ...
       { ... }
-    ] 
+    ]
  }
 ```
 
