@@ -4,12 +4,9 @@
  * Module dependencies.
  */
 var common = require('./common'),
-  async = require('async'),
-  BlockDb = require('../../lib/BlockDb'),
-  TransactionDb = require('../../lib/TransactionDb');
-
-var bdb = new BlockDb();
-var tdb = new TransactionDb();
+var async = require('async');
+var bdb = require('./BlockDb').default();
+var tdb = require('./TransactionDb').default();
 
 /**
  * Find block by hash ...
