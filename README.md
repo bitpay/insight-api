@@ -1,3 +1,4 @@
+
 # *insight API*
 
 *insight API* is an open-source bitcoin blockchain REST
@@ -12,6 +13,10 @@ require certain information from the blockchain that bitcoind does not provide.
 A blockchain explorer front-end has been developed on top of *Insight API*. It can
 be downloaded at [Github Insight Repository](https://github.com/bitpay/insight).
 
+## Warning
+  Insight file sync does not work with **bitcoind**  v0.10 
+  In order to use Insigtht you must set the environment variable INSIGHT_FORCE_RPC_SYNC = 1  
+  We are working on `bitcore-node` to replace Insight-api. Check `bitcore-node` on  [github](https://github.com/bitpay/bitcore-node).
 
 ## Prerequisites
 
@@ -31,6 +36,7 @@ bitcoind must be running and must have finished downloading the blockchain **bef
 * **Node.js v0.10.x** - Download and Install [Node.js](http://www.nodejs.org/download/).
 
 * **NPM** - Node.js package manager, should be automatically installed when you get node.js.
+
 
 ## Quick Install
   Check the Prerequisites section above before installing.

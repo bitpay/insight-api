@@ -50,6 +50,7 @@ switch (process.env.NODE_ENV) {
 }
 
 var network = process.env.INSIGHT_NETWORK || 'testnet';
+var forceRPCsync = process.env.INSIGHT_FORCE_RPC_SYNC;
 
 var dataDir = process.env.BITCOIND_DATADIR;
 var isWin = /^win/.test(process.platform);
@@ -133,4 +134,5 @@ module.exports = {
   },
   safeConfirmations: safeConfirmations, // PLEASE NOTE THAT *FULL RESYNC* IS NEEDED TO CHANGE safeConfirmations
   ignoreCache: ignoreCache,
+  forceRPCsync: forceRPCsync,
 };
