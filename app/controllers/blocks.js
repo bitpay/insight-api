@@ -3,10 +3,10 @@
 /**
  * Module dependencies.
  */
-var common = require('./common'),
+var common = require('./common');
 var async = require('async');
-var bdb = require('./BlockDb').default();
-var tdb = require('./TransactionDb').default();
+var bdb = require('../../lib/BlockDb').default();
+var tdb = require('../../lib/TransactionDb').default();
 
 /**
  * Find block by hash ...
