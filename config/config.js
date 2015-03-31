@@ -27,6 +27,12 @@ if (process.env.INSIGHT_NETWORK === 'livenet') {
   port = '3000';
   b_port = '8332';
   p2p_port = '8333';
+} else if (process.env.INSIGHT_NETWORK === 'regtest') {
+  env = 'regtest';
+  db = home + '/regtest';
+  port = '3002';
+  b_port = '18444';
+  p2p_port = '18444';
 } else {
   env = 'testnet';
   db = home + '/testnet';
