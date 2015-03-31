@@ -65,7 +65,7 @@
     "commander": "^2.3.0",
     "connect-ratelimit": "git://github.com/dharmafly/connect-ratelimit.git#0550eff209c54f35078f46445000797fa942ab97",
     "cron": "^1.0.4",
-    "express": "~3.4.7",
+    "express": "~3.3.5",
     "glob": "*",
     "leveldown": "~0.10.0",
     "levelup": "~0.19.0",
