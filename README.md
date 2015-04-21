@@ -210,23 +210,23 @@ Sample return:
 ``` json
 [
     {
-      address: "n2PuaAguxZqLddRbTnAoAuwKYgN2w2hZk7",
-      txid: "dbfdc2a0d22a8282c4e7be0452d595695f3a39173bed4f48e590877382b112fc",
-      vout: 0,
-      ts: 1401276201,
-      scriptPubKey: "76a914e50575162795cd77366fb80d728e3216bd52deac88ac",
-      amount: 0.001,
-      confirmations: 3
+      "address": "n2PuaAguxZqLddRbTnAoAuwKYgN2w2hZk7",
+      "txid": "dbfdc2a0d22a8282c4e7be0452d595695f3a39173bed4f48e590877382b112fc",
+      "vout": 0,
+      "ts": 1401276201,
+      "scriptPubKey": "76a914e50575162795cd77366fb80d728e3216bd52deac88ac",
+      "amount": 0.001,
+      "confirmations": 3
     },
     {
-      address: "n2PuaAguxZqLddRbTnAoAuwKYgN2w2hZk7",
-      txid: "e2b82af55d64f12fd0dd075d0922ee7d6a300f58fe60a23cbb5831b31d1d58b4",
-      vout: 0,
-      ts: 1401226410,
-      scriptPubKey: "76a914e50575162795cd77366fb80d728e3216bd52deac88ac",
-      amount: 0.001,
-      confirmation: 6
-      confirmationsFromCache: true,
+      "address": "n2PuaAguxZqLddRbTnAoAuwKYgN2w2hZk7",
+      "txid": "e2b82af55d64f12fd0dd075d0922ee7d6a300f58fe60a23cbb5831b31d1d58b4",
+      "vout": 0,
+      "ts": 1401226410,
+      "scriptPubKey": "76a914e50575162795cd77366fb80d728e3216bd52deac88ac",
+      "amount": 0.001,
+      "confirmation": 6,
+      "confirmationsFromCache": true
     }
 ]
 ```
