@@ -46,6 +46,13 @@ var fullTx = function(tx) {
   });
 
   t.valueOut = (valueOut.toFixed(8) / util.COIN);
+  try {
+    t.vout = tx.vout.map(function(o) {
+      var r = {};
+      r[o.scriptPubKey.addresses] = o.valueSat;
+      return r;
+    });
+  } catch (e) {};
   return t;
 };
 
