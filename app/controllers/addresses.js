@@ -14,7 +14,7 @@ var tDb = require('../../lib/TransactionDb').default();
 var checkSync = function(req, res) {
   if (req.historicSync) {
     var i = req.historicSync.info()
-    if (i.status !== 'complete') {
+    if (i.status !== 'finished') {
       common.notReady(req, res, i.syncPercentage);
       return false;
     }
