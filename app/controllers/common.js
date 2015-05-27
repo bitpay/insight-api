@@ -1,5 +1,8 @@
 'use strict';
 
+exports.notReady = function (err, res, p) {
+  res.status(503).send('Server not yet ready. Sync Percentage:' + p);
+};
 
 exports.handleErrors = function (err, res) {
   if (err) {

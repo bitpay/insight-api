@@ -1,43 +1,43 @@
 'use strict';
 
-var imports            = require('soop').imports();
-var async              = require('async');
-var bitcore            = require('bitcore');
-var BitcoreAddress     = bitcore.Address;
+var imports = require('soop').imports();
+var async = require('async');
+var bitcore = require('bitcore');
+var BitcoreAddress = bitcore.Address;
 var BitcoreTransaction = bitcore.Transaction;
-var BitcoreUtil        = bitcore.util;
-var Parser             = bitcore.BinaryParser;
-var Buffer             = bitcore.Buffer;
-var TransactionDb      = imports.TransactionDb || require('../../lib/TransactionDb').default();
-var BlockDb            = imports.BlockDb || require('../../lib/BlockDb').default();
-var config              = require('../../config/config');
-var CONCURRENCY        = 5;
+var BitcoreUtil = bitcore.util;
+var Parser = bitcore.BinaryParser;
+var Buffer = bitcore.Buffer;
+var TransactionDb = imports.TransactionDb || require('../../lib/TransactionDb').default();
+var BlockDb = imports.BlockDb || require('../../lib/BlockDb').default();
+var config = require('../../config/config');
+var CONCURRENCY = 5;
 
 function Address(addrStr) {
-  this.balanceSat        = 0;
-  this.totalReceivedSat  = 0;
-  this.totalSentSat      = 0;
+  this.balanceSat = 0;
+  this.totalReceivedSat = 0;
+  this.totalSentSat = 0;
 
-  this.unconfirmedBalanceSat  = 0;
+  this.unconfirmedBalanceSat = 0;
 
-  this.txApperances           = 0;
-  this.unconfirmedTxApperances= 0;
-  this.seen                   = {};
+  this.txApperances = 0;
+  this.unconfirmedTxApperances = 0;
+  this.seen = {};
 
   // TODO store only txids? +index? +all?
-  this.transactions   = [];
-  this.unspent   = [];
+  this.transactions = [];
+  this.unspent = [];
 
   var a = new BitcoreAddress(addrStr);
   a.validate();
-  this.addrStr        = addrStr;
-  
+  this.addrStr = addrStr;
+
   Object.defineProperty(this, 'totalSent', {
     get: function() {
       return parseFloat(this.totalSentSat) / parseFloat(BitcoreUtil.COIN);
     },
-    set:  function(i) {
-      this.totalSentSat =  i * BitcoreUtil.COIN;
+    set: function(i) {
+      this.totalSentSat = i * BitcoreUtil.COIN;
     },
     enumerable: 1,
   });
@@ -46,8 +46,8 @@ function Address(addrStr) {
     get: function() {
       return parseFloat(this.balanceSat) / parseFloat(BitcoreUtil.COIN);
     },
-    set:  function(i) {
-      this.balance =   i * BitcoreUtil.COIN;
+    set: function(i) {
+      this.balance = i * BitcoreUtil.COIN;
     },
     enumerable: 1,
   });
@@ -56,8 +56,8 @@ function Address(addrStr) {
     get: function() {
       return parseFloat(this.totalReceivedSat) / parseFloat(BitcoreUtil.COIN);
     },
-    set:  function(i) {
-      this.totalReceived =  i * BitcoreUtil.COIN;
+    set: function(i) {
+      this.totalReceived = i * BitcoreUtil.COIN;
     },
     enumerable: 1,
   });
@@ -67,8 +67,8 @@ function Address(addrStr) {
     get: function() {
       return parseFloat(this.unconfirmedBalanceSat) / parseFloat(BitcoreUtil.COIN);
     },
-    set:  function(i) {
-      this.unconfirmedBalanceSat =  i * BitcoreUtil.COIN;
+    set: function(i) {
+      this.unconfirmedBalanceSat = i * BitcoreUtil.COIN;
     },
     enumerable: 1,
   });
@@ -78,18 +78,18 @@ function Address(addrStr) {
 Address.prototype.getObj = function() {
   // Normalize json address
   return {
-    'addrStr':                  this.addrStr,
-    'balance':                  this.balance,
-    'balanceSat':               this.balanceSat,
-    'totalReceived':            this.totalReceived,
-    'totalReceivedSat':         this.totalReceivedSat,
-    'totalSent':                this.totalSent,
-    'totalSentSat':             this.totalSentSat,
-    'unconfirmedBalance':       this.unconfirmedBalance,
-    'unconfirmedBalanceSat':    this.unconfirmedBalanceSat,
-    'unconfirmedTxApperances':  this.unconfirmedTxApperances,
-    'txApperances':             this.txApperances,
-    'transactions':             this.transactions
+    'addrStr': this.addrStr,
+    'balance': this.balance,
+    'balanceSat': this.balanceSat,
+    'totalReceived': this.totalReceived,
+    'totalReceivedSat': this.totalReceivedSat,
+    'totalSent': this.totalSent,
+    'totalSentSat': this.totalSentSat,
+    'unconfirmedBalance': this.unconfirmedBalance,
+    'unconfirmedBalanceSat': this.unconfirmedBalanceSat,
+    'unconfirmedTxApperances': this.unconfirmedTxApperances,
+    'txApperances': this.txApperances,
+    'transactions': this.transactions
   };
 };
 
@@ -103,7 +103,8 @@ Address.prototype._addTxItem = function(txItem, txList, includeInfo) {
     }
   };
 
-  var add=0, addSpend=0;
+  var add = 0,
+    addSpend = 0;
   var v = txItem.value_sat;
   var seen = this.seen;
 
@@ -112,35 +113,38 @@ Address.prototype._addTxItem = function(txItem, txList, includeInfo) {
     seen[txItem.txid] = 1;
     add = 1;
 
-    addTx({ txid: txItem.txid, ts: txItem.ts });
+    addTx({
+      txid: txItem.txid,
+      ts: txItem.ts
+    });
   }
 
   // Spent tx
-  if (txItem.spentTxId && !seen[txItem.spentTxId]  ) {
-    addTx({ txid: txItem.spentTxId, ts: txItem.spentTs });
-    seen[txItem.spentTxId]=1;
-    addSpend=1;
+  if (txItem.spentTxId && !seen[txItem.spentTxId]) {
+    addTx({
+      txid: txItem.spentTxId,
+      ts: txItem.spentTs
+    });
+    seen[txItem.spentTxId] = 1;
+    addSpend = 1;
   }
   if (txItem.isConfirmed) {
     this.txApperances += add;
     this.totalReceivedSat += v;
-    if (! txItem.spentTxId ) {
+    if (!txItem.spentTxId) {
       //unspent
-      this.balanceSat   += v;
-    }
-    else if(!txItem.spentIsConfirmed) {
+      this.balanceSat += v;
+    } else if (!txItem.spentIsConfirmed) {
       // unspent
-      this.balanceSat   += v;
+      this.balanceSat += v;
       this.unconfirmedBalanceSat -= v;
       this.unconfirmedTxApperances += addSpend;
-    }
-    else {
+    } else {
       // spent
       this.totalSentSat += v;
       this.txApperances += addSpend;
     }
-  }
-  else {
+  } else {
     this.unconfirmedBalanceSat += v;
     this.unconfirmedTxApperances += add;
   }
@@ -156,29 +160,29 @@ Address.prototype.update = function(next, opts) {
   if (!self.addrStr) return next();
   opts = opts || {};
 
-  if (! ('ignoreCache' in opts) )
+  if (!('ignoreCache' in opts))
     opts.ignoreCache = config.ignoreCache;
 
   // should collect txList from address?
-  var txList  = opts.txLimit === 0 ? null: [];
+  var txList = opts.txLimit === 0 ? null : [];
 
-  var tDb   = TransactionDb;
-  var bDb   = BlockDb;
-  tDb.fromAddr(self.addrStr, opts, function(err,txOut){
+  var tDb = TransactionDb;
+  var bDb = BlockDb;
+  tDb.fromAddr(self.addrStr, opts, function(err, txOut) {
     if (err) return next(err);
 
     bDb.fillConfirmations(txOut, function(err) {
       if (err) return next(err);
 
       tDb.cacheConfirmations(txOut, function(err) {
-// console.log('[Address.js.161:txOut:]',txOut); //TODO
+        // console.log('[Address.js.161:txOut:]',txOut); //TODO
         if (err) return next(err);
         if (opts.onlyUnspent) {
-          txOut  = txOut.filter(function(x){
+          txOut = txOut.filter(function(x) {
             return !x.spentTxId;
           });
           tDb.fillScriptPubKey(txOut, function() {
-            self.unspent = txOut.map(function(x){
+            self.unspent = txOut.map(function(x) {
               return {
                 address: self.addrStr,
                 txid: x.txid,
@@ -192,12 +196,11 @@ Address.prototype.update = function(next, opts) {
             });
             return next();
           });
-        }
-        else {
-          txOut.forEach(function(txItem){
+        } else {
+          txOut.forEach(function(txItem) {
             self._addTxItem(txItem, txList, opts.includeTxInfo);
           });
-          if (txList) 
+          if (txList)
             self.transactions = txList;
 
           return next();
@@ -208,4 +211,3 @@ Address.prototype.update = function(next, opts) {
 };
 
 module.exports = require('soop')(Address);
-

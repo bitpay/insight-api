@@ -11,6 +11,18 @@ var async = require('async');
 
 var tDb = require('../../lib/TransactionDb').default();
 
+var checkSync = function(req, res) {
+  if (req.historicSync) {
+    var i = req.historicSync.info()
+    if (i.status !== 'finished') {
+      common.notReady(req, res, i.syncPercentage);
+      return false;
+    }
+  }
+  return true;
+};
+
+
 var getAddr = function(req, res, next) {
   var a;
   try {
@@ -47,6 +59,7 @@ var getAddrs = function(req, res, next) {
 };
 
 exports.show = function(req, res, next) {
+  if (!checkSync(req, res)) return;
   var a = getAddr(req, res, next);
 
   if (a) {
@@ -56,13 +69,18 @@ exports.show = function(req, res, next) {
       } else {
         return res.jsonp(a.getObj());
       }
-    }, {txLimit: req.query.noTxList?0:-1, ignoreCache: req.param('noCache')});
+    }, {
+      txLimit: req.query.noTxList ? 0 : -1,
+      ignoreCache: req.param('noCache')
+    });
   }
 };
 
 
 
 exports.utxo = function(req, res, next) {
+  if (!checkSync(req, res)) return;
+
   var a = getAddr(req, res, next);
   if (a) {
     a.update(function(err) {
@@ -71,11 +89,15 @@ exports.utxo = function(req, res, next) {
       else {
         return res.jsonp(a.unspent);
       }
-    }, {onlyUnspent:1, ignoreCache: req.param('noCache')});
+    }, {
+      onlyUnspent: 1,
+      ignoreCache: req.param('noCache')
+    });
   }
 };
 
 exports.multiutxo = function(req, res, next) {
+  if (!checkSync(req, res)) return;
   var as = getAddrs(req, res, next);
   if (as) {
     var utxos = [];
@@ -84,7 +106,10 @@ exports.multiutxo = function(req, res, next) {
         if (err) callback(err);
         utxos = utxos.concat(a.unspent);
         callback();
-      }, {onlyUnspent:1, ignoreCache: req.param('noCache')});
+      }, {
+        onlyUnspent: 1,
+        ignoreCache: req.param('noCache')
+      });
     }, function(err) { // finished callback
       if (err) return common.handleErrors(err, res);
       res.jsonp(utxos);
@@ -93,6 +118,7 @@ exports.multiutxo = function(req, res, next) {
 };
 
 exports.multitxs = function(req, res, next) {
+  if (!checkSync(req, res)) return;
 
   function processTxs(txs, from, to, cb) {
     txs = _.uniq(_.flatten(txs), 'txid');
@@ -109,9 +135,11 @@ exports.multitxs = function(req, res, next) {
     }
 
     var txIndex = {};
-    _.each(txs, function (tx) { txIndex[tx.txid] = tx; });
+    _.each(txs, function(tx) {
+      txIndex[tx.txid] = tx;
+    });
 
-    async.each(txs, function (tx, callback) {
+    async.each(txs, function(tx, callback) {
       tDb.fromIdWithInfo(tx.txid, function(err, tx) {
         if (err) console.log(err);
         if (tx && tx.info) {
@@ -119,9 +147,9 @@ exports.multitxs = function(req, res, next) {
         }
         callback();
       });
-    }, function (err) {
+    }, function(err) {
       if (err) return cb(err);
-      
+
       var transactions = _.pluck(txs, 'info');
       if (paginated) {
         transactions = {
@@ -146,10 +174,13 @@ exports.multitxs = function(req, res, next) {
         if (err) callback(err);
         txs.push(a.transactions);
         callback();
-      }, {ignoreCache: req.param('noCache'), includeTxInfo: true});
+      }, {
+        ignoreCache: req.param('noCache'),
+        includeTxInfo: true
+      });
     }, function(err) { // finished callback
       if (err) return common.handleErrors(err, res);
-      processTxs(txs, from, to, function (err, transactions) {
+      processTxs(txs, from, to, function(err, transactions) {
         if (err) return common.handleErrors(err, res);
         res.jsonp(transactions);
       });
@@ -158,6 +189,7 @@ exports.multitxs = function(req, res, next) {
 };
 
 exports.balance = function(req, res, next) {
+  if (!checkSync(req, res)) return;
   var a = getAddr(req, res, next);
   if (a)
     a.update(function(err) {
@@ -166,10 +198,13 @@ exports.balance = function(req, res, next) {
       } else {
         return res.jsonp(a.balanceSat);
       }
-    }, {ignoreCache: req.param('noCache')});
+    }, {
+      ignoreCache: req.param('noCache')
+    });
 };
 
 exports.totalReceived = function(req, res, next) {
+  if (!checkSync(req, res)) return;
   var a = getAddr(req, res, next);
   if (a)
     a.update(function(err) {
@@ -178,10 +213,13 @@ exports.totalReceived = function(req, res, next) {
       } else {
         return res.jsonp(a.totalReceivedSat);
       }
-    }, {ignoreCache: req.param('noCache')});
+    }, {
+      ignoreCache: req.param('noCache')
+    });
 };
 
 exports.totalSent = function(req, res, next) {
+  if (!checkSync(req, res)) return;
   var a = getAddr(req, res, next);
   if (a)
     a.update(function(err) {
@@ -190,10 +228,13 @@ exports.totalSent = function(req, res, next) {
       } else {
         return res.jsonp(a.totalSentSat);
       }
-    }, {ignoreCache: req.param('noCache')});
+    }, {
+      ignoreCache: req.param('noCache')
+    });
 };
 
 exports.unconfirmedBalance = function(req, res, next) {
+  if (!checkSync(req, res)) return;
   var a = getAddr(req, res, next);
   if (a)
     a.update(function(err) {
@@ -202,5 +243,7 @@ exports.unconfirmedBalance = function(req, res, next) {
       } else {
         return res.jsonp(a.unconfirmedBalanceSat);
       }
-    }, {ignoreCache: req.param('noCache')});
+    }, {
+      ignoreCache: req.param('noCache')
+    });
 };
