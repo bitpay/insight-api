@@ -26,8 +26,8 @@ module.exports = function(app, historicSync, peerSync) {
   app.set('json spaces', 0);
 
   app.enable('jsonp callback');
-  app.use(config.apiPrefix + '/sync', setHistoric);
-  app.use(config.apiPrefix + '/peer', setPeer);
+  app.use(config.apiPrefix, setHistoric);
+  app.use(config.apiPrefix, setPeer);
   app.use(express.logger('dev'));
   app.use(express.json());
   app.use(express.urlencoded());
