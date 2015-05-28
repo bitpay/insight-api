@@ -45,7 +45,7 @@
   },
   "bin": "insight.js",
   "scripts": {
-    "start": "node node_modules/grunt-cli/bin/grunt"
+    "start": "node insight.js"
   },
   "dependencies": {
     "async": "*",
