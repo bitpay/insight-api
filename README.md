@@ -182,6 +182,18 @@ The end-points are:
   /api/block/[:hash]
   /api/block/00000000a967199a2fad0877433c93df785a8d8ce062e5f9b451cd1397bdbf62
 ```
+### Block index
+Get block hash by height
+```
+  /api/block-index/[:height]
+  /api/block-index/0
+```
+This would return:
+```
+{"blockHash":"000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f"}
+```
+which is the hash of the Genesis block (0 height)
+
 ### Transaction
 ```
   /api/tx/[:txid]
