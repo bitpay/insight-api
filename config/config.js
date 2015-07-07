@@ -80,13 +80,8 @@ var bitcoindConf = {
   disableAgent: true
 };
 
-var enableMonitor = process.env.ENABLE_MONITOR === 'true';
-var enableCleaner = process.env.ENABLE_CLEANER === 'true';
-var enableMailbox = process.env.ENABLE_MAILBOX === 'true';
 var enableRatelimiter = process.env.ENABLE_RATELIMITER === 'true';
-var enableCredentialstore = process.env.ENABLE_CREDSTORE === 'true';
 var enableEmailstore = process.env.ENABLE_EMAILSTORE === 'true';
-var enablePublicInfo = process.env.ENABLE_PUBLICINFO === 'true';
 var loggerLevel = process.env.LOGGER_LEVEL || 'info';
 var enableHTTPS = process.env.ENABLE_HTTPS === 'true';
 var enableCurrencyRates = process.env.ENABLE_CURRENCYRATES === 'true';
@@ -96,22 +91,12 @@ if (!fs.existsSync(db)) {
 }
 
 module.exports = {
-  enableMonitor: enableMonitor,
-  monitor: require('../plugins/config-monitor.js'),
-  enableCleaner: enableCleaner,
-  cleaner: require('../plugins/config-cleaner.js'),
-  enableMailbox: enableMailbox,
-  mailbox: require('../plugins/config-mailbox.js'),
   enableRatelimiter: enableRatelimiter,
   ratelimiter: require('../plugins/config-ratelimiter.js'),
-  enableCredentialstore: enableCredentialstore,
-  credentialstore: require('../plugins/config-credentialstore'),
   enableEmailstore: enableEmailstore,
   emailstore: require('../plugins/config-emailstore'),
   enableCurrencyRates: enableCurrencyRates,
   currencyrates: require('../plugins/config-currencyrates'),
-  enablePublicInfo: enablePublicInfo,
-  publicInfo: require('../plugins/publicInfo/config'),
   loggerLevel: loggerLevel,
   enableHTTPS: enableHTTPS,
   version: version,
