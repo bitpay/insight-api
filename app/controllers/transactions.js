@@ -59,10 +59,15 @@ exports.transaction = function(req, res, next, txid) {
   tDb.fromIdWithInfo(txid, function(err, tx) {
     if (err || ! tx)
       return common.handleErrors(err, res);
-    else {
+
+    bdb.fillVinConfirmations(tx.info, function(err) {
+      if (err)
+        return common.handleErrors(err, res);
+
       req.transaction = tx.info;
       return next();
-    }
+    });
+
   });
 };
 
