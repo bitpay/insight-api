@@ -9,6 +9,9 @@ var Address = require('../models/Address');
 var common = require('./common');
 var async = require('async');
 
+var MAX_BATCH_SIZE = 100;
+var RPC_CONCURRENCY = 5;
+
 var tDb = require('../../lib/TransactionDb').default();
 
 var checkSync = function(req, res) {
@@ -50,7 +53,7 @@ var getAddrs = function(req, res, next) {
     }
   } catch (e) {
     common.handleErrors({
-      message: 'Invalid address:' + e.message,
+      message: 'Invalid addrs param:' + e.message,
       code: 1
     }, res, next);
     return null;
@@ -101,7 +104,7 @@ exports.multiutxo = function(req, res, next) {
   var as = getAddrs(req, res, next);
   if (as) {
     var utxos = [];
-    async.each(as, function(a, callback) {
+    async.eachLimit(as, RPC_CONCURRENCY, function(a, callback) {
       a.update(function(err) {
         if (err) callback(err);
         utxos = utxos.concat(a.unspent);
@@ -123,23 +126,31 @@ exports.multitxs = function(req, res, next) {
   function processTxs(txs, from, to, cb) {
     txs = _.uniq(_.flatten(txs), 'txid');
     var nbTxs = txs.length;
-    var paginated = !_.isUndefined(from) || !_.isUndefined(to);
 
-    if (paginated) {
-      txs.sort(function(a, b) {
-        return (b.ts || b.ts) - (a.ts || a.ts);
-      });
-      var start = Math.max(from || 0, 0);
-      var end = Math.min(to || txs.length, txs.length);
-      txs = txs.slice(start, end);
+    if ( _.isUndefined(from) && _.isUndefined(to)) {
+      from = 0;
+      to = MAX_BATCH_SIZE;
     }
+
+    if ( ! _.isUndefined(from) && _.isUndefined(to))
+      to = from + MAX_BATCH_SIZE;
+
+    if ( ! _.isUndefined(from) && ! _.isUndefined(to) && to - from > MAX_BATCH_SIZE)
+      to = from + MAX_BATCH_SIZE;
+
+    txs.sort(function(a, b) {
+      return (b.ts || b.ts) - (a.ts || a.ts);
+    });
+    var start = Math.max(from || 0, 0);
+    var end = Math.min(to || nbTxs, nbTxs);
+    txs = txs.slice(start, end);
 
     var txIndex = {};
     _.each(txs, function(tx) {
       txIndex[tx.txid] = tx;
     });
 
-    async.eachLimit(txs, 5, function(tx, callback) {
+    async.eachLimit(txs, RPC_CONCURRENCY, function(tx, callback) {
       tDb.fromIdWithInfo(tx.txid, function(err, tx) {
         if (err) {
           console.log(err);
@@ -154,14 +165,12 @@ exports.multitxs = function(req, res, next) {
       if (err) return cb(err);
 
       var transactions = _.pluck(txs, 'info');
-      if (paginated) {
-        transactions = {
-          totalItems: nbTxs,
-          from: +from,
-          to: +to,
-          items: transactions,
-        };
-      }
+      transactions = {
+        totalItems: nbTxs,
+        from: +from,
+        to: +to,
+        items: transactions,
+      };
       return cb(null, transactions);
     });
   };
@@ -172,17 +181,19 @@ exports.multitxs = function(req, res, next) {
   var as = getAddrs(req, res, next);
   if (as) {
     var txs = [];
-    async.eachLimit(as, 10, function(a, callback) {
+    async.eachLimit(as, RPC_CONCURRENCY, function(a, callback) {
       a.update(function(err) {
         if (err) callback(err);
         txs.push(a.transactions);
         callback();
       }, {
         ignoreCache: req.param('noCache'),
-        includeTxInfo: true
+        includeTxInfo: true,
+        dontFillSpent: true,
       });
     }, function(err) { // finished callback
       if (err) return common.handleErrors(err, res);
+
       processTxs(txs, from, to, function(err, transactions) {
         if (err) return common.handleErrors(err, res);
         res.jsonp(transactions);
