@@ -139,9 +139,12 @@ exports.multitxs = function(req, res, next) {
       txIndex[tx.txid] = tx;
     });
 
-    async.each(txs, function(tx, callback) {
+    async.eachLimit(txs, 5, function(tx, callback) {
       tDb.fromIdWithInfo(tx.txid, function(err, tx) {
-        if (err) console.log(err);
+        if (err) {
+          console.log(err);
+          return common.handleErrors(err, res);
+        }
         if (tx && tx.info) {
           txIndex[tx.txid].info = tx.info;
         }
