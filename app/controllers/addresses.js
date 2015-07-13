@@ -127,23 +127,24 @@ exports.multitxs = function(req, res, next) {
     txs = _.uniq(_.flatten(txs), 'txid');
     var nbTxs = txs.length;
 
-    if ( _.isUndefined(from) && _.isUndefined(to)) {
+    if (_.isUndefined(from) && _.isUndefined(to)) {
       from = 0;
       to = MAX_BATCH_SIZE;
     }
-
-    if ( ! _.isUndefined(from) && _.isUndefined(to))
+    if (!_.isUndefined(from) && _.isUndefined(to))
       to = from + MAX_BATCH_SIZE;
 
-    if ( ! _.isUndefined(from) && ! _.isUndefined(to) && to - from > MAX_BATCH_SIZE)
+    if (!_.isUndefined(from) && !_.isUndefined(to) && to - from > MAX_BATCH_SIZE)
       to = from + MAX_BATCH_SIZE;
+
+    if (from < 0) from = 0;
+    if (to > nbTxs) tx = nbTxs;
 
     txs.sort(function(a, b) {
       return (b.ts || b.ts) - (a.ts || a.ts);
     });
-    var start = Math.max(from || 0, 0);
-    var end = Math.min(to || nbTxs, nbTxs);
-    txs = txs.slice(start, end);
+
+    txs = txs.slice(from, to);
 
     var txIndex = {};
     _.each(txs, function(tx) {
