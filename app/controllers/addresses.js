@@ -138,7 +138,9 @@ exports.multitxs = function(req, res, next) {
       to = from + MAX_BATCH_SIZE;
 
     if (from < 0) from = 0;
-    if (to > nbTxs) tx = nbTxs;
+    if (to < 0) to = 0;
+    if (from > nbTxs) from = nbTxs;
+    if (to > nbTxs) to = nbTxs;
 
     txs.sort(function(a, b) {
       return (b.ts || b.ts) - (a.ts || a.ts);
