@@ -1,6 +1,7 @@
 'use strict';
 
 var imports = require('soop').imports();
+var _ = require('lodash');
 var async = require('async');
 var bitcore = require('bitcore');
 var BitcoreAddress = bitcore.Address;
@@ -183,7 +184,9 @@ Address.prototype.update = function(next, opts) {
             return !x.spentTxId;
           });
           tDb.fillScriptPubKey(txOut, function() {
-            self.unspent = txOut.map(function(x) {
+            //_.filter will filterout unspend without scriptPubkey
+            //(probably from double spends)
+            self.unspent = _.filter(txOut.map(function(x) {
               return {
                 address: self.addrStr,
                 txid: x.txid,
@@ -194,7 +197,7 @@ Address.prototype.update = function(next, opts) {
                 confirmations: x.isConfirmedCached ? (config.safeConfirmations) : x.confirmations,
                 confirmationsFromCache: !!x.isConfirmedCached,
               };
-            });
+            }), 'scriptPubKey');;
             return next();
           });
         } else {
