@@ -115,7 +115,8 @@ Address.prototype._addTxItem = function(txItem, txList, includeInfo) {
 
     addTx({
       txid: txItem.txid,
-      ts: txItem.ts
+      ts: txItem.ts,
+      firstSeenTs: txItem.firstSeenTs,
     });
   }
 
@@ -202,7 +203,6 @@ Address.prototype.update = function(next, opts) {
           });
           if (txList)
             self.transactions = txList;
-
           return next();
         }
       });
