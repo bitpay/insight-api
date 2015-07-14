@@ -161,13 +161,18 @@ exports.multitxs = function(req, res, next) {
         }
         if (tx && tx.info) {
           txIndex[tx.txid].info = tx.info;
-        }
+        } else 
+          nbTxs--;
+
         callback();
       });
     }, function(err) {
       if (err) return cb(err);
 
-      var transactions = _.pluck(txs, 'info');
+      // It could be that a txid is stored at an address but it is
+      // no longer at bitcoind (for example a double spend)
+      
+      var transactions = _.compact(_.pluck(txs, 'info'));
       transactions = {
         totalItems: nbTxs,
         from: +from,
