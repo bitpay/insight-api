@@ -143,9 +143,8 @@ exports.multitxs = function(req, res, next) {
     if (to > nbTxs) to = nbTxs;
 
     txs.sort(function(a, b) {
-      return (b.ts || b.ts) - (a.ts || a.ts);
+      return (b.firstSeenTs || b.ts) - (a.firstSeenTs || a.ts);
     });
-
     txs = txs.slice(from, to);
 
     var txIndex = {};
@@ -153,13 +152,17 @@ exports.multitxs = function(req, res, next) {
       txIndex[tx.txid] = tx;
     });
 
-    async.eachLimit(txs, RPC_CONCURRENCY, function(tx, callback) {
-      tDb.fromIdWithInfo(tx.txid, function(err, tx) {
+    async.eachLimit(txs, RPC_CONCURRENCY, function(tx2, callback) {
+      tDb.fromIdWithInfo(tx2.txid, function(err, tx) {
         if (err) {
           console.log(err);
           return common.handleErrors(err, res);
         }
         if (tx && tx.info) {
+
+          if (tx2.firstSeenTs)
+            tx.info.firstSeenTs = tx2.firstSeenTs;
+
           txIndex[tx.txid].info = tx.info;
         } else 
           nbTxs--;
@@ -192,6 +195,7 @@ exports.multitxs = function(req, res, next) {
     async.eachLimit(as, RPC_CONCURRENCY, function(a, callback) {
       a.update(function(err) {
         if (err) callback(err);
+
         txs.push(a.transactions);
         callback();
       }, {
