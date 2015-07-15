@@ -164,8 +164,14 @@ exports.multitxs = function(req, res, next) {
             tx.info.firstSeenTs = tx2.firstSeenTs;
 
           txIndex[tx.txid].info = tx.info;
-        } else 
-          nbTxs--;
+        } else  {
+          // TX no longer available
+          txIndex[tx2.txid].info = {
+            txid: tx2.txid,
+            possibleDoubleSpend: true,
+            firstSeenTs: tx2.firstSeenTs,
+          };
+        }
 
         callback();
       });
