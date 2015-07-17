@@ -143,7 +143,11 @@ exports.multitxs = function(req, res, next) {
     if (to > nbTxs) to = nbTxs;
 
     txs.sort(function(a, b) {
-      return (b.firstSeenTs || b.ts) - (a.firstSeenTs || a.ts);
+      var b = (b.firstSeenTs || b.ts)+ b.txid;
+      var a = (a.firstSeenTs || a.ts)+ a.txid;
+      if (a > b) return -1;
+      if (a < b) return 1;
+      return 0;
     });
     txs = txs.slice(from, to);
 
@@ -164,7 +168,7 @@ exports.multitxs = function(req, res, next) {
             tx.info.firstSeenTs = tx2.firstSeenTs;
 
           txIndex[tx.txid].info = tx.info;
-        } else  {
+        } else {
           // TX no longer available
           txIndex[tx2.txid].info = {
             txid: tx2.txid,
@@ -180,7 +184,7 @@ exports.multitxs = function(req, res, next) {
 
       // It could be that a txid is stored at an address but it is
       // no longer at bitcoind (for example a double spend)
-      
+
       var transactions = _.compact(_.pluck(txs, 'info'));
       transactions = {
         totalItems: nbTxs,
