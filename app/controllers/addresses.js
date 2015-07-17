@@ -211,7 +211,6 @@ exports.multitxs = function(req, res, next) {
       }, {
         ignoreCache: req.param('noCache'),
         includeTxInfo: true,
-        dontFillSpent: true,
       });
     }, function(err) { // finished callback
       if (err) return common.handleErrors(err, res);
