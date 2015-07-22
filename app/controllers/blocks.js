@@ -4,6 +4,7 @@
  * Module dependencies.
  */
 var common = require('./common');
+var multi       = common.multi;
 var async = require('async');
 var bdb = require('../../lib/BlockDb').default();
 var tdb = require('../../lib/TransactionDb').default();
@@ -11,19 +12,34 @@ var tdb = require('../../lib/TransactionDb').default();
 /**
  * Find block by hash ...
  */
-exports.block = function(req, res, next, hash) {
+exports.block = multi(function(hash, cb) {
   bdb.fromHashWithInfo(hash, function(err, block) {
     if (err || !block)
       return common.handleErrors(err, res, next);
     else {
       tdb.getPoolInfo(block.info.tx[0], function(info) {
         block.info.poolInfo = info;
-        req.block = block.info;
-        return next();
+	cb(null, block.info);
       });
     }
   });
-};
+}, 'block');
+
+
+/**
+ * Find block header by hash ...
+ */
+exports.blockHeader = multi(function(hash, cb) {
+  bdb.fromHashWithInfo(hash, function(err, block) {
+    if (err || !block)
+      return common.handleErrors(err, res, next);
+    else {
+      delete block.info.tx;
+      cb(null, block.info);
+    }
+  });
+}, 'block');
+
 
 
 /**
@@ -36,18 +52,49 @@ exports.show = function(req, res) {
 };
 
 /**
+ * Show block hash
+ */
+exports.showBlockHash = function(req, res) {
+  if (req.blockHash) {
+    res.jsonp(req.blockHash);
+  }
+};
+
+/**
  * Show block by Height
  */
-exports.blockindex = function(req, res, next, height) {
+exports.blockIndex = multi(function(height, cb) {
   bdb.blockIndex(height, function(err, hashStr) {
     if (err) {
       console.log(err);
-      res.status(400).send('Bad Request'); // TODO
+      cb('Bad Request'); // TODO
     } else {
-      res.jsonp(hashStr);
+      cb(null, hashStr);
     }
   });
-};
+}, 'blockHash');
+
+
+/**
+ * Show block header by Height
+ */
+exports.blockHeaderByIndex = multi(function(height, cb) {
+  bdb.blockIndex(height, function(err, hashStr) {
+    if (err) {
+      console.log(err);
+      cb('Bad Request');
+    } else {
+      bdb.fromHashWithInfo(hashStr.blockHash, function(err, block) {
+        if (err || !block)
+          cb(err);
+        else {
+          delete block.info.tx;
+          cb(null, block.info);
+        }
+      });
+    }
+  });
+}, 'block');
 
 var getBlock = function(blockhash, cb) {
   bdb.fromHashWithInfo(blockhash, function(err, block) {

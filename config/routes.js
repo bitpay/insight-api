@@ -17,8 +17,14 @@ module.exports = function(app) {
   app.get(apiPrefix + '/block/:blockHash', blocks.show);
   app.param('blockHash', blocks.block);
 
-  app.get(apiPrefix + '/block-index/:height', blocks.blockindex);
-  app.param('height', blocks.blockindex);
+  app.get(apiPrefix + '/blockheader/:blockHeaderHash', blocks.show);
+  app.param('blockHeaderHash', blocks.blockHeader);
+
+  app.get(apiPrefix + '/block-index/:height', blocks.showBlockHash);
+  app.param('height', blocks.blockIndex);
+
+  app.get(apiPrefix + '/blockheader-by-index/:headerHeight', blocks.show);
+  app.param('headerHeight', blocks.blockHeaderByIndex);
 
   // Transaction routes
   var transactions = require('../app/controllers/transactions');
@@ -26,6 +32,8 @@ module.exports = function(app) {
   app.param('txid', transactions.transaction);
   app.get(apiPrefix + '/txs', transactions.list);
   app.post(apiPrefix + '/tx/send', transactions.send);
+  app.get(apiPrefix + '/multitx/:txids', transactions.show);
+  app.param('txids', transactions.transaction);
 
   // Raw Routes
   app.get(apiPrefix + '/rawtx/:txid', transactions.showRaw);
