@@ -38,6 +38,8 @@ module.exports = function(app) {
   // Raw Routes
   app.get(apiPrefix + '/rawtx/:txid', transactions.showRaw);
   app.param('txid', transactions.rawTransaction);
+  app.get(apiPrefix + '/rawmultitx/:txids', transactions.showRaw);
+  app.param('txids', transactions.rawTransaction);
 
   // Address routes
   var addresses = require('../app/controllers/addresses');

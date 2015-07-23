@@ -41,16 +41,15 @@ exports.send = function(req, res) {
   });
 };
 
-exports.rawTransaction = function (req, res, next, txid) {
+exports.rawTransaction = multi(function(txid, cb) {
     bitcoreRpc.getRawTransaction(txid, function (err, transaction) {
         if (err || !transaction)
-            return common.handleErrors(err, res);
+            return cb(err);
         else {
-            req.rawTransaction = { 'rawtx': transaction.result };
-            return next();
+            return cb(null, transaction.result);
         }
     });
-};
+}, 'rawTransaction');
 
 /**
  * Find transaction by hash ...
