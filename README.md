@@ -371,6 +371,13 @@ Where "xxx" can be:
  * getBestBlockHash
  * getLastBlockHash
 
+
+### Utility methods
+```
+  /api/utils/estimatefee[?nbBlocks=2]
+```
+
+
 ## Web Socket API
 The web socket API is served using [socket.io](http://socket.io).
 
