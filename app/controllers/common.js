@@ -28,8 +28,9 @@ exports.multi = function(f, outkey) {
     }
     else inputs = [inputdata];
     async.mapSeries(inputs, f, function(err, results) {
-	if (err)
+	if (err) {
           return exports.handleErrors(err, res);
+	}
         req[outkey] = results;
   	if (req[outkey].length == 1)
   	  req[outkey] = req[outkey][0]

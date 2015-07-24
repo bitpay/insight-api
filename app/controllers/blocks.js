@@ -67,7 +67,7 @@ exports.blockIndex = multi(function(height, cb) {
   bdb.blockIndex(height, function(err, hashStr) {
     if (err) {
       console.log(err);
-      cb('Bad Request'); // TODO
+      return cb(err); // TODO
     } else {
       cb(null, hashStr);
     }
@@ -82,11 +82,11 @@ exports.blockHeaderByIndex = multi(function(height, cb) {
   bdb.blockIndex(height, function(err, hashStr) {
     if (err) {
       console.log(err);
-      cb('Bad Request');
+      return cb(err);
     } else {
       bdb.fromHashWithInfo(hashStr.blockHash, function(err, block) {
         if (err || !block)
-          cb(err);
+          return cb(err);
         else {
           delete block.info.tx;
           cb(null, block.info);
