@@ -1,5 +1,7 @@
 'use strict';
 //var imports       = require('soop').imports();
+var _ = require('lodash');
+var async = require('async');
 
 var bitcore = require('bitcore');
 var RpcClient = bitcore.RpcClient;
@@ -8,14 +10,16 @@ var rpc = new RpcClient(config.bitcoind);
 
 function Utils() {}
 
-Utils.prototype.estimateFee = function(n, next) {
+Utils.prototype.estimateFee = function(nbBlocks, cb) {
   var that = this;
 
-  rpc.estimateFee(n, function(err, info) {
-    if (err) return next(err);
-
-    that.feePerKB = info.result;
-    return next();
+  async.map([].concat(nbBlocks), function(n, next) {
+    rpc.estimateFee(+n, function(err, info) {
+      return next(err, [n, info.result]);
+    });
+  }, function(err, result) {
+    if (err) return cb(err);
+    return cb(null, _.zipObject(result));
   });
 };
 
