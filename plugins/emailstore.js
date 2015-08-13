@@ -11,7 +11,6 @@
   var crypto = require('crypto');
   var fs = require('fs');
   var levelup = require('levelup');
-  var nodemailer = require('nodemailer');
   var querystring = require('querystring');
   var moment = require('moment');
 
@@ -102,24 +101,11 @@
    */
   emailPlugin.init = function(config) {
     logger.info('Using emailstore plugin');
+    config = config || {};
 
     var path = globalConfig.leveldb + '/emailstore' + (globalConfig.name ? ('-' + globalConfig.name) : '');
     emailPlugin.db = config.db || globalConfig.db || levelup(path);
-
-    emailPlugin.email = config.emailTransport || nodemailer.createTransport(config.email);
-
-    emailPlugin.textTemplate = config.textTemplate || 'copay.plain';
-    emailPlugin.htmlTemplate = config.htmlTemplate || 'copay.html';
-
     emailPlugin.crypto = config.crypto || crypto;
-
-    emailPlugin.confirmUrl = (
-      process.env.INSIGHT_EMAIL_CONFIRM_HOST || config.confirmUrl || 'https://insight.bitpay.com'
-    ) + globalConfig.apiPrefix + '/email/validate';
-
-    emailPlugin.redirectUrl = (
-      config.redirectUrl || 'https://copay.io/in/app#!/confirmed'
-    );
   };
 
   /**
@@ -138,78 +124,6 @@
       error: error.message
     }).end();
   };
-
-  /**
-   * Helper that sends a verification email.
-   *
-   * @param {string} email - the user's email
-   * @param {string} secret - the verification secret
-   */
-  emailPlugin.sendVerificationEmail = function(email, secret, callback) {
-    var confirmUrl = emailPlugin.makeConfirmUrl(email, secret);
-
-    logger.debug('ConfirmUrl:',confirmUrl);
-
-    async.series([
-
-      function(callback) {
-        emailPlugin.makeEmailBody({
-          email: email,
-          confirm_url: confirmUrl
-        }, callback);
-      },
-      function(callback) {
-        emailPlugin.makeEmailHTMLBody({
-          email: email,
-          confirm_url: confirmUrl,
-          title: 'Your wallet backup needs confirmation'
-        }, callback);
-      }
-    ], function(err, results) {
-      var emailBody = results[0];
-      var emailBodyHTML = results[1];
-      var mailOptions = {
-        from: 'copay@copay.io',
-        to: email,
-        subject: '[Copay] Your wallet backup needs confirmation',
-        text: emailBody,
-        html: emailBodyHTML
-      };
-
-      // send mail with defined transport object
-      emailPlugin.email.sendMail(mailOptions, function(err, info) {
-        if (err) {
-          logger.error('An error occurred when trying to send email to ' + email, err);
-          return callback(err);
-        }
-        logger.info('Message sent: ', info ? info : '');
-        return callback(err, info);
-      });
-    });
-  };
-
-  emailPlugin.makeConfirmUrl = function(email, secret) {
-    return emailPlugin.confirmUrl + (
-      '?email=' + encodeURIComponent(email) + '&verification_code=' + secret
-    );
-  };
-
-  /**
-   * Returns a function that reads an underscore template and uses the `opts` param
-   * to build an email body
-   */
-  var applyTemplate = function(templateFilename) {
-    return function(opts, callback) {
-      fs.readFile(__dirname + '/emailTemplates/' + emailPlugin[templateFilename],
-        function(err, template) {
-          return callback(err, _.template(template, opts));
-        }
-      );
-    };
-  };
-
-  emailPlugin.makeEmailBody = applyTemplate('textTemplate');
-  emailPlugin.makeEmailHTMLBody = applyTemplate('htmlTemplate');
 
   /**
    * @param {string} email
@@ -349,22 +263,6 @@
     });
   };
 
-  emailPlugin.createVerificationSecretAndSendEmail = function(email, callback) {
-    emailPlugin.createVerificationSecret(email, function(err, secret) {
-      if (err || !secret) {
-        logger.error('error saving verification secret', email, secret, err);
-        return callback(emailPlugin.errors.INTERNAL_ERROR);
-      }
-      emailPlugin.sendVerificationEmail(email, secret, function (err, res) {
-        if (err) {
-          logger.error('error sending verification email', email, secret, err);
-          return callback(emailPlugin.errors.ERROR_SENDING_EMAIL);
-        }
-        return callback();
-      });
-    });
-  };
-
   /**
    * Creates and stores a verification secret in the database.
    *
@@ -440,132 +338,6 @@
       }
       return callback();
     });
-  };
-
-  /**
-   * Store a record in the database. The underlying database is merely a levelup instance (a key
-   * value store) that uses the email concatenated with the secret as a key to store the record.
-   * The request is expected to contain the parameters:
-   * * email
-   * * secret
-   * * record
-   *
-   * @param {Express.Request} request
-   * @param {Express.Response} response
-   */
-  emailPlugin.save = function(request, response) {
-
-    var queryData = '';
-    var credentials = emailPlugin.getCredentialsFromRequest(request);
-    if (credentials.code) {
-      return emailPlugin.returnError(credentials, response);
-    }
-    var email = credentials.email;
-    var passphrase = credentials.passphrase;
-
-    request.on('data', function(data) {
-      queryData += data;
-      if (queryData.length > POST_LIMIT) {
-        queryData = '';
-        response.writeHead(413, {
-          'Content-Type': 'text/plain'
-        });
-        response.end();
-        request.connection.destroy();
-      }
-    }).on('end', function() {
-      var params = querystring.parse(queryData);
-      var key = params.key;
-      var record = params.record;
-      if (!email || !passphrase || !record || !key) {
-        return emailPlugin.returnError(emailPlugin.errors.MISSING_PARAMETER, response);
-      }
-
-      emailPlugin.processPost(request, response, email, key, passphrase, record);
-    });
-  };
-
-  emailPlugin.processPost = function(request, response, email, key, passphrase, record) {
-    var isNewProfile = false;
-    var isConfirmed = true;
-    var errorCreating = false;
-
-    async.series([
-        /**
-         * Try to fetch this user's email. If it exists, check the secret is the same.
-         */
-        function(callback) {
-          emailPlugin.exists(email, function(err, exists) {
-            if (err) return callback(err);
-            
-            if (exists) {
-              emailPlugin.checkPassphrase(email, passphrase, function(err, match) {
-                if (err) return callback(err);
-                if (!match) return callback(emailPlugin.errors.EMAIL_TAKEN);
-                return callback();
-              });
-            } else {
-              isNewProfile = true;
-              emailPlugin.savePassphrase(email, passphrase, function(err) {
-                return callback(err);
-              });
-            }
-          });
-        },
-        function(callback) {
-          emailPlugin.isConfirmed(email, function(err, inIsConfirmed) {
-            if (err) return callback(err);
-            isConfirmed = inIsConfirmed;
-            return callback();
-          });
-        },
-        function(callback) {
-          emailPlugin.checkSizeQuota(email, record.length, isConfirmed, function(err) {
-            return callback(err);
-          });
-        },
-        function(callback) {
-          emailPlugin.checkAndUpdateItemQuota(email, key, isConfirmed, function(err) {
-            return callback(err);
-          });
-        },
-        /**
-         * Save the encrypted private key in the storage.
-         */
-        function(callback) {
-          emailPlugin.saveEncryptedData(email, key, record, function(err) {
-            return callback(err);
-          });
-        },
-        /**
-         * Create and store the verification secret. If successful, send a verification email.
-         */
-        function(callback) {
-          if (!isNewProfile || isConfirmed) return callback();
-
-          emailPlugin.createVerificationSecretAndSendEmail(email, function(err) {
-            if (err) {
-              errorCreating = true;
-            }
-            return callback(err);
-          });
-        },
-      ],
-      function(err) {
-        if (err) {
-          if (isNewProfile && !isConfirmed && errorCreating) {
-            emailPlugin.deleteWholeProfile(email, function() {
-              return emailPlugin.returnError(err, response);
-            });
-          }
-
-          emailPlugin.returnError(err, response);
-        } else {
-          response.json({
-            success: true
-          }).end();
-        }
-      });
   };
 
   emailPlugin.getCredentialsFromRequest = function(request) {
@@ -729,7 +501,7 @@
     });
   };
 
-  emailPlugin._parseSecret = function (value) {
+  emailPlugin._parseSecret = function(value) {
     var obj = null;
     try {
       obj = JSON.parse(value);
@@ -755,16 +527,10 @@
 
         var secret = emailPlugin._parseSecret(value);
 
-        emailPlugin.sendVerificationEmail(email, secret, function (err) {
-          if (err) {
-            logger.error('error resending verification email', email, secret, err);
-            return emailPlugin.returnError(emailPlugin.errors.ERROR_SENDING_EMAIL, response);
-          }
-          return response.json({
-              success: true
-            }).end();
+        return response.json({
+          success: true
+        }).end();
 
-        });
       });
     });
   };
@@ -899,32 +665,6 @@
         return emailPlugin.returnError(err, response);
       }
       response.send(value).end();
-    });
-  };
-
-  emailPlugin.oldSave = function(request, response) {
-    var queryData = '';
-
-    request.on('data', function(data) {
-      queryData += data;
-      if (queryData.length > UNCONFIRMED_PER_ITEM_QUOTA) {
-        queryData = '';
-        response.writeHead(413, {
-          'Content-Type': 'text/plain'
-        }).end();
-        request.connection.destroy();
-      }
-    }).on('end', function() {
-      var params = querystring.parse(queryData);
-      var email = params.email;
-      var passphrase = params.secret;
-      var key = params.key;
-      var record = params.record;
-      if (!email || !passphrase || !record || !key) {
-        return emailPlugin.returnError(emailPlugin.errors.MISSING_PARAMETER, response);
-      }
-
-      emailPlugin.processPost(request, response, email, key, passphrase, record);
     });
   };
 
