@@ -4,21 +4,18 @@
  * Module dependencies.
  */
 
-var Utils = require('../models/Utils'),
-  common = require('./common');
+var _ = require('lodash');
+
+var Utils = require('../models/Utils');
+var common = require('./common');
 
 exports.estimateFee = function(req, res) {
+  var args = req.query.nbBlocks || '2';
+  var nbBlocks = args.split(',');
 
-  var nbBlocks = +req.query.nbBlocks || 2;
   var utilsObject = new Utils();
-
-  var returnJsonp = function(err) {
-    if (err || !utilsObject)
-      return common.handleErrors(err, res);
-    else {
-      res.jsonp(utilsObject);
-    }
-  };
-
-  utilsObject.estimateFee(nbBlocks, returnJsonp);
+  utilsObject.estimateFee(nbBlocks, function(err, fees) {
+    if (err) return common.handleErrors(err, res);
+    res.jsonp(fees);
+  });
 };
