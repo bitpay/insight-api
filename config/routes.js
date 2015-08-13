@@ -65,7 +65,6 @@ module.exports = function(app) {
   if (config.enableEmailstore) {
     var emailPlugin = require('../plugins/emailstore');
     app.get(apiPrefix + '/email/retrieve', emailPlugin.retrieve);
-    app.get(apiPrefix + '/email/retrieve/:email', emailPlugin.oldRetrieve);
   }
 
   // Currency rates plugin

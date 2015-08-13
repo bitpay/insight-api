@@ -94,7 +94,6 @@ module.exports = {
   enableRatelimiter: enableRatelimiter,
   ratelimiter: require('../plugins/config-ratelimiter.js'),
   enableEmailstore: enableEmailstore,
-  emailstore: require('../plugins/config-emailstore'),
   enableCurrencyRates: enableCurrencyRates,
   currencyrates: require('../plugins/config-currencyrates'),
   loggerLevel: loggerLevel,
