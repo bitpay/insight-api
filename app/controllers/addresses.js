@@ -79,6 +79,28 @@ exports.show = function(req, res, next) {
   }
 };
 
+exports.multishow = function(req, res, next) {
+  if (!checkSync(req, res)) return;
+  var as = getAddrs(req, res, next);
+
+  if (as) {
+    var addrs = [];
+    async.eachLimit(as, RPC_CONCURRENCY, function(a, callback) {
+      a.update(function(err) {
+        if (err) callback(err);
+        addrs = addrs.concat(a.getObj());
+        callback();
+      }, {
+        txLimit: req.query.noTxList ? 0 : -1,
+        ignoreCache: req.param('noCache')
+      });
+    }, function(err) { // finished callback
+      if (err) return common.handleErrors(err, res);
+      res.jsonp(addrs);
+    });
+  }
+};
+
 
 
 exports.utxo = function(req, res, next) {
