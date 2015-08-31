@@ -43,6 +43,7 @@
   "scripts": {
     "start": "node insight.js"
   },
+  "bitcoreNode": "bitcore-node",
   "dependencies": {
     "async": "*",
     "base58-native": "0.1.2",
