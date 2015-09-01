@@ -30,6 +30,12 @@ var blockIndexes = {
     chainWork: '00000000000000000000000000000000000000000000000544ea52e0575ba752',
     prevHash: '000000000001b9c41e6c4a7b81a068b50cf3f522ee4ac1e942e75ec16e090547',
     height: 533950 
+  },
+  533974: { 
+    hash: '0000000000000afa0c3c0afd450c793a1e300ec84cbe9555166e06132f19a8f7',
+    chainWork: '0000000000000000000000000000000000000000000000054626b1839ade284a',
+    prevHash: '00000000000001a55f3214e9172eb34b20e0bc5bd6b8007f3f149fca2c8991a4',
+    height: 533974 
   }
 };
 
@@ -160,6 +166,38 @@ describe('Blocks', function() {
       };
 
       blocks.list(req, res);
+    });
+  });
+
+  describe('/block-index/:height route', function() {
+    var node = {
+      services: {
+        bitcoind: {
+          getBlockIndex: function(height) {
+            return blockIndexes[height];
+          }
+        }
+      }
+    };
+
+    it('should have correct data', function(done) {
+      var blocks = new BlockController(node);
+
+      var insight = {
+        "blockHash": "0000000000000afa0c3c0afd450c793a1e300ec84cbe9555166e06132f19a8f7"
+      };
+
+      var req = {};
+      var res = {
+        jsonp: function(data) {
+          should(data).eql(insight);
+          done();
+        }
+      };
+      var next = function() {};
+      var height = 533974;
+
+      blocks.blockIndex(req, res, next, height);
     });
   });
 });

@@ -9,7 +9,7 @@ function AddressController(node) {
   this.txController = new TxController(node);
 }
 
-AddressController.prototype.show = function(req, res, next) {
+AddressController.prototype.show = function(req, res) {
   this.getAddressHistory(req.addr, function(err, data) {
     if(err) {
       return common.handleErrors(err, res);
@@ -19,23 +19,23 @@ AddressController.prototype.show = function(req, res, next) {
   });
 };
 
-AddressController.prototype.balance = function(req, res, next) {
-  this.addressHistorySubQuery(req, res, next, 'balanceSat');
+AddressController.prototype.balance = function(req, res) {
+  this.addressHistorySubQuery(req, res, 'balanceSat');
 };
 
-AddressController.prototype.totalReceived = function(req, res, next) {
-  this.addressHistorySubQuery(req, res, next, 'totalReceivedSat');
+AddressController.prototype.totalReceived = function(req, res) {
+  this.addressHistorySubQuery(req, res, 'totalReceivedSat');
 };
 
-AddressController.prototype.totalSent = function(req, res, next) {
-  this.addressHistorySubQuery(req, res, next, 'totalSentSat');
+AddressController.prototype.totalSent = function(req, res) {
+  this.addressHistorySubQuery(req, res, 'totalSentSat');
 };
 
-AddressController.prototype.unconfirmedBalance = function(req, res, next) {
-  this.addressHistorySubQuery(req, res, next, 'unconfirmedBalanceSat');
+AddressController.prototype.unconfirmedBalance = function(req, res) {
+  this.addressHistorySubQuery(req, res, 'unconfirmedBalanceSat');
 };
 
-AddressController.prototype.addressHistorySubQuery = function(req, res, next, param) {
+AddressController.prototype.addressHistorySubQuery = function(req, res, param) {
   this.getAddressHistory(req.addr, function(err, data) {
     if(err) {
       return common.handleErrors(err, res);
@@ -92,7 +92,7 @@ AddressController.prototype.check = function(req, res, next, addresses) {
   }
 
   next();
-}
+};
 
 AddressController.prototype.transformAddressHistory = function(txinfos, address) {
   var transactions = txinfos.map(function(info) {
@@ -141,7 +141,7 @@ AddressController.prototype.transformAddressHistory = function(txinfos, address)
   };
 };
 
-AddressController.prototype.utxo = function(req, res, next) {
+AddressController.prototype.utxo = function(req, res) {
   var self = this;
 
   this.node.getUnspentOutputs(req.addr, true, function(err, utxos) {
@@ -155,7 +155,7 @@ AddressController.prototype.utxo = function(req, res, next) {
   });
 };
 
-AddressController.prototype.multiutxo = function(req, res, next) {
+AddressController.prototype.multiutxo = function(req, res) {
   var self = this;
 
   this.node.getUnspentOutputs(req.addrs, true, function(err, utxos) {
@@ -174,7 +174,7 @@ AddressController.prototype.transformUtxo = function(utxo) {
     address: utxo.address,
     txid: utxo.txid,
     vout: utxo.outputIndex,
-    ts: utxo.timestamp ? Math.round(utxo.timestamp / 1000) : Math.round(Date.now() / 1000),
+    ts: utxo.timestamp ? parseInt(utxo.timestamp) : Date.now(),
     scriptPubKey: utxo.script,
     amount: utxo.satoshis / 1e8,
     confirmations: utxo.confirmations
@@ -196,13 +196,19 @@ AddressController.prototype.multitxs = function(req, res, next) {
 AddressController.prototype.transformAddressHistoryForMultiTxs = function(txinfos) {
   var self = this;
 
+  var items = txinfos.map(function(txinfo) {
+    return txinfo.tx;
+  }).filter(function(value, index, self) {
+    return self.indexOf(value) === index;
+  }).map(function(tx) {
+    return self.txController.transformTransaction(tx);
+  }).reverse();
+
   var transformed = {
-    totalItems: txinfos.length,
+    totalItems: items.length,
     from: 0,
-    to: txinfos.length,
-    items: txinfos.map(function(txinfo) {
-      return self.txController.transformTransaction(txinfo.tx);
-    }).reverse()
+    to: items.length,
+    items: items
   };
 
   return transformed;

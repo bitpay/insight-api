@@ -70,7 +70,7 @@ TxController.prototype.transformTransaction = function(transaction) {
 
   transformed.blockhash = transaction.__blockHash;
   transformed.confirmations = confirmations;
-  transformed.time = transaction.__timestamp ? transaction.__timestamp : Date.now(); // can we get this from bitcoind?
+  transformed.time = transaction.__timestamp ? Math.round(transaction.__timestamp / 1000) : Math.round(Date.now() / 1000); // can we get this from bitcoind?
   transformed.blocktime = transformed.time;
 
   if(transaction.isCoinbase()) {
@@ -104,9 +104,9 @@ TxController.prototype.transformInput = function(input, index) {
     transformed.valueSat = input.output.satoshis;
     transformed.value = input.output.satoshis / 1e8;
     transformed.doubleSpentTxID = null; // TODO
-    transformed.isConfirmed = null; // TODO
-    transformed.confirmations = null; // TODO
-    transformed.unconfirmedInput = null; // TODO
+    //transformed.isConfirmed = null; // TODO
+    //transformed.confirmations = null; // TODO
+    //transformed.unconfirmedInput = null; // TODO
   }
 
   return transformed;
@@ -121,10 +121,10 @@ TxController.prototype.transformOutput = function(output, index) {
       hex: output.script,
       reqSigs: null, // TODO
       type: null // TODO
-    },
-    spentTxId: null, // TODO
-    spentIndex: null, // TODO
-    spentTs: null // TODO
+    }
+    //spentTxId: undefined, // TODO
+    //spentIndex: undefined, // TODO
+    //spentTs: undefined // TODO
   };
 
   var address = bitcore.Script(output.script).toAddress(this.node.network).toString();
@@ -186,7 +186,7 @@ TxController.prototype.list = function(req, res) {
       async.mapSeries(txs, function(tx, next) {
         tx.__blockHash = block.hash;
         tx.__height = blockInfo.height;
-        tx.__timestamp = block.header.time;
+        tx.__timestamp = block.header.time * 1000;
 
         tx.populateInputs(self.node.services.db, [], function(err) {
           if(err) {
