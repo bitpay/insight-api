@@ -21,6 +21,9 @@
   }, {
     "name": "Ivan Socolsky",
     "email": "jungans@gmail.com"
+  }, {
+    "name": "Patrick Nagurny",
+    "email": "patrick@bitpay.com"
   }],
   "bugs": {
     "url": "https://github.com/bitpay/insight-api/issues"
@@ -39,50 +42,18 @@
   "engines": {
     "node": "*"
   },
-  "bin": "insight.js",
   "scripts": {
-    "start": "node insight.js"
+    "test": "NODE_ENV=test mocha -R spec --recursive"
   },
-  "bitcoreNode": "bitcore-node",
+  "bitcoreNode": "lib",
   "dependencies": {
     "async": "*",
-    "base58-native": "0.1.2",
-    "bignum": "*",
-    "morgan": "*",
-    "bitcore": "git://github.com/bitpay/bitcore.git#51c53b16ced6bcaf4b78329955d6814579fe4ee9",
-    "bufferput": "git://github.com/bitpay/node-bufferput.git",
-    "buffertools": "*",
-    "commander": "^2.3.0",
-    "connect-ratelimit": "git://github.com/dharmafly/connect-ratelimit.git#0550eff209c54f35078f46445000797fa942ab97",
-    "cron": "^1.0.4",
-    "express": "~3.4.7",
-    "glob": "*",
-    "leveldown": "~0.10.0",
-    "levelup": "~0.19.0",
-    "lodash": "^2.4.1",
-    "microtime": "^0.6.0",
-    "mkdirp": "^0.5.0",
-    "moment": "~2.5.0",
-    "preconditions": "^1.0.7",
-    "request": "^2.48.0",
-    "socket.io": "1.0.6",
-    "socket.io-client": "1.0.6",
-    "soop": "=0.1.5",
-    "winston": "*",
-    "xmlhttprequest": "~1.6.0"
+    "bitcore": "^0.13.2",
+    "lodash": "^2.4.1"
   },
   "devDependencies": {
+    "mocha": "~1.16.2",
     "chai": "*",
-    "grunt": "~0.4.2",
-    "grunt-cli": "~0.1.11",
-    "grunt-concurrent": "~0.4.2",
-    "grunt-contrib-jshint": "~0.8.0",
-    "grunt-contrib-watch": "~0.5.3",
-    "grunt-env": "~0.4.1",
-    "grunt-markdown": "~0.5.0",
-    "grunt-mocha-test": "~0.8.1",
-    "grunt-nodemon": "~0.2.0",
-    "memdown": "^0.10.2",
     "should": "^2.1.1",
     "sinon": "^1.10.3"
   }

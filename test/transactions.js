@@ -2,7 +2,7 @@
 var should = require('should');
 var sinon = require('sinon');
 var bitcore = require('bitcore');
-var TxController = require('../../bitcore-node/transactions');
+var TxController = require('../lib/transactions');
 var _ = require('lodash');
 
 /*var diff = function(a, b) {
