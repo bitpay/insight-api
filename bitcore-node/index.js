@@ -16,7 +16,7 @@ InsightAPI.dependencies = ['address', 'web'];
 inherits(InsightAPI, BaseService);
 
 InsightAPI.prototype.setupRoutes = function(app) {
-  var apiPrefix = '/api';
+  var apiPrefix = '/insight-api';
 
   //Block routes
   var blocks = new BlockController(this.node);
