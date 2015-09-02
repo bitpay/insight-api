@@ -2,7 +2,7 @@
 
 var should = require('should');
 var sinon = require('sinon');
-var BlockController = require('../../bitcore-node/blocks');
+var BlockController = require('../lib/blocks');
 var bitcore = require('bitcore');
 var _ = require('lodash');
 
