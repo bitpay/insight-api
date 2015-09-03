@@ -5,36 +5,6 @@ var AddressController = require('../lib/addresses');
 var _ = require('lodash');
 var bitcore = require('bitcore');
 
-var diff = function(a, b) {
-  if(Array.isArray(a)) {
-    var r = [];
-    for(var i = 0; i < a.length; i++) {
-      if(b[i] === a[i]) {
-        break;
-      } else {
-        if(_.isObject(a[i])) {
-          r.push(diff(a[i], b[i]));
-        } else {
-          r.push(a[i]);
-        }
-      }
-    }
-
-    return r;
-  } else {
-    var r = {};
-    _.each(a, function(v,k) {
-        if(b[k] === v) return;
-        // but what if it returns an empty object? still attach?
-        r[k] = _.isObject(v)
-                ? diff(v, b[k])
-                : v
-            ;
-        });
-    return r;
-  }
-}
-
 var txinfos = [
   {
     "address": "mkPvAKZ2rar6qeG3KjBtJHHMSP1wFZH7Er",
@@ -163,7 +133,7 @@ var tx = bitcore.Transaction().fromObject({
 });
 
 tx.__height = 534181;
-tx.__timestamp = 1441116143000;
+tx.__timestamp = 1441116143;
 tx.__blockHash = '0000000000000041ddc94ecf4f86a456a83b2e320c36c6f0c13ff92c7e75f013';
 var txinfos2 = [
   {

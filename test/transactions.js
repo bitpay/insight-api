@@ -5,49 +5,6 @@ var bitcore = require('bitcore');
 var TxController = require('../lib/transactions');
 var _ = require('lodash');
 
-/*var diff = function(a, b) {
-  var r = {};
-  _.each(a, function(v,k) {
-      if(b[k] === v) return;
-      // but what if it returns an empty object? still attach?
-      r[k] = _.isObject(v)
-              ? diff(v, b[k])
-              : v
-          ;
-      });
-  return r;
-};*/
-
-var diff = function(a, b) {
-  if(Array.isArray(a)) {
-    var r = [];
-    for(var i = 0; i < a.length; i++) {
-      if(b[i] === a[i]) {
-        break;
-      } else {
-        if(_.isObject(a[i])) {
-          r.push(diff(a[i], b[i]));
-        } else {
-          r.push(a[i]);
-        }
-      }
-    }
-
-    return r;
-  } else {
-    var r = {};
-    _.each(a, function(v,k) {
-        if(b[k] === v) return;
-        // but what if it returns an empty object? still attach?
-        r[k] = _.isObject(v)
-                ? diff(v, b[k])
-                : v
-            ;
-        });
-    return r;
-  }
-}
-
 describe('Transactions', function() {
   describe('/tx/:txid', function() {
     it('should have correct data', function(done) {
@@ -215,7 +172,7 @@ describe('Transactions', function() {
       var bitcoreTx = bitcore.Transaction(bitcoreTxObj);
       bitcoreTx.__blockHash = '0000000000000afa0c3c0afd450c793a1e300ec84cbe9555166e06132f19a8f7';
       bitcoreTx.__height = 533974;
-      bitcoreTx.__timestamp = 1440987503000;
+      bitcoreTx.__timestamp = 1440987503;
       bitcoreTx.populateInputs = sinon.stub().callsArg(2);
       bitcoreTx.toObject = sinon.stub().returns(bitcoreTxObj);
 
@@ -657,11 +614,11 @@ describe('Transactions', function() {
       ];
 
       txinfos[0].tx.__blockHash = '00000000000001001aba15de213648f370607fb048288dd27b96f7e833a73520';
-      txinfos[0].tx.__timestamp = 1441068774000;
+      txinfos[0].tx.__timestamp = 1441068774;
       txinfos[0].tx.__height = 534105;
 
       txinfos[1].tx.__blockHash = '0000000000000a3acc1f7fe72917eb48bb319ed96c125a6dfcc0ba6acab3c4d0';
-      txinfos[1].tx.__timestamp = 1441072817000;
+      txinfos[1].tx.__timestamp = 1441072817;
       txinfos[1].tx.__height = 534110;
 
       var node = {
@@ -877,7 +834,6 @@ describe('Transactions', function() {
 
       var res = {
         jsonp: function(data) {
-          var d = diff(insight, data);
           var merged = _.merge(data, todos);
           should(merged).eql(insight);
           done();
