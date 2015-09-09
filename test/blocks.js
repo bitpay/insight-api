@@ -74,7 +74,8 @@ describe('Blocks', function() {
       getBlock: sinon.stub().callsArgWith(1, null, bitcoreBlock),
       services: {
         bitcoind: {
-          getBlockIndex: sinon.stub().returns(blockIndexes['0000000000000afa0c3c0afd450c793a1e300ec84cbe9555166e06132f19a8f7'])
+          getBlockIndex: sinon.stub().returns(blockIndexes['0000000000000afa0c3c0afd450c793a1e300ec84cbe9555166e06132f19a8f7']),
+          isMainChain: sinon.stub().returns(true)
         },
         db: {
           tip: {
