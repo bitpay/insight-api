@@ -67,9 +67,7 @@ describe('Blocks', function() {
     var bitcoreBlock = bitcore.Block.fromBuffer(new Buffer(blocks['0000000000000afa0c3c0afd450c793a1e300ec84cbe9555166e06132f19a8f7'], 'hex'));
 
     var todos = {
-      difficulty: 1295829.93087696,
-      nextblockhash: '000000000001e866a8057cde0c650796cb8a59e0e6038dc31c69d7ca6649627d',
-      reward: 12.5
+      nextblockhash: '000000000001e866a8057cde0c650796cb8a59e0e6038dc31c69d7ca6649627d'
     };
 
     var node = {
