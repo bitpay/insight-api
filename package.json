@@ -57,7 +57,7 @@
   "bitcoreNode": "lib",
   "dependencies": {
     "async": "*",
-    "bitcore": "^0.13.2",
+    "bitcore": "^0.13.3",
     "lodash": "^2.4.1"
   },
   "devDependencies": {
