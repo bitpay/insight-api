@@ -865,4 +865,33 @@ describe('Transactions', function() {
       transactions.rawTransaction(req, res, next, txid);
     });
   });
+
+  describe('#transformInvTransaction', function() {
+    it('should give the correct data', function() {
+      var insight = {
+        "txid": "a15a7c257af596704390d345ff3ea2eed4cd02ce8bfb8afb700bff82257e49fb",
+        "valueOut": 0.02038504,
+        "vout": [
+          {
+            "3DQYCLG6rZdtV2Xw8y4YtozZjNHYoKsLuo": 45000
+          },
+          {
+            "12WvZmssxT85f81dD6wcmWznxbnFkEpNMS": 1993504
+          }
+        ]
+      };
+
+      var rawTx = '01000000011760bc271a397bfb65b7506d430d96ebb1faff467ed957516238a9670e806a86010000006b483045022100f0056ae68a34cdb4194d424bd727c18f82653bca2a198e0d55ab6b4ee88bbdb902202a5745af4f72a5dbdca1e3d683af4667728a8b20e8001e0f8308a4d329ce3f96012102f3af6e66b61c9d99c74d9a9c3c1bec014a8c05d28bf339c8f5f395b5ce319e7dffffffff02c8af00000000000017a9148083b541ea15f1d18c5ca5e1fd47f9035cce24ed87206b1e00000000001976a91410a0e70cd91a45e0e6e409e227ab285bd61592b188ac00000000';
+      var tx = bitcore.Transaction().fromBuffer(new Buffer(rawTx, 'hex'));
+
+      var node = {
+        network: bitcore.Networks.livenet
+      };
+
+      var transactions = new TxController(node);
+
+      var result = transactions.transformInvTransaction(tx);
+      should(result).eql(insight);
+    });
+  });
 });
