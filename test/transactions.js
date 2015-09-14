@@ -613,6 +613,11 @@ describe('Transactions', function() {
         }
       ];
 
+      var historyResult = {
+        totalCount: txinfos.length,
+        items: txinfos
+      };
+
       txinfos[0].tx.__blockHash = '00000000000001001aba15de213648f370607fb048288dd27b96f7e833a73520';
       txinfos[0].tx.__timestamp = 1441068774;
       txinfos[0].tx.__height = 534105;
@@ -622,7 +627,7 @@ describe('Transactions', function() {
       txinfos[1].tx.__height = 534110;
 
       var node = {
-        getAddressHistory: sinon.stub().callsArgWith(2, null, txinfos),
+        getAddressHistory: sinon.stub().callsArgWith(2, null, historyResult),
         services: {
           db: {
             tip: {
