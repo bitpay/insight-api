@@ -125,13 +125,24 @@ describe('Blocks', function() {
         }
       ],
       "length": 2,
-      "pagination": {}
+      "pagination": {
+        "current": "2015-08-30",
+        "currentTs": 1440979199,
+        "isToday": false,
+        "more": false,
+        "next": "2015-08-31",
+        "prev": "2015-08-29"
+      }
     };
 
     var stub = sinon.stub();
     stub.onFirstCall().callsArgWith(1, null, bitcore.Block.fromBuffer(blocks['000000000008fbb2e358e382a6f6948b2da24563bba183af447e6e2542e8efc7'], 'hex'));
     stub.onSecondCall().callsArgWith(1, null, bitcore.Block.fromBuffer(blocks['00000000000006bd8fe9e53780323c0e85719eca771022e1eb6d10c62195c441'], 'hex'))
 
+    var hashes = [
+      '00000000000006bd8fe9e53780323c0e85719eca771022e1eb6d10c62195c441',
+      '000000000008fbb2e358e382a6f6948b2da24563bba183af447e6e2542e8efc7'
+    ];
     var node = {
       getBlock: stub,
       services: {
@@ -141,9 +152,7 @@ describe('Blocks', function() {
           }
         },
         db: {
-          tip: {
-            hash: '000000000008fbb2e358e382a6f6948b2da24563bba183af447e6e2542e8efc7'
-          }
+          getBlockHashesByTimestamp: sinon.stub().callsArgWith(2, null, hashes)
         }
       }
     };
@@ -153,7 +162,8 @@ describe('Blocks', function() {
 
       var req = {
         query: {
-          limit: 2
+          limit: 2,
+          blockDate: '2015-08-30'
         }
       };
 
