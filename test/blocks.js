@@ -140,8 +140,8 @@ describe('Blocks', function() {
     stub.onSecondCall().callsArgWith(1, null, bitcore.Block.fromBuffer(blocks['00000000000006bd8fe9e53780323c0e85719eca771022e1eb6d10c62195c441'], 'hex'))
 
     var hashes = [
-      '00000000000006bd8fe9e53780323c0e85719eca771022e1eb6d10c62195c441',
-      '000000000008fbb2e358e382a6f6948b2da24563bba183af447e6e2542e8efc7'
+      '000000000008fbb2e358e382a6f6948b2da24563bba183af447e6e2542e8efc7',
+      '00000000000006bd8fe9e53780323c0e85719eca771022e1eb6d10c62195c441'
     ];
     var node = {
       getBlock: stub,
