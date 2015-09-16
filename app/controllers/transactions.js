@@ -6,6 +6,7 @@
 var Address     = require('../models/Address');
 var async       = require('async');
 var common      = require('./common');
+var multi       = common.multi;
 var util        = require('util');
 
 var Rpc         = require('../../lib/Rpc');
@@ -40,36 +41,32 @@ exports.send = function(req, res) {
   });
 };
 
-exports.rawTransaction = function (req, res, next, txid) {
+exports.rawTransaction = multi(function(txid, cb) {
     bitcoreRpc.getRawTransaction(txid, function (err, transaction) {
         if (err || !transaction)
-            return common.handleErrors(err, res);
+            return cb(err);
         else {
-            req.rawTransaction = { 'rawtx': transaction.result };
-            return next();
+            return cb(null, transaction.result);
         }
     });
-};
+}, 'rawTransaction');
 
 /**
  * Find transaction by hash ...
  */
-exports.transaction = function(req, res, next, txid) {
+exports.transaction = multi(function(txid, cb) {
+    tDb.fromIdWithInfo(txid, function(err, tx) {
+      if (err || ! tx)
+        return cb(err);
 
-  tDb.fromIdWithInfo(txid, function(err, tx) {
-    if (err || ! tx)
-      return common.handleErrors(err, res);
+      bdb.fillVinConfirmations(tx.info, function(err) {
+        if (err)
+          return cb(err);
+        return cb(null, tx.info);
+      });
 
-    bdb.fillVinConfirmations(tx.info, function(err) {
-      if (err)
-        return common.handleErrors(err, res);
-
-      req.transaction = tx.info;
-      return next();
     });
-
-  });
-};
+}, 'transaction');
 
 
 /**
