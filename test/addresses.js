@@ -5,88 +5,91 @@ var AddressController = require('../lib/addresses');
 var _ = require('lodash');
 var bitcore = require('bitcore');
 
-var txinfos = [
-  {
-    "address": "mkPvAKZ2rar6qeG3KjBtJHHMSP1wFZH7Er",
-    "satoshis": 2782729129,
-    "height": 534105,
-    "confirmations": 123,
-    "timestamp": 1441068774,
-    "fees": 35436,
-    "outputIndexes": [
-      0
-    ],
-    "inputIndexes": [],
-    "tx": {
-      "hash": "bb0ec3b96209fac9529570ea6f83a86af2cceedde4aaf2bfcc4796680d23f1c7",
-      "version": 1,
-      "inputs": [
-        {
-          "prevTxId": "ea5e5bafbf29cdf6f6097ab344128477e67889d4d6203cb43594836daa6cc425",
-          "outputIndex": 1,
-          "sequenceNumber": 4294967294,
-          "script": "483045022100f4d169783bef70e3943d2a617cce55d9fe4e33fc6f9880b8277265e2f619a97002201238648abcdf52960500664e969046d41755f7fc371971ebc78002fc418465a6012103acdcd31d51272403ce0829447e59e2ac9e08ed0bf92011cbf7420addf24534e6",
-          "scriptString": "72 0x3045022100f4d169783bef70e3943d2a617cce55d9fe4e33fc6f9880b8277265e2f619a97002201238648abcdf52960500664e969046d41755f7fc371971ebc78002fc418465a601 33 0x03acdcd31d51272403ce0829447e59e2ac9e08ed0bf92011cbf7420addf24534e6",
-          "output": {
-            "satoshis": 2796764565,
-            "script": "76a91488b1fe8aec5ae4358a11447a2f22b2781faedb9b88ac"
+var txinfos = {
+  totalCount: 2,
+  items: [
+    {
+      "address": "mkPvAKZ2rar6qeG3KjBtJHHMSP1wFZH7Er",
+      "satoshis": 2782729129,
+      "height": 534105,
+      "confirmations": 123,
+      "timestamp": 1441068774,
+      "fees": 35436,
+      "outputIndexes": [
+        0
+      ],
+      "inputIndexes": [],
+      "tx": {
+        "hash": "bb0ec3b96209fac9529570ea6f83a86af2cceedde4aaf2bfcc4796680d23f1c7",
+        "version": 1,
+        "inputs": [
+          {
+            "prevTxId": "ea5e5bafbf29cdf6f6097ab344128477e67889d4d6203cb43594836daa6cc425",
+            "outputIndex": 1,
+            "sequenceNumber": 4294967294,
+            "script": "483045022100f4d169783bef70e3943d2a617cce55d9fe4e33fc6f9880b8277265e2f619a97002201238648abcdf52960500664e969046d41755f7fc371971ebc78002fc418465a6012103acdcd31d51272403ce0829447e59e2ac9e08ed0bf92011cbf7420addf24534e6",
+            "scriptString": "72 0x3045022100f4d169783bef70e3943d2a617cce55d9fe4e33fc6f9880b8277265e2f619a97002201238648abcdf52960500664e969046d41755f7fc371971ebc78002fc418465a601 33 0x03acdcd31d51272403ce0829447e59e2ac9e08ed0bf92011cbf7420addf24534e6",
+            "output": {
+              "satoshis": 2796764565,
+              "script": "76a91488b1fe8aec5ae4358a11447a2f22b2781faedb9b88ac"
+            }
           }
-        }
-      ],
-      "outputs": [
-        {
-          "satoshis": 2782729129,
-          "script": "76a9143583efb5e64a4668c6c54bb5fcc30af4417b4f2d88ac"
-        },
-        {
-          "satoshis": 14000000,
-          "script": "76a9149713201957f42379e574d7c70d506ee49c2c8ad688ac"
-        }
-      ],
-      "nLockTime": 534089
-    }
-  },
-  {
-    "address": "mkPvAKZ2rar6qeG3KjBtJHHMSP1wFZH7Er",
-    "satoshis": -2782729129,
-    "height": 534110,
-    "confirmations": 118,
-    "timestamp": 1441072817,
-    "fees": 35437,
-    "outputIndexes": [],
-    "inputIndexes": [
-      "0"
-    ],
-    "tx": {
-      "hash": "01f700df84c466f2a389440e5eeacdc47d04f380c39e5d19dce2ce91a11ecba3",
-      "version": 1,
-      "inputs": [
-        {
-          "prevTxId": "bb0ec3b96209fac9529570ea6f83a86af2cceedde4aaf2bfcc4796680d23f1c7",
-          "outputIndex": 0,
-          "sequenceNumber": 4294967294,
-          "script": "47304402201ee69281db6b95bb1aa3074059b67581635b719e8f64e4c2694db6ec56ad9447022011e91528996ea459b1fb2c0b59363fecbefe4bc2ca90f7b2382bdaa358f2d5640121034cc057b12a68ee79df998004b9a1341bbb18b17ea4939bebaa3bac001e940f24",
-          "scriptString": "71 0x304402201ee69281db6b95bb1aa3074059b67581635b719e8f64e4c2694db6ec56ad9447022011e91528996ea459b1fb2c0b59363fecbefe4bc2ca90f7b2382bdaa358f2d56401 33 0x034cc057b12a68ee79df998004b9a1341bbb18b17ea4939bebaa3bac001e940f24",
-          "output": {
+        ],
+        "outputs": [
+          {
             "satoshis": 2782729129,
             "script": "76a9143583efb5e64a4668c6c54bb5fcc30af4417b4f2d88ac"
+          },
+          {
+            "satoshis": 14000000,
+            "script": "76a9149713201957f42379e574d7c70d506ee49c2c8ad688ac"
           }
-        }
+        ],
+        "nLockTime": 534089
+      }
+    },
+    {
+      "address": "mkPvAKZ2rar6qeG3KjBtJHHMSP1wFZH7Er",
+      "satoshis": -2782729129,
+      "height": 534110,
+      "confirmations": 118,
+      "timestamp": 1441072817,
+      "fees": 35437,
+      "outputIndexes": [],
+      "inputIndexes": [
+        "0"
       ],
-      "outputs": [
-        {
-          "satoshis": 2764693692,
-          "script": "76a91456e446bc3489543d8324c6d0271524c0bd0506dd88ac"
-        },
-        {
-          "satoshis": 18000000,
-          "script": "76a914011d2963b619186a318f768dddfd98cd553912a088ac"
-        }
-      ],
-      "nLockTime": 534099
+      "tx": {
+        "hash": "01f700df84c466f2a389440e5eeacdc47d04f380c39e5d19dce2ce91a11ecba3",
+        "version": 1,
+        "inputs": [
+          {
+            "prevTxId": "bb0ec3b96209fac9529570ea6f83a86af2cceedde4aaf2bfcc4796680d23f1c7",
+            "outputIndex": 0,
+            "sequenceNumber": 4294967294,
+            "script": "47304402201ee69281db6b95bb1aa3074059b67581635b719e8f64e4c2694db6ec56ad9447022011e91528996ea459b1fb2c0b59363fecbefe4bc2ca90f7b2382bdaa358f2d5640121034cc057b12a68ee79df998004b9a1341bbb18b17ea4939bebaa3bac001e940f24",
+            "scriptString": "71 0x304402201ee69281db6b95bb1aa3074059b67581635b719e8f64e4c2694db6ec56ad9447022011e91528996ea459b1fb2c0b59363fecbefe4bc2ca90f7b2382bdaa358f2d56401 33 0x034cc057b12a68ee79df998004b9a1341bbb18b17ea4939bebaa3bac001e940f24",
+            "output": {
+              "satoshis": 2782729129,
+              "script": "76a9143583efb5e64a4668c6c54bb5fcc30af4417b4f2d88ac"
+            }
+          }
+        ],
+        "outputs": [
+          {
+            "satoshis": 2764693692,
+            "script": "76a91456e446bc3489543d8324c6d0271524c0bd0506dd88ac"
+          },
+          {
+            "satoshis": 18000000,
+            "script": "76a914011d2963b619186a318f768dddfd98cd553912a088ac"
+          }
+        ],
+        "nLockTime": 534099
+      }
     }
-  }
-];
+  ]
+};
 
 var tx = bitcore.Transaction().fromObject({
   "hash": "63b68becb0e514b32317f4b29a5cf0627d4087e54ac17f686fcb1d9a27680f73",
@@ -135,14 +138,14 @@ var tx = bitcore.Transaction().fromObject({
 tx.__height = 534181;
 tx.__timestamp = 1441116143;
 tx.__blockHash = '0000000000000041ddc94ecf4f86a456a83b2e320c36c6f0c13ff92c7e75f013';
-var txinfos2 = [
-  {
-    tx: tx
-  },
-  {
-    tx: tx
-  }
-];
+var txinfos2 = {
+  totalCount: 1,
+  items: [
+    {
+      tx: tx
+    }
+  ]
+};
 
 var utxos = [
   {
@@ -512,7 +515,9 @@ describe('Addresses', function() {
       var addresses = new AddressController(node);
 
       var req = {
-        addrs: 'mzkD4nmQ8ixqxySdBgsXTpgvAMK5iRZpNK,moZY18rGNmh4YCPeugtGW46AkkWMQttBUD'
+        addrs: 'mzkD4nmQ8ixqxySdBgsXTpgvAMK5iRZpNK,moZY18rGNmh4YCPeugtGW46AkkWMQttBUD',
+        query: {},
+        body: {}
       };
 
       var res = {
