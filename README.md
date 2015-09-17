@@ -4,6 +4,18 @@ A Bitcoin blockchain REST and web socket API service for [Bitcore Node](https://
 
 This is a backend-only service. If you're looking for the web frontend application, take a look at https://github.com/bitpay/insight.
 
+## Getting Started
+
+```bash
+npm install -g bitcore-node@latest
+bitcore-node create mynode
+cd mynode
+bitcore-node add insight-api
+bitcore-node start
+```
+
+The API endpoints will be available by default at: 'http://localhost:3001/insight-api/`
+
 ## Prerequisites
 
 - [Bitcore Node 0.2.x](https://github.com/bitpay/bitcore-node)
