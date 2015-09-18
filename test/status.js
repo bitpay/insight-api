@@ -18,10 +18,27 @@ describe('Status', function() {
       errors: ''
     };
 
+    var outSetInfo = {
+      height: 151,
+      bestblock: '20b6cc0600037171b8bb634bbd04ea754945be44db8d9199b74798f1abdb382d',
+      transactions: 151,
+      txouts: 151,
+      bytes_serialized: 10431,
+      hash_serialized: 'c165d5dcb22a897745ee2ee274b47133b995bbcf8dd4a7572fedad87541c7df8',
+      total_amount: 750000000000
+    };
+
     var node = {
       services: {
         bitcoind: {
-          getInfo: sinon.stub().returns(info)
+          getInfo: sinon.stub().returns(info),
+          getTxOutSetInfo: sinon.stub().returns(outSetInfo),
+          getBestBlockHash: sinon.stub().returns(outSetInfo.bestblock)
+        },
+        db: {
+          tip: {
+            hash: outSetInfo.bestblock
+          }
         }
       }
     };
@@ -64,6 +81,69 @@ describe('Status', function() {
 
       status.show(req, res);
     });
+
+    it('getTxOutSetInfo', function(done) {
+      var req = {
+        query: {
+          q: 'getTxOutSetInfo'
+        }
+      };
+      var res = {
+        jsonp: function(data) {
+          data.txoutsetinfo.should.equal(outSetInfo);
+          done();
+        }
+      };
+      status.show(req, res);
+    });
+
+    it('getTxOutSetInfo (cached)', function(done) {
+      var req = {
+        query: {
+          q: 'getTxOutSetInfo'
+        }
+      };
+      var res = {
+        jsonp: function(data) {
+          data.txoutsetinfo.should.equal(outSetInfo);
+          done();
+        }
+      };
+      status.node.services.bitcoind.getTxOutSetInfo.callCount.should.equal(1);
+      status.show(req, res);
+    });
+
+    it('getBestBlockHash', function(done) {
+      var req = {
+        query: {
+          q: 'getBestBlockHash'
+        }
+      };
+      var res = {
+        jsonp: function(data) {
+          data.bestblockhash.should.equal(outSetInfo.bestblock);
+          done();
+        }
+      };
+      status.show(req, res);
+    });
+
+    it('getLastBlockHash', function(done) {
+      var req = {
+        query: {
+          q: 'getLastBlockHash'
+        }
+      };
+      var res = {
+        jsonp: function(data) {
+          data.syncTipHash.should.equal(outSetInfo.bestblock);
+          data.lastblockhash.should.equal(outSetInfo.bestblock);
+          done();
+        }
+      };
+      status.show(req, res);
+    });
+
   });
 
   describe('/sync', function() {
