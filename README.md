@@ -220,7 +220,6 @@ Where "xxx" can be:
 
  * getInfo
  * getDifficulty
- * getTxOutSetInfo
  * getBestBlockHash
  * getLastBlockHash
 
