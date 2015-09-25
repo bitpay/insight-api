@@ -32,7 +32,6 @@ describe('Status', function() {
       services: {
         bitcoind: {
           getInfo: sinon.stub().returns(info),
-          getTxOutSetInfo: sinon.stub().returns(outSetInfo),
           getBestBlockHash: sinon.stub().returns(outSetInfo.bestblock)
         },
         db: {
@@ -79,37 +78,6 @@ describe('Status', function() {
         }
       };
 
-      status.show(req, res);
-    });
-
-    it('getTxOutSetInfo', function(done) {
-      var req = {
-        query: {
-          q: 'getTxOutSetInfo'
-        }
-      };
-      var res = {
-        jsonp: function(data) {
-          data.txoutsetinfo.should.equal(outSetInfo);
-          done();
-        }
-      };
-      status.show(req, res);
-    });
-
-    it('getTxOutSetInfo (cached)', function(done) {
-      var req = {
-        query: {
-          q: 'getTxOutSetInfo'
-        }
-      };
-      var res = {
-        jsonp: function(data) {
-          data.txoutsetinfo.should.equal(outSetInfo);
-          done();
-        }
-      };
-      status.node.services.bitcoind.getTxOutSetInfo.callCount.should.equal(1);
       status.show(req, res);
     });
 
