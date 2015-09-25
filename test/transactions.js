@@ -898,5 +898,28 @@ describe('Transactions', function() {
       var result = transactions.transformInvTransaction(tx);
       should(result).eql(insight);
     });
+    it('will not include null values in vout array', function() {
+      var insight = {
+        "txid": "716d54157c31e52c820494c6c2b8af1b64352049f4dcc80632aa15742a7f82c4",
+        "valueOut": 12.5002,
+        "vout": [
+          {
+            "n4eY3qiP9pi32MWC6FcJFHciSsfNiYFYgR": 12.5002 * 1e8
+          }
+        ]
+      };
+
+      var rawTx = '01000000010000000000000000000000000000000000000000000000000000000000000000ffffffff0403ebc108ffffffff04a0ca814a000000001976a914fdb9fb622b0db8d9121475a983288a0876f4de4888ac0000000000000000226a200000000000000000000000000000000000000000000000000000ffff0000000000000000000000001b6a1976a914fdb9fb622b0db8d9121475a983288a0876f4de4888ac0000000000000000326a303a791c8e85200500d89769b4f958e4db6b3ec388ddaa30233c4517d942d440c24ae903bff40d97ca06465fcf2714000000000000';
+      var tx = bitcore.Transaction().fromBuffer(new Buffer(rawTx, 'hex'));
+
+      var node = {
+        network: bitcore.Networks.testnet
+      };
+
+      var transactions = new TxController(node);
+
+      var result = transactions.transformInvTransaction(tx);
+      should(result).eql(insight);
+    });
   });
 });
