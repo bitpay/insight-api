@@ -31,10 +31,10 @@ describe('Utils', function() {
 
       var res = {
         jsonp: function(fees) {
-          should(fees).eql({1: 1000, 3: 3000});
+          should(fees).eql({1: 0.00001, 3: 0.00003});
           done();
         }
-      }
+      };
       utils.estimateFee(req, res);
     });
   });
