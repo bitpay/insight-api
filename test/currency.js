@@ -43,7 +43,7 @@ describe('Currency', function() {
     };
     var currency = new TestCurrencyController({node: node});
     currency.bitstampRate = 220.20;
-    currency.timestamp = new Date() - 61000 * CurrencyController.DEFAULT_CURRENCY_DELAY;
+    currency.timestamp = Date.now() - 61000 * CurrencyController.DEFAULT_CURRENCY_DELAY;
     var req = {};
     var res = {
       jsonp: function(response) {
@@ -67,7 +67,7 @@ describe('Currency', function() {
     };
     var currency = new TestCurrencyController({node: node});
     currency.bitstampRate = 237.90;
-    currency.timestamp = new Date() - 65000 * CurrencyController.DEFAULT_CURRENCY_DELAY;
+    currency.timestamp = Date.now() - 65000 * CurrencyController.DEFAULT_CURRENCY_DELAY;
     var req = {};
     var res = {
       jsonp: function(response) {
@@ -93,7 +93,7 @@ describe('Currency', function() {
     };
     var currency = new TestCurrencyController({node: node});
     currency.bitstampRate = 237.90;
-    currency.timestamp = + new Date();
+    currency.timestamp = Date.now();
     var req = {};
     var res = {
       jsonp: function(response) {
