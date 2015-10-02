@@ -132,13 +132,13 @@ describe('Transactions', function() {
       var todos = {
         vin: [
           {
-            confirmations: 242,
             isConfirmed: true,
+            confirmations: 242,
             unconfirmedInput: false
           },
           {
-            confirmations: 242,
             isConfirmed: true,
+            confirmations: 242,
             unconfirmedInput: false
           }
         ],
@@ -152,12 +152,13 @@ describe('Transactions', function() {
             scriptPubKey: {
               reqSigs: 1
             },
-            spentIndex: 1,
-            spentTs: 1440997099,
-            spentTxId: '614fe1708825f9c21732394e4784cc6808ac1d8b939736bfdead970567561eec'
+            spentTs: 1440997099
           }
         ]
       };
+
+      var spentTxId = '614fe1708825f9c21732394e4784cc6808ac1d8b939736bfdead970567561eec';
+      var spentIndex = 1;
 
       var bitcoreTx = bitcore.Transaction(bitcoreTxObj);
       bitcoreTx.__blockHash = '0000000000000afa0c3c0afd450c793a1e300ec84cbe9555166e06132f19a8f7';
@@ -172,6 +173,21 @@ describe('Transactions', function() {
           db: {
             tip: {
               __height: 534203
+            }
+          },
+          address: {
+            getInputForOutput: function(txid, outputIndex, options, callback) {
+              var data = false;
+              if (txid === 'b85334bf2df35c6dd5b294efe92ffc793a78edff75a2ca666fc296ffb04bbba0' &&
+                  outputIndex === 1) {
+                data = {
+                  inputTxId: spentTxId,
+                  inputIndex: spentIndex
+                }
+              }
+              setImmediate(function() {
+                callback(null, data);
+              });
             }
           }
         },
@@ -214,6 +230,9 @@ describe('Transactions', function() {
             tip: {
               __height: 534209
             }
+          },
+          address: {
+            getInputForOutput: sinon.stub().callsArgWith(3, null, false),
           }
         },
         network: 'testnet'
@@ -593,6 +612,34 @@ describe('Transactions', function() {
             tip: {
               __height: 534223
             }
+          },
+          address: {
+            getInputForOutput: function(txid, outputIndex, options, callback) {
+              var data = false;
+              if (txid === 'bb0ec3b96209fac9529570ea6f83a86af2cceedde4aaf2bfcc4796680d23f1c7') {
+                if (outputIndex === 0) {
+                  data = {
+                    inputTxId: '01f700df84c466f2a389440e5eeacdc47d04f380c39e5d19dce2ce91a11ecba3',
+                    inputIndex: 0
+                  };
+                }
+              } else if (txid === '01f700df84c466f2a389440e5eeacdc47d04f380c39e5d19dce2ce91a11ecba3') {
+                if (outputIndex === 0) {
+                  data = {
+                    inputTxId: '661194e5533a395ce9076f292b7e0fb28fe94cd8832a81b4aa0517ff58c1ddd2',
+                    inputIndex: 0
+                  }
+                } else if (outputIndex === 1) {
+                  data = {
+                    inputTxId: '71a9e60c0341c9c258367f1a6d4253276f16e207bf84f41ff7412d8958a81bed',
+                    inputIndex: 0
+                  }
+                }
+              }
+              setImmediate(function() {
+                callback(null, data);
+              });
+            }
           }
         },
         network: 'testnet'
@@ -737,8 +784,6 @@ describe('Transactions', function() {
                 "scriptPubKey": {
                   "reqSigs": 1
                 },
-                "spentTxId": "01f700df84c466f2a389440e5eeacdc47d04f380c39e5d19dce2ce91a11ecba3",
-                "spentIndex": 0,
                 "spentTs": 1441072817
               },
               {
@@ -756,16 +801,12 @@ describe('Transactions', function() {
                 "scriptPubKey": {
                   "reqSigs": 1
                 },
-                "spentTxId": "661194e5533a395ce9076f292b7e0fb28fe94cd8832a81b4aa0517ff58c1ddd2",
-                "spentIndex": 0,
                 "spentTs": 1441077236
               },
               {
                 "scriptPubKey": {
                   "reqSigs": 1
                 },
-                "spentTxId": "71a9e60c0341c9c258367f1a6d4253276f16e207bf84f41ff7412d8958a81bed",
-                "spentIndex": 0,
                 "spentTs": 1441069523
               }
             ]

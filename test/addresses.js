@@ -520,6 +520,9 @@ describe('Addresses', function() {
             tip: {
               __height: 534232
             }
+          },
+          address: {
+            getInputForOutput: sinon.stub().callsArgWith(3, null, false),
           }
         },
         network: 'testnet'
