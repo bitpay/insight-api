@@ -14,13 +14,36 @@ bitcore-node add insight-api
 bitcore-node start
 ```
 
-The API endpoints will be available by default at: 'http://localhost:3001/insight-api/`
+The API endpoints will be available by default at: `http://localhost:3001/insight-api/`
 
 ## Prerequisites
 
 - [Bitcore Node 0.2.x](https://github.com/bitpay/bitcore-node)
 
 **Note:** You can use an existing Bitcoin data directory, however `txindex` needs to be set to true in `bitcoin.conf`.
+
+## Notes on Upgrading from v0.2
+
+Some of the fields and methods are not supported:
+
+The `/tx/<txid>` endpoint JSON response will not include the following fields on the "vin"
+object:
+- `doubleSpentTxId` // double spends are not currently tracked
+- `isConfirmed` // confirmation of the previous output
+- `confirmations` // confirmations of the previous output
+- `unconfirmedInput`
+
+The `/tx/<txid>` endpoint JSON response will not include the following fields on the "vout"
+object.
+- `spentTs`
+
+The `/status?q=getTxOutSetInfo` method has also been removed due to the query being very slow and locking bitcoind.
+
+Plug-in support for Insight API is also no longer available, as well as the endpoints:
+- `/email/retrieve`
+- `/rates/:code`
+
+Caching support has not yet been added in the v0.3 upgrade.
 
 ## API HTTP Endpoints
 
@@ -30,7 +53,7 @@ The API endpoints will be available by default at: 'http://localhost:3001/insigh
   /api/block/00000000a967199a2fad0877433c93df785a8d8ce062e5f9b451cd1397bdbf62
 ```
 
-### Block index
+### Block Index
 Get block hash by height
 ```
   /api/block-index/[:height]
@@ -93,11 +116,8 @@ Sample return:
     }
 ]
 ```
-Please note that in case confirmations are cached (which happens by default when the number of confirmations is bigger that INSIGHT_SAFE_CONFIRMATIONS) the response will include the pair confirmationsFromCache:true, and confirmations will equal INSIGHT_SAFE_CONFIRMATIONS. See noCache and INSIGHT_IGNORE_CACHE options for details.
 
-
-
-### Unspent Outputs for multiple addresses
+### Unspent Outputs for Multiple Addresses
 GET method:
 ```
   /api/addrs/[:addrs]/utxo
@@ -125,7 +145,7 @@ addrs: 2NF2baYuJAkCKo5onjUKEPdARQkZ6SYyKd5,2NAre8sX2povnjy4aeiHKeEh97Qhn97tB1f
   /api/txs/?address=mmhmMNfBiZZ37g1tgg2t8DDbNoEdqKVxAL
 ```
 
-### Transactions for multiple addresses
+### Transactions for Multiple Addresses
 GET method:
 ```
   /api/addrs/[:addrs]/txs[?from=&to=]
@@ -174,7 +194,7 @@ Sample output:
 
 Note: if pagination params are not specified, the result is an array of transactions.
 
-### Transaction broadcasting
+### Transaction Broadcasting
 POST method:
 ```
   /api/tx/send
@@ -201,17 +221,17 @@ POST response:
   }
 ```
 
-### Historic blockchain data sync status
+### Historic Blockchain Data Sync Status
 ```
   /api/sync
 ```
 
-### Live network p2p data sync status
+### Live Network P2P Data Sync Status (Bitcoind runs in the same process)
 ```
   /api/peer
 ```
 
-### Status of the bitcoin network
+### Status of the Bitcoin Network
 ```
   /api/status?q=xxx
 ```
@@ -224,7 +244,7 @@ Where "xxx" can be:
  * getLastBlockHash
 
 
-### Utility methods
+### Utility Methods
 ```
   /api/utils/estimatefee[?nbBlocks=2]
 ```
