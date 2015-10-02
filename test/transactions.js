@@ -132,42 +132,33 @@ describe('Transactions', function() {
       var todos = {
         vin: [
           {
-            confirmations: 242,
             isConfirmed: true,
-            scriptSig: {
-              asm: '30450221008e5df62719cd92d7b137d00bbd27f153f2909bcad3a300960bc1020ec6d5e961022039df51600ff4fb5da5a794d1648c6b47c1f7d277fd5877fb5e52a730a3595f8c01 04eb1e0ccd9afcac42229348dd776e991c69551ae3474340fada12e787e51758397e1d3afdba360d6374261125ea3b6ea079a5f202c150dfd729e1062d9176a307'
-            },
+            confirmations: 242,
             unconfirmedInput: false
           },
           {
-            confirmations: 242,
             isConfirmed: true,
-            scriptSig: {
-              asm: '30440220761464d7bab9515d92260762a97af82a9b25d202d8f7197b1aaec81b6fed541f022059f99606de6b06e17b2cd102dceb3807ebdd9e777a5b77c9a0b3672f5eabcb3101 04eb1e0ccd9afcac42229348dd776e991c69551ae3474340fada12e787e51758397e1d3afdba360d6374261125ea3b6ea079a5f202c150dfd729e1062d9176a307'
-            },
+            confirmations: 242,
             unconfirmedInput: false
           }
         ],
         vout: [
           {
             scriptPubKey: {
-              asm: 'OP_DUP OP_HASH160 4b7b335f978f130269fe661423258ae9642df8a1 OP_EQUALVERIFY OP_CHECKSIG',
-              reqSigs: 1,
-              type: 'pubkeyhash'
+              reqSigs: 1
             }
           },
           {
             scriptPubKey: {
-              asm: 'OP_DUP OP_HASH160 6efcf883b4b6f9997be9a0600f6c095fe2bd2d92 OP_EQUALVERIFY OP_CHECKSIG',
-              reqSigs: 1,
-              type: 'pubkeyhash'
+              reqSigs: 1
             },
-            spentIndex: 1,
-            spentTs: 1440997099,
-            spentTxId: '614fe1708825f9c21732394e4784cc6808ac1d8b939736bfdead970567561eec'
+            spentTs: 1440997099
           }
         ]
       };
+
+      var spentTxId = '614fe1708825f9c21732394e4784cc6808ac1d8b939736bfdead970567561eec';
+      var spentIndex = 1;
 
       var bitcoreTx = bitcore.Transaction(bitcoreTxObj);
       bitcoreTx.__blockHash = '0000000000000afa0c3c0afd450c793a1e300ec84cbe9555166e06132f19a8f7';
@@ -182,6 +173,21 @@ describe('Transactions', function() {
           db: {
             tip: {
               __height: 534203
+            }
+          },
+          address: {
+            getInputForOutput: function(txid, outputIndex, options, callback) {
+              var data = false;
+              if (txid === 'b85334bf2df35c6dd5b294efe92ffc793a78edff75a2ca666fc296ffb04bbba0' &&
+                  outputIndex === 1) {
+                data = {
+                  inputTxId: spentTxId,
+                  inputIndex: spentIndex
+                }
+              }
+              setImmediate(function() {
+                callback(null, data);
+              });
             }
           }
         },
@@ -224,6 +230,9 @@ describe('Transactions', function() {
             tip: {
               __height: 534209
             }
+          },
+          address: {
+            getInputForOutput: sinon.stub().callsArgWith(3, null, false),
           }
         },
         network: 'testnet'
@@ -453,39 +462,23 @@ describe('Transactions', function() {
             vout: [
               {
                 scriptPubKey: {
-                  asm: 'OP_DUP OP_HASH160 68bedce8982d25c3b6b03f6238cbad00378b8ead OP_EQUALVERIFY OP_CHECKSIG',
-                  reqSigs: 1,
-                  type: 'pubkeyhash'
+                  reqSigs: 1
                 }
               }
             ]
           },
           {
             vin: [
-              {
-                scriptSig: {
-                  asm: '30450221008e5df62719cd92d7b137d00bbd27f153f2909bcad3a300960bc1020ec6d5e961022039df51600ff4fb5da5a794d1648c6b47c1f7d277fd5877fb5e52a730a3595f8c01 04eb1e0ccd9afcac42229348dd776e991c69551ae3474340fada12e787e51758397e1d3afdba360d6374261125ea3b6ea079a5f202c150dfd729e1062d9176a307'
-                }
-              },
-              {
-                scriptSig: {
-                  asm: '30440220761464d7bab9515d92260762a97af82a9b25d202d8f7197b1aaec81b6fed541f022059f99606de6b06e17b2cd102dceb3807ebdd9e777a5b77c9a0b3672f5eabcb3101 04eb1e0ccd9afcac42229348dd776e991c69551ae3474340fada12e787e51758397e1d3afdba360d6374261125ea3b6ea079a5f202c150dfd729e1062d9176a307'
-                }
-              }
             ],
             vout: [
               {
                 scriptPubKey: {
-                  asm: 'OP_DUP OP_HASH160 4b7b335f978f130269fe661423258ae9642df8a1 OP_EQUALVERIFY OP_CHECKSIG',
-                  reqSigs: 1,
-                  type: 'pubkeyhash'
+                  reqSigs: 1
                 }
               },
               {
                 scriptPubKey: {
-                  asm: 'OP_DUP OP_HASH160 6efcf883b4b6f9997be9a0600f6c095fe2bd2d92 OP_EQUALVERIFY OP_CHECKSIG',
-                  reqSigs: 1,
-                  type: 'pubkeyhash'
+                  reqSigs: 1
                 },
                 spentIndex: 1,
                 spentTs: 1440997099,
@@ -495,23 +488,11 @@ describe('Transactions', function() {
           },
           {
             vin: [
-              {
-                scriptSig: {
-                  asm: '3045022100f67cffc0ae23adb236ff3edb4a9736e277605db30cc7708dfab8cf1e1483bbce022052396aa5d664ec1cb65992c423fd9a17e94dc7af328d2d559e90746dd195ca5901 0346134da14907581d8190d3980caaf46d95e4eb9c1ca8e70f1fc6007fefb1909d'
-                }
-              },
-              {
-                scriptSig: {
-                  asm: '3044022077222a91cda23af69179377c62d84a176fb12caff6c5cbf6ae9e5957ff3b1afe0220768edead76819228dcba18cca3c9a5a5d4c32919720f21df21a297ba375bbe5c01 03371ea5a4dfe356b3ea4042a537d7ab7ee0faabd43e21b6cc076fda2240629eee'
-                }
-              }
             ],
             vout: [
               {
                 scriptPubKey: {
-                  asm: 'OP_DUP OP_HASH160 8e451eec7ca0a1764b4ab119274efdd2727b3c85 OP_EQUALVERIFY OP_CHECKSIG',
-                  reqSigs: 1,
-                  type: 'pubkeyhash'
+                  reqSigs: 1
                 },
                 spentIndex: 1,
                 spentTs: 1440992946,
@@ -519,9 +500,7 @@ describe('Transactions', function() {
               },
               {
                 scriptPubKey: {
-                  asm: 'OP_DUP OP_HASH160 d0fce8f064cd1059a6a11501dd66fe42368572b0 OP_EQUALVERIFY OP_CHECKSIG',
-                  reqSigs: 1,
-                  type: 'pubkeyhash'
+                  reqSigs: 1
                 },
                 spentIndex: 34,
                 spentTs: 1440999118,
@@ -632,6 +611,34 @@ describe('Transactions', function() {
           db: {
             tip: {
               __height: 534223
+            }
+          },
+          address: {
+            getInputForOutput: function(txid, outputIndex, options, callback) {
+              var data = false;
+              if (txid === 'bb0ec3b96209fac9529570ea6f83a86af2cceedde4aaf2bfcc4796680d23f1c7') {
+                if (outputIndex === 0) {
+                  data = {
+                    inputTxId: '01f700df84c466f2a389440e5eeacdc47d04f380c39e5d19dce2ce91a11ecba3',
+                    inputIndex: 0
+                  };
+                }
+              } else if (txid === '01f700df84c466f2a389440e5eeacdc47d04f380c39e5d19dce2ce91a11ecba3') {
+                if (outputIndex === 0) {
+                  data = {
+                    inputTxId: '661194e5533a395ce9076f292b7e0fb28fe94cd8832a81b4aa0517ff58c1ddd2',
+                    inputIndex: 0
+                  }
+                } else if (outputIndex === 1) {
+                  data = {
+                    inputTxId: '71a9e60c0341c9c258367f1a6d4253276f16e207bf84f41ff7412d8958a81bed',
+                    inputIndex: 0
+                  }
+                }
+              }
+              setImmediate(function() {
+                callback(null, data);
+              });
             }
           }
         },
@@ -771,59 +778,35 @@ describe('Transactions', function() {
         "txs": [
           {
             "vin": [
-              {
-                "scriptSig": {
-                  "asm": "3045022100f4d169783bef70e3943d2a617cce55d9fe4e33fc6f9880b8277265e2f619a97002201238648abcdf52960500664e969046d41755f7fc371971ebc78002fc418465a601 03acdcd31d51272403ce0829447e59e2ac9e08ed0bf92011cbf7420addf24534e6"
-                }
-              }
             ],
             "vout": [
               {
                 "scriptPubKey": {
-                  "asm": "OP_DUP OP_HASH160 3583efb5e64a4668c6c54bb5fcc30af4417b4f2d OP_EQUALVERIFY OP_CHECKSIG",
-                  "reqSigs": 1,
-                  "type": "pubkeyhash"
+                  "reqSigs": 1
                 },
-                "spentTxId": "01f700df84c466f2a389440e5eeacdc47d04f380c39e5d19dce2ce91a11ecba3",
-                "spentIndex": 0,
                 "spentTs": 1441072817
               },
               {
                 "scriptPubKey": {
-                  "asm": "OP_DUP OP_HASH160 9713201957f42379e574d7c70d506ee49c2c8ad6 OP_EQUALVERIFY OP_CHECKSIG",
-                  "reqSigs": 1,
-                  "type": "pubkeyhash"
+                  "reqSigs": 1
                 }
               }
             ]
           },
           {
             "vin": [
-              {
-                "scriptSig": {
-                  "asm": "304402201ee69281db6b95bb1aa3074059b67581635b719e8f64e4c2694db6ec56ad9447022011e91528996ea459b1fb2c0b59363fecbefe4bc2ca90f7b2382bdaa358f2d56401 034cc057b12a68ee79df998004b9a1341bbb18b17ea4939bebaa3bac001e940f24"
-                }
-              }
             ],
             "vout": [
               {
                 "scriptPubKey": {
-                  "asm": "OP_DUP OP_HASH160 56e446bc3489543d8324c6d0271524c0bd0506dd OP_EQUALVERIFY OP_CHECKSIG",
-                  "reqSigs": 1,
-                  "type": "pubkeyhash"
+                  "reqSigs": 1
                 },
-                "spentTxId": "661194e5533a395ce9076f292b7e0fb28fe94cd8832a81b4aa0517ff58c1ddd2",
-                "spentIndex": 0,
                 "spentTs": 1441077236
               },
               {
                 "scriptPubKey": {
-                  "asm": "OP_DUP OP_HASH160 011d2963b619186a318f768dddfd98cd553912a0 OP_EQUALVERIFY OP_CHECKSIG",
-                  "reqSigs": 1,
-                  "type": "pubkeyhash"
+                  "reqSigs": 1
                 },
-                "spentTxId": "71a9e60c0341c9c258367f1a6d4253276f16e207bf84f41ff7412d8958a81bed",
-                "spentIndex": 0,
                 "spentTs": 1441069523
               }
             ]
