@@ -65,15 +65,11 @@ exports.transaction = function(req, res, next, txid) {
         return common.handleErrors(err, res);
 
       req.transaction = tx.info;   
-      console.log("getHeight(" + tx.info.blockhash );
       if(tx.info.blockhash) {
         bdb.getHeight(tx.info.blockhash , function(err, height) {
           if (err) return cb(err);
-          console.log("height="+height);
           tx.info.height = height;
-
           return next();
-
         });
       } else {
         return next();
