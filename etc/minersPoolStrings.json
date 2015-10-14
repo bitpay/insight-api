@@ -231,5 +231,12 @@
          "BTCChina Pool",
          "btcchina.com"
       ]
+   },
+   {
+      "poolName":"BTCC Pool",
+      "url":"https://pool.btcc.com/",
+      "searchStrings":[
+         "/BTCC/"
+      ]
    }
 ]
