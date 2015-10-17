@@ -1,185 +1,59 @@
+# Insight API
 
-# *insight API*
+A Bitcoin blockchain REST and web socket API service for [Bitcore Node](https://github.com/bitpay/bitcore-node).
 
-*insight API* is an open-source bitcoin blockchain REST
-and websocket API. Insight API runs in NodeJS and uses LevelDB for storage.
+This is a backend-only service. If you're looking for the web frontend application, take a look at https://github.com/bitpay/insight.
 
-This is a backend-only service. If you're looking for the web frontend application,
-take a look at https://github.com/bitpay/insight.
+## Getting Started
 
-*Insight API* allows to develop bitcoin-related applications (such as wallets) that
-require certain information from the blockchain that bitcoind does not provide.
+```bash
+npm install -g bitcore-node@latest
+bitcore-node create mynode
+cd mynode
+bitcore-node add insight-api
+bitcore-node start
+```
 
-A blockchain explorer front-end has been developed on top of *Insight API*. It can
-be downloaded at [Github Insight Repository](https://github.com/bitpay/insight).
-
-## Warning
-  Insight file sync does not work with **bitcoind**  v0.10 
-  In order to use Insigtht you must set the environment variable INSIGHT_FORCE_RPC_SYNC = 1  
-  We are working on `bitcore-node` to replace Insight-api. Check `bitcore-node` on  [github](https://github.com/bitpay/bitcore-node).
+The API endpoints will be available by default at: `http://localhost:3001/insight-api/`
 
 ## Prerequisites
 
-* **bitcoind** - Download and Install [Bitcoin](http://bitcoin.org/en/download)
+- [Bitcore Node 0.2.x](https://github.com/bitpay/bitcore-node)
 
-*insight API* needs a *trusted* bitcoind node to run. *insight API* will connect to the node
-through the RPC API, bitcoin peer-to-peer protocol, and will even read its raw block .dat files for syncing.
+**Note:** You can use an existing Bitcoin data directory, however `txindex` needs to be set to true in `bitcoin.conf`.
 
-Configure bitcoind to listen to RPC calls and set `txindex` to true.
-The easiest way to do this is by copying `./etc/bitcoind/bitcoin.conf` to your
-bitcoin data directory (usually `~/.bitcoin` on Linux, `%appdata%\Bitcoin\` on Windows,
-or `~/Library/Application Support/Bitcoin` on Mac OS X).
+## Notes on Upgrading from v0.2
 
-bitcoind must be running and must have finished downloading the blockchain **before** running *insight API*.
+Some of the fields and methods are not supported:
 
+The `/tx/<txid>` endpoint JSON response will not include the following fields on the "vin"
+object:
+- `doubleSpentTxId` // double spends are not currently tracked
+- `isConfirmed` // confirmation of the previous output
+- `confirmations` // confirmations of the previous output
+- `unconfirmedInput`
 
-* **Node.js v0.10.x** - Download and Install [Node.js](http://www.nodejs.org/download/).
+The `/tx/<txid>` endpoint JSON response will not include the following fields on the "vout"
+object.
+- `spentTs`
 
-* **NPM** - Node.js package manager, should be automatically installed when you get node.js.
+The `/status?q=getTxOutSetInfo` method has also been removed due to the query being very slow and locking bitcoind.
 
+Plug-in support for Insight API is also no longer available, as well as the endpoints:
+- `/email/retrieve`
+- `/rates/:code`
 
-## Quick Install
-  Check the Prerequisites section above before installing.
+Caching support has not yet been added in the v0.3 upgrade.
 
-  To install Insight API, clone the main repository:
-
-    $ git clone https://github.com/bitpay/insight-api && cd insight-api
-
-  Install dependencies:
-
-    $ npm install
-
-  Run the main application:
-
-    $ node insight.js
-
-  Then open a browser and go to:
-
-    http://localhost:3001
-
-  Please note that the app will need to sync its internal database
-  with the blockchain state, which may take some time. You can check
-  sync progress at http://localhost:3001/api/sync.
-
-
-## Configuration
-
-All configuration is specified in the [config](config/) folder, particularly the [config.js](config/config.js) file. There you can specify your application name and database name. Certain configuration values are pulled from environment variables if they are defined:
-
-```
-BITCOIND_HOST         # RPC bitcoind host
-BITCOIND_PORT         # RPC bitcoind Port
-BITCOIND_P2P_HOST     # P2P bitcoind Host (will default to BITCOIND_HOST, if specified)
-BITCOIND_P2P_PORT     # P2P bitcoind Port
-BITCOIND_USER         # RPC username
-BITCOIND_PASS         # RPC password
-BITCOIND_DATADIR      # bitcoind datadir. 'testnet3' will be appended automatically if testnet is used. NEED to finish with '/'. e.g: `/vol/data/`
-INSIGHT_NETWORK [= 'livenet' | 'testnet']
-INSIGHT_PORT          # insight api port
-INSIGHT_DB            # Path where to store insight's internal DB. (defaults to $HOME/.insight)
-INSIGHT_SAFE_CONFIRMATIONS=6  # Nr. of confirmation needed to start caching transaction information
-INSIGHT_IGNORE_CACHE  # True to ignore cache of spents in transaction, with more than INSIGHT_SAFE_CONFIRMATIONS confirmations. This is useful for tracking double spents for old transactions.
-ENABLE_CURRENCYRATES # if "true" will enable a plugin to obtain historic conversion rates for various currencies
-ENABLE_RATELIMITER # if "true" will enable the ratelimiter plugin
-LOGGER_LEVEL # defaults to 'info', can be 'debug','verbose','error', etc.
-ENABLE_HTTPS # if "true" it will server using SSL/HTTPS
-ENABLE_EMAILSTORE # if "true" will enable a plugin to store data with a validated email address
-INSIGHT_EMAIL_CONFIRM_HOST # Only meanfull if ENABLE_EMAILSTORE is enable. Hostname for the confirm URLs. E.g: 'https://insight.bitpay.com'
-
-```
-
-Make sure that bitcoind is configured to [accept incoming connections using 'rpcallowip'](https://en.bitcoin.it/wiki/Running_Bitcoin).
-
-In case the network is changed (testnet to livenet or vice versa) levelDB database needs to be deleted. This can be performed running:
-```util/sync.js -D``` and waiting for *insight* to synchronize again.  Once the database is deleted, the sync.js process can be safely interrupted (CTRL+C) and continued from the synchronization process embedded in main app.
-
-## Synchronization
-
-The initial synchronization process scans the blockchain from the paired bitcoind server to update addresses and balances. *insight-api* needs exactly one trusted bitcoind node to run. This node must have finished downloading the blockchain before running *insight-api*.
-
-While *insight* is synchronizing the website can be accessed (the sync process is embedded in the webserver), but there may be missing data or incorrect balances for addresses. The 'sync' status is shown at the `/api/sync` endpoint.
-
-The blockchain can be read from bitcoind's raw `.dat` files or RPC interface.
-Reading the information from the `.dat` files is much faster so it's the
-recommended (and default) alternative. `.dat` files are scanned in the default
-location for each platform (for example, `~/.bitcoin` on Linux). In case a
-non-standard location is used, it needs to be defined (see the Configuration section).
-As of June 2014, using `.dat` files the sync process takes 9 hrs.
-for livenet and 30 mins. for testnet.
-
-While synchronizing the blockchain, *insight-api* listens for new blocks and
-transactions relayed by the bitcoind node. Those are also stored on *insight-api*'s database.
-In case *insight-api* is shutdown for a period of time, restarting it will trigger
-a partial (historic) synchronization of the blockchain. Depending on the size of
-that synchronization task, a reverse RPC or forward `.dat` syncing strategy will be used.
-
-If bitcoind is shutdown, *insight-api* needs to be stopped and restarted
-once bitcoind is restarted.
-
-### Syncing old blockchain data manually
-
-  Old blockchain data can be manually synced issuing:
-
-    $ util/sync.js
-
-  Check util/sync.js --help for options, particulary -D to erase the current DB.
-
-  *NOTE*: there is no need to run this manually since the historic synchronization
-  is built in into the web application. Running *insight-api* normally will trigger
-  the historic sync automatically.
-
-
-### DB storage requirement
-
-To store the blockchain and address related information, *insight-api* uses LevelDB.
-Two DBs are created: txs and blocks. By default these are stored on
-
-  ``~/.insight/``
-
-Please note that some older versions of Insight-API store that on `<insight's root>/db`.
-
-This can be changed at config/config.js. As of June 2014, storing the livenet blockchain takes ~35GB of disk space (2GB for the testnet).
-
-## Development
-
-To run insight locally for development with grunt:
-
-```$ NODE_ENV=development grunt```
-
-To run the tests
-
-```$ grunt test```
-
-
-Contributions and suggestions are welcome at [insight-api github repository](https://github.com/bitpay/insight-api).
-
-## Caching schema
-
-Since v0.2 a new cache schema has been introduced. Only information from transactions with
-INSIGHT_SAFE_CONFIRMATIONS settings will be cached (by default SAFE_CONFIRMATIONS=6). There
-are 3 different caches:
- * Number of confirmations
- * Transaction output spent/unspent status
- * scriptPubKey for unspent transactions
-
-Cache data is only populated on request, i.e., only after accessing the required data for
-the first time, the information is cached, there is not pre-caching procedure.  To ignore
-cache by default, use INSIGHT_IGNORE_CACHE. Also, address related calls support `?noCache=1`
-to ignore the cache in a particular API request.
-
-## API
-
-By default, insight provides a REST API at `/api`, but this prefix is configurable from the var `apiPrefix` in the `config.js` file.
-
-The end-points are:
-
+## API HTTP Endpoints
 
 ### Block
 ```
   /api/block/[:hash]
   /api/block/00000000a967199a2fad0877433c93df785a8d8ce062e5f9b451cd1397bdbf62
 ```
-### Block index
+
+### Block Index
 Get block hash by height
 ```
   /api/block-index/[:height]
@@ -198,11 +72,13 @@ which is the hash of the Genesis block (0 height)
   /api/rawtx/[:rawid]
   /api/rawtx/525de308971eabd941b139f46c7198b5af9479325c2395db7f2fb5ae8562556c
 ```
+
 ### Address
 ```
   /api/addr/[:addr][?noTxList=1&noCache=1]
   /api/addr/mmvP3mTe53qxHdPqXEvdu8WdC7GfQ2vmx5?noTxList=1
 ```
+
 ### Address Properties
 ```
   /api/addr/[:addr]/balance
@@ -211,6 +87,7 @@ which is the hash of the Genesis block (0 height)
   /api/addr/[:addr]/unconfirmedBalance
 ```
 The response contains the value in Satoshis.
+
 ### Unspent Outputs
 ```
   /api/addr/[:addr]/utxo[?noCache=1]
@@ -239,11 +116,8 @@ Sample return:
     }
 ]
 ```
-Please note that in case confirmations are cached (which happens by default when the number of confirmations is bigger that INSIGHT_SAFE_CONFIRMATIONS) the response will include the pair confirmationsFromCache:true, and confirmations will equal INSIGHT_SAFE_CONFIRMATIONS. See noCache and INSIGHT_IGNORE_CACHE options for details.
 
-
-
-### Unspent Outputs for multiple addresses
+### Unspent Outputs for Multiple Addresses
 GET method:
 ```
   /api/addrs/[:addrs]/utxo
@@ -271,7 +145,7 @@ addrs: 2NF2baYuJAkCKo5onjUKEPdARQkZ6SYyKd5,2NAre8sX2povnjy4aeiHKeEh97Qhn97tB1f
   /api/txs/?address=mmhmMNfBiZZ37g1tgg2t8DDbNoEdqKVxAL
 ```
 
-### Transactions for multiple addresses
+### Transactions for Multiple Addresses
 GET method:
 ```
   /api/addrs/[:addrs]/txs[?from=&to=]
@@ -320,8 +194,7 @@ Sample output:
 
 Note: if pagination params are not specified, the result is an array of transactions.
 
-
-### Transaction broadcasting
+### Transaction Broadcasting
 POST method:
 ```
   /api/tx/send
@@ -348,17 +221,17 @@ POST response:
   }
 ```
 
-### Historic blockchain data sync status
+### Historic Blockchain Data Sync Status
 ```
   /api/sync
 ```
 
-### Live network p2p data sync status
+### Live Network P2P Data Sync Status (Bitcoind runs in the same process)
 ```
   /api/peer
 ```
 
-### Status of the bitcoin network
+### Status of the Bitcoin Network
 ```
   /api/status?q=xxx
 ```
@@ -367,12 +240,11 @@ Where "xxx" can be:
 
  * getInfo
  * getDifficulty
- * getTxOutSetInfo
  * getBestBlockHash
  * getLastBlockHash
 
 
-### Utility methods
+### Utility Methods
 ```
   /api/utils/estimatefee[?nbBlocks=2]
 ```
