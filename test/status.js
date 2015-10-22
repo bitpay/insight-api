@@ -125,7 +125,8 @@ describe('Status', function() {
           },
           bitcoind: {
             height: 500000,
-            isSynced: sinon.stub().returns(true)
+            isSynced: sinon.stub().returns(true),
+            syncPercentage: sinon.stub().returns(99.99)
           }
         }
       };
