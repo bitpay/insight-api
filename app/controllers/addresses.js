@@ -141,10 +141,11 @@ exports.multitxs = function(req, res, next) {
     if (to < 0) to = 0;
     if (from > nbTxs) from = nbTxs;
     if (to > nbTxs) to = nbTxs;
+    var MAX = 9999999999;
 
     txs.sort(function(a, b) {
-      var b = (b.firstSeenTs || b.ts)+ b.txid;
-      var a = (a.firstSeenTs || a.ts)+ a.txid;
+      var b = (b.bs || b.firstSeenTs || MAX) + b.txid;
+      var a = (a.bs || b.firstSeenTs || MAX) + a.txid;
       if (a > b) return -1;
       if (a < b) return 1;
       return 0;
