@@ -144,8 +144,8 @@ exports.multitxs = function(req, res, next) {
     var MAX = 9999999999;
 
     txs.sort(function(a, b) {
-      var b = (b.bs || b.firstSeenTs || MAX) + b.txid;
-      var a = (a.bs || b.firstSeenTs || MAX) + a.txid;
+      var b = (b.ts || b.firstSeenTs || MAX) + b.txid;
+      var a = (a.ts || b.firstSeenTs || MAX) + a.txid;
       if (a > b) return -1;
       if (a < b) return 1;
       return 0;
