@@ -181,7 +181,7 @@ describe('Status', function() {
     it('should have correct data', function(done) {
       var node = {};
       var expected = {
-        version: '0.3.0'
+        version: require('../package.json').version
       };
 
       var req = {};
