@@ -10,7 +10,7 @@ This is a backend-only service. If you're looking for the web frontend applicati
 npm install -g bitcore-node@latest
 bitcore-node create mynode
 cd mynode
-bitcore-node add insight-api
+bitcore-node install insight-api
 bitcore-node start
 ```
 
@@ -49,15 +49,15 @@ Caching support has not yet been added in the v0.3 upgrade.
 
 ### Block
 ```
-  /api/block/[:hash]
-  /api/block/00000000a967199a2fad0877433c93df785a8d8ce062e5f9b451cd1397bdbf62
+  /insight-api/block/[:hash]
+  /insight-api/block/00000000a967199a2fad0877433c93df785a8d8ce062e5f9b451cd1397bdbf62
 ```
 
 ### Block Index
 Get block hash by height
 ```
-  /api/block-index/[:height]
-  /api/block-index/0
+  /insight-api/block-index/[:height]
+  /insight-api/block-index/0
 ```
 This would return:
 ```
@@ -67,30 +67,30 @@ which is the hash of the Genesis block (0 height)
 
 ### Transaction
 ```
-  /api/tx/[:txid]
-  /api/tx/525de308971eabd941b139f46c7198b5af9479325c2395db7f2fb5ae8562556c
-  /api/rawtx/[:rawid]
-  /api/rawtx/525de308971eabd941b139f46c7198b5af9479325c2395db7f2fb5ae8562556c
+  /insight-api/tx/[:txid]
+  /insight-api/tx/525de308971eabd941b139f46c7198b5af9479325c2395db7f2fb5ae8562556c
+  /insight-api/rawtx/[:rawid]
+  /insight-api/rawtx/525de308971eabd941b139f46c7198b5af9479325c2395db7f2fb5ae8562556c
 ```
 
 ### Address
 ```
-  /api/addr/[:addr][?noTxList=1&noCache=1]
-  /api/addr/mmvP3mTe53qxHdPqXEvdu8WdC7GfQ2vmx5?noTxList=1
+  /insight-api/addr/[:addr][?noTxList=1&noCache=1]
+  /insight-api/addr/mmvP3mTe53qxHdPqXEvdu8WdC7GfQ2vmx5?noTxList=1
 ```
 
 ### Address Properties
 ```
-  /api/addr/[:addr]/balance
-  /api/addr/[:addr]/totalReceived
-  /api/addr/[:addr]/totalSent
-  /api/addr/[:addr]/unconfirmedBalance
+  /insight-api/addr/[:addr]/balance
+  /insight-api/addr/[:addr]/totalReceived
+  /insight-api/addr/[:addr]/totalSent
+  /insight-api/addr/[:addr]/unconfirmedBalance
 ```
 The response contains the value in Satoshis.
 
 ### Unspent Outputs
 ```
-  /api/addr/[:addr]/utxo[?noCache=1]
+  /insight-api/addr/[:addr]/utxo[?noCache=1]
 ```
 Sample return:
 ``` json
@@ -120,13 +120,13 @@ Sample return:
 ### Unspent Outputs for Multiple Addresses
 GET method:
 ```
-  /api/addrs/[:addrs]/utxo
-  /api/addrs/2NF2baYuJAkCKo5onjUKEPdARQkZ6SYyKd5,2NAre8sX2povnjy4aeiHKeEh97Qhn97tB1f/utxo
+  /insight-api/addrs/[:addrs]/utxo
+  /insight-api/addrs/2NF2baYuJAkCKo5onjUKEPdARQkZ6SYyKd5,2NAre8sX2povnjy4aeiHKeEh97Qhn97tB1f/utxo
 ```
 
 POST method:
 ```
-  /api/addrs/utxo
+  /insight-api/addrs/utxo
 ```
 
 POST params:
@@ -136,25 +136,25 @@ addrs: 2NF2baYuJAkCKo5onjUKEPdARQkZ6SYyKd5,2NAre8sX2povnjy4aeiHKeEh97Qhn97tB1f
 
 ### Transactions by Block
 ```
-  /api/txs/?block=HASH
-  /api/txs/?block=00000000fa6cf7367e50ad14eb0ca4737131f256fc4c5841fd3c3f140140e6b6
+  /insight-api/txs/?block=HASH
+  /insight-api/txs/?block=00000000fa6cf7367e50ad14eb0ca4737131f256fc4c5841fd3c3f140140e6b6
 ```
 ### Transactions by Address
 ```
-  /api/txs/?address=ADDR
-  /api/txs/?address=mmhmMNfBiZZ37g1tgg2t8DDbNoEdqKVxAL
+  /insight-api/txs/?address=ADDR
+  /insight-api/txs/?address=mmhmMNfBiZZ37g1tgg2t8DDbNoEdqKVxAL
 ```
 
 ### Transactions for Multiple Addresses
 GET method:
 ```
-  /api/addrs/[:addrs]/txs[?from=&to=]
-  /api/addrs/2NF2baYuJAkCKo5onjUKEPdARQkZ6SYyKd5,2NAre8sX2povnjy4aeiHKeEh97Qhn97tB1f/txs?from=0&to=20
+  /insight-api/addrs/[:addrs]/txs[?from=&to=]
+  /insight-api/addrs/2NF2baYuJAkCKo5onjUKEPdARQkZ6SYyKd5,2NAre8sX2povnjy4aeiHKeEh97Qhn97tB1f/txs?from=0&to=20
 ```
 
 POST method:
 ```
-  /api/addrs/txs
+  /insight-api/addrs/txs
 ```
 
 POST params:
@@ -197,7 +197,7 @@ Note: if pagination params are not specified, the result is an array of transact
 ### Transaction Broadcasting
 POST method:
 ```
-  /api/tx/send
+  /insight-api/tx/send
 ```
 POST params:
 ```
@@ -223,17 +223,17 @@ POST response:
 
 ### Historic Blockchain Data Sync Status
 ```
-  /api/sync
+  /insight-api/sync
 ```
 
 ### Live Network P2P Data Sync Status (Bitcoind runs in the same process)
 ```
-  /api/peer
+  /insight-api/peer
 ```
 
 ### Status of the Bitcoin Network
 ```
-  /api/status?q=xxx
+  /insight-api/status?q=xxx
 ```
 
 Where "xxx" can be:
@@ -246,7 +246,7 @@ Where "xxx" can be:
 
 ### Utility Methods
 ```
-  /api/utils/estimatefee[?nbBlocks=2]
+  /insight-api/utils/estimatefee[?nbBlocks=2]
 ```
 
 
