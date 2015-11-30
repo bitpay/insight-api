@@ -866,7 +866,8 @@ describe('Transactions', function() {
           {
             "12WvZmssxT85f81dD6wcmWznxbnFkEpNMS": 1993504
           }
-        ]
+        ],
+        "isRBF": false,
       };
 
       var rawTx = '01000000011760bc271a397bfb65b7506d430d96ebb1faff467ed957516238a9670e806a86010000006b483045022100f0056ae68a34cdb4194d424bd727c18f82653bca2a198e0d55ab6b4ee88bbdb902202a5745af4f72a5dbdca1e3d683af4667728a8b20e8001e0f8308a4d329ce3f96012102f3af6e66b61c9d99c74d9a9c3c1bec014a8c05d28bf339c8f5f395b5ce319e7dffffffff02c8af00000000000017a9148083b541ea15f1d18c5ca5e1fd47f9035cce24ed87206b1e00000000001976a91410a0e70cd91a45e0e6e409e227ab285bd61592b188ac00000000';
@@ -889,7 +890,8 @@ describe('Transactions', function() {
           {
             "n4eY3qiP9pi32MWC6FcJFHciSsfNiYFYgR": 12.5002 * 1e8
           }
-        ]
+        ],
+        "isRBF": false,
       };
 
       var rawTx = '01000000010000000000000000000000000000000000000000000000000000000000000000ffffffff0403ebc108ffffffff04a0ca814a000000001976a914fdb9fb622b0db8d9121475a983288a0876f4de4888ac0000000000000000226a200000000000000000000000000000000000000000000000000000ffff0000000000000000000000001b6a1976a914fdb9fb622b0db8d9121475a983288a0876f4de4888ac0000000000000000326a303a791c8e85200500d89769b4f958e4db6b3ec388ddaa30233c4517d942d440c24ae903bff40d97ca06465fcf2714000000000000';
@@ -904,5 +906,28 @@ describe('Transactions', function() {
       var result = transactions.transformInvTransaction(tx);
       should(result).eql(insight);
     });
+    it('should detect RBF txs', function() {
+      var testCases = [{
+        rawTx: '01000000017fa897c3556271c34cb28c03c196c2d912093264c9d293cb4980a2635474467d010000000f5355540b6f93598893578893588851ffffffff01501e0000000000001976a914aa2482ce71d219018ef334f6cc551ee88abd920888ac00000000',
+        expected: false,
+      }, {
+        rawTx: '01000000017fa897c3556271c34cb28c03c196c2d912093264c9d293cb4980a2635474467d010000000f5355540b6f935988935788935888510000000001501e0000000000001976a914aa2482ce71d219018ef334f6cc551ee88abd920888ac00000000',
+        expected: true,
+      }, ];
+
+      var node = {
+        network: bitcore.Networks.livenet
+      };
+
+      var transactions = new TxController(node);
+
+      _.each(testCases, function(tc) {
+        var tx = bitcore.Transaction().fromBuffer(new Buffer(tc.rawTx, 'hex'));
+        var result = transactions.transformInvTransaction(tx);
+        should.exist(result.isRBF);
+        result.isRBF.should.equal(tc.expected);
+      });
+    });
+
   });
 });
