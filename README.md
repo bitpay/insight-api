@@ -1,4 +1,4 @@
-# Insight API
+# Insight API [![Build Status](https://travis-ci.org/CoinSpace/insight-api.svg)](https://travis-ci.org/CoinSpace/insight-api)
 
 A Bitcoin blockchain REST and web socket API service for [Bitcore Node](https://github.com/bitpay/bitcore-node).
 
