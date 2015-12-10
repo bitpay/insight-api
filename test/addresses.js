@@ -455,6 +455,7 @@ describe('Addresses', function() {
                       }
                   ],
                   "blockhash": "0000000000000041ddc94ecf4f86a456a83b2e320c36c6f0c13ff92c7e75f013",
+                  "blockheight": 534181,
                   "confirmations": 52,
                   "time": 1441116143,
                   "blocktime": 1441116143,
