@@ -861,6 +861,37 @@ describe('Transactions', function() {
     });
   });
 
+  describe('/rawtxs/:txids', function() {
+    it('should give the correct data', function(done) {
+      var hexes = [
+        '01000000010000000000000000000000000000000000000000000000000000000000000000ffffffff2303d6250800feb0aae355fe263600000963676d696e6572343208ae5800000000000000ffffffff01c018824a000000001976a91468bedce8982d25c3b6b03f6238cbad00378b8ead88ac00000000',
+        '01000000010000000000000000000000000000000000000000000000000000000000000000ffffffff2303d6250800feb0aae355fe263600000963676d696e6572343208ae5800000000000000ffffffff01c018824a000000001976a91468bedce8982d25c3b6b03f6238cbad00378b8ead88ac00000000'
+      ];
+
+      var stub = sinon.stub();
+
+      stub
+        .onFirstCall()
+        .callsArgWith(2, null, bitcore.Transaction().fromBuffer(new Buffer(hexes[0], 'hex')));
+      stub
+        .onSecondCall()
+        .callsArgWith(2, null, bitcore.Transaction().fromBuffer(new Buffer(hexes[1], 'hex')));
+
+      var req = {};
+      var transactions = new TxController({
+        getTransaction: stub
+      });
+
+      transactions.multiRawTransaction(req, {}, function() {
+        should(req.rawTransaction.rawtx).eql(hexes);
+        done();
+      }, [
+        '25a988e54b02e0e5df146a0f8fa7b9db56210533a9f04bdfda5f4ceb6f77aadd',
+        'b85334bf2df35c6dd5b294efe92ffc793a78edff75a2ca666fc296ffb04bbba0'
+      ].join(','));
+    });
+  });
+
   describe('#transformInvTransaction', function() {
     it('should give the correct data', function() {
       var insight = {
