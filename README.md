@@ -80,6 +80,7 @@ which is the hash of the Genesis block (0 height)
 
 ### Multiple Transactions
 ```
+  /insight-api/txs/[:rawid1],[:rawid2],...,[:rawidn]
   /insight-api/rawtxs/[:rawid1],[:rawid2],...,[:rawidn]
 ```
 
