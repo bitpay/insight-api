@@ -274,6 +274,103 @@ describe('Addresses', function() {
     });
   });
 
+  describe('/addrs/:addrs', function() {
+    var addresses;
+    var node;
+    var req;
+    var summaries;
+
+    beforeEach(function() {
+      var stub = sinon.stub();
+
+      summaries = [{
+        balance: 0,
+        totalReceived: 2782729129,
+        totalSpent: 2782729129,
+        unconfirmedBalance: 0,
+        appearances: 2,
+        unconfirmedAppearances: 0,
+        txids: [
+          'bb0ec3b96209fac9529570ea6f83a86af2cceedde4aaf2bfcc4796680d23f1c7',
+          '01f700df84c466f2a389440e5eeacdc47d04f380c39e5d19dce2ce91a11ecba3'
+        ]
+      }, {
+        balance: 0,
+        totalReceived: 2782729129,
+        totalSpent: 2782729129,
+        unconfirmedBalance: 0,
+        appearances: 2,
+        unconfirmedAppearances: 0,
+        txids: [
+          'bb0ec3b96209fac9529570ea6f83a86af2cceedde4aaf2bfcc4796680d23f1c7',
+          '01f700df84c466f2a389440e5eeacdc47d04f380c39e5d19dce2ce91a11ecba3'
+        ]
+      }];
+
+      stub
+        .onFirstCall()
+        .callsArgWith(2, null, summaries[0]);
+      stub
+        .onSecondCall()
+        .callsArgWith(2, null, summaries[1]);
+
+      node = {
+        getAddressSummary: stub
+      };
+
+      addresses = new AddressController(node);
+
+      req = {
+        addrs: 'mzkD4nmQ8ixqxySdBgsXTpgvAMK5iRZpNK,moZY18rGNmh4YCPeugtGW46AkkWMQttBUD',
+        query: {}
+      };
+    });
+
+    it('should have correct data', function(done) {
+      addresses.multishow(req, {
+        jsonp: function(data) {
+          should(data).eql([
+            {
+              addrStr: 'mzkD4nmQ8ixqxySdBgsXTpgvAMK5iRZpNK',
+              balance: 0,
+              balanceSat: 0,
+              totalReceived: 27.82729129,
+              totalReceivedSat: 2782729129,
+              totalSent: 27.82729129,
+              totalSentSat: 2782729129,
+              unconfirmedBalance: 0,
+              unconfirmedBalanceSat: 0,
+              unconfirmedTxApperances: 0,
+              txApperances: 2,
+              transactions: [
+                'bb0ec3b96209fac9529570ea6f83a86af2cceedde4aaf2bfcc4796680d23f1c7',
+                '01f700df84c466f2a389440e5eeacdc47d04f380c39e5d19dce2ce91a11ecba3'
+              ]
+            },
+            {
+              addrStr: 'moZY18rGNmh4YCPeugtGW46AkkWMQttBUD',
+              balance: 0,
+              balanceSat: 0,
+              totalReceived: 27.82729129,
+              totalReceivedSat: 2782729129,
+              totalSent: 27.82729129,
+              totalSentSat: 2782729129,
+              unconfirmedBalance: 0,
+              unconfirmedBalanceSat: 0,
+              unconfirmedTxApperances: 0,
+              txApperances: 2,
+              transactions: [
+                'bb0ec3b96209fac9529570ea6f83a86af2cceedde4aaf2bfcc4796680d23f1c7',
+                '01f700df84c466f2a389440e5eeacdc47d04f380c39e5d19dce2ce91a11ecba3'
+              ]
+            }
+          ]);
+          done();
+        }
+      });
+    });
+  });
+
   describe('/addr/:addr/utxo', function() {
     it('should have correct data', function(done) {
       var insight = [

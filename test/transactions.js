@@ -532,6 +532,241 @@ describe('Transactions', function() {
 
       transactions.list(req, res);
     });
+
+    it('should give the correct data', function(done) {
+      var insight = [
+        {
+          "blockhash": "0000000000000afa0c3c0afd450c793a1e300ec84cbe9555166e06132f19a8f7",
+          "blockheight": 533974,
+          "blocktime": 1440987503,
+          "confirmations": 230,
+          "fees": 0.0003,
+          "locktime": 0,
+          "size": 437,
+          "time": 1440987503,
+          "txid": "b85334bf2df35c6dd5b294efe92ffc793a78edff75a2ca666fc296ffb04bbba0",
+          "valueIn": 0.3495539,
+          "valueOut": 0.3492539,
+          "version": 1,
+          "vin": [
+            {
+              "addr": "mqdofsXHpePPGBFXuwwypAqCcXi48Xhb2f",
+              "doubleSpentTxID": null,
+              "n": 0,
+              "scriptSig": {
+                "asm": "30450221008e5df62719cd92d7b137d00bbd27f153f2909bcad3a300960bc1020ec6d5e961022039df51600ff4fb5da5a794d1648c6b47c1f7d277fd5877fb5e52a730a3595f8c01 04eb1e0ccd9afcac42229348dd776e991c69551ae3474340fada12e787e51758397e1d3afdba360d6374261125ea3b6ea079a5f202c150dfd729e1062d9176a307",
+                "hex": "4830450221008e5df62719cd92d7b137d00bbd27f153f2909bcad3a300960bc1020ec6d5e961022039df51600ff4fb5da5a794d1648c6b47c1f7d277fd5877fb5e52a730a3595f8c014104eb1e0ccd9afcac42229348dd776e991c69551ae3474340fada12e787e51758397e1d3afdba360d6374261125ea3b6ea079a5f202c150dfd729e1062d9176a307"
+              },
+              "sequence": 4294967295,
+              "txid": "87c9b0f27571fff14b8c2d69e55614eacedd0f59fcc490b721320f9dae145aad",
+              "value": 0.18535505,
+              "valueSat": 18535505,
+              "vout": 0
+            },
+            {
+              "addr": "mqdofsXHpePPGBFXuwwypAqCcXi48Xhb2f",
+              "doubleSpentTxID": null,
+              "n": 1,
+              "scriptSig": {
+                "asm": "30440220761464d7bab9515d92260762a97af82a9b25d202d8f7197b1aaec81b6fed541f022059f99606de6b06e17b2cd102dceb3807ebdd9e777a5b77c9a0b3672f5eabcb3101 04eb1e0ccd9afcac42229348dd776e991c69551ae3474340fada12e787e51758397e1d3afdba360d6374261125ea3b6ea079a5f202c150dfd729e1062d9176a307",
+                "hex": "4730440220761464d7bab9515d92260762a97af82a9b25d202d8f7197b1aaec81b6fed541f022059f99606de6b06e17b2cd102dceb3807ebdd9e777a5b77c9a0b3672f5eabcb31014104eb1e0ccd9afcac42229348dd776e991c69551ae3474340fada12e787e51758397e1d3afdba360d6374261125ea3b6ea079a5f202c150dfd729e1062d9176a307"
+              },
+              "sequence": 4294967295,
+              "txid": "d8a10aaedf3dd33b5ddf8979273f3dbf61e4638d1aa6a93c59ea22bc65ac2196",
+              "value": 0.16419885,
+              "valueSat": 16419885,
+              "vout": 0
+            }
+          ],
+          "vout": [
+            {
+              "n": 0,
+              "scriptPubKey": {
+                "addresses": [
+                  "mnQ4ZaGessNgdxmWPxbTHcfx4b8R6eUr1X"
+                ],
+                "asm": "OP_DUP OP_HASH160 4b7b335f978f130269fe661423258ae9642df8a1 OP_EQUALVERIFY OP_CHECKSIG",
+                "hex": "76a9144b7b335f978f130269fe661423258ae9642df8a188ac",
+                "type": "pubkeyhash"
+              },
+              "value": "0.21247964"
+            },
+            {
+              "n": 1,
+              "scriptPubKey": {
+                "addresses": [
+                  "mqdofsXHpePPGBFXuwwypAqCcXi48Xhb2f"
+                ],
+                "asm": "OP_DUP OP_HASH160 6efcf883b4b6f9997be9a0600f6c095fe2bd2d92 OP_EQUALVERIFY OP_CHECKSIG",
+                "hex": "76a9146efcf883b4b6f9997be9a0600f6c095fe2bd2d9288ac",
+                "type": "pubkeyhash"
+              },
+              "spentIndex": 1,
+              "spentTxId": "614fe1708825f9c21732394e4784cc6808ac1d8b939736bfdead970567561eec",
+              "value": "0.13677426"
+            }
+          ]
+        },
+        {
+          "blockhash": "0000000000000afa0c3c0afd450c793a1e300ec84cbe9555166e06132f19a8f7",
+          "blockheight": 533974,
+          "blocktime": 1440987503,
+          "confirmations": 230,
+          "fees": 0.0003,
+          "locktime": 0,
+          "size": 437,
+          "time": 1440987503,
+          "txid": "b85334bf2df35c6dd5b294efe92ffc793a78edff75a2ca666fc296ffb04bbba0",
+          "valueIn": 0.3495539,
+          "valueOut": 0.3492539,
+          "version": 1,
+          "vin": [
+            {
+              "addr": "mqdofsXHpePPGBFXuwwypAqCcXi48Xhb2f",
+              "doubleSpentTxID": null,
+              "n": 0,
+              "scriptSig": {
+                "asm": "30450221008e5df62719cd92d7b137d00bbd27f153f2909bcad3a300960bc1020ec6d5e961022039df51600ff4fb5da5a794d1648c6b47c1f7d277fd5877fb5e52a730a3595f8c01 04eb1e0ccd9afcac42229348dd776e991c69551ae3474340fada12e787e51758397e1d3afdba360d6374261125ea3b6ea079a5f202c150dfd729e1062d9176a307",
+                "hex": "4830450221008e5df62719cd92d7b137d00bbd27f153f2909bcad3a300960bc1020ec6d5e961022039df51600ff4fb5da5a794d1648c6b47c1f7d277fd5877fb5e52a730a3595f8c014104eb1e0ccd9afcac42229348dd776e991c69551ae3474340fada12e787e51758397e1d3afdba360d6374261125ea3b6ea079a5f202c150dfd729e1062d9176a307"
+              },
+              "sequence": 4294967295,
+              "txid": "87c9b0f27571fff14b8c2d69e55614eacedd0f59fcc490b721320f9dae145aad",
+              "value": 0.18535505,
+              "valueSat": 18535505,
+              "vout": 0
+            },
+            {
+              "addr": "mqdofsXHpePPGBFXuwwypAqCcXi48Xhb2f",
+              "doubleSpentTxID": null,
+              "n": 1,
+              "scriptSig": {
+                "asm": "30440220761464d7bab9515d92260762a97af82a9b25d202d8f7197b1aaec81b6fed541f022059f99606de6b06e17b2cd102dceb3807ebdd9e777a5b77c9a0b3672f5eabcb3101 04eb1e0ccd9afcac42229348dd776e991c69551ae3474340fada12e787e51758397e1d3afdba360d6374261125ea3b6ea079a5f202c150dfd729e1062d9176a307",
+                "hex": "4730440220761464d7bab9515d92260762a97af82a9b25d202d8f7197b1aaec81b6fed541f022059f99606de6b06e17b2cd102dceb3807ebdd9e777a5b77c9a0b3672f5eabcb31014104eb1e0ccd9afcac42229348dd776e991c69551ae3474340fada12e787e51758397e1d3afdba360d6374261125ea3b6ea079a5f202c150dfd729e1062d9176a307"
+              },
+              "sequence": 4294967295,
+              "txid": "d8a10aaedf3dd33b5ddf8979273f3dbf61e4638d1aa6a93c59ea22bc65ac2196",
+              "value": 0.16419885,
+              "valueSat": 16419885,
+              "vout": 0
+            }
+          ],
+          "vout": [
+            {
+              "n": 0,
+              "scriptPubKey": {
+                "addresses": [
+                  "mnQ4ZaGessNgdxmWPxbTHcfx4b8R6eUr1X"
+                ],
+                "asm": "OP_DUP OP_HASH160 4b7b335f978f130269fe661423258ae9642df8a1 OP_EQUALVERIFY OP_CHECKSIG",
+                "hex": "76a9144b7b335f978f130269fe661423258ae9642df8a188ac",
+                "type": "pubkeyhash"
+              },
+              "value": "0.21247964"
+            },
+            {
+              "n": 1,
+              "scriptPubKey": {
+                "addresses": [
+                  "mqdofsXHpePPGBFXuwwypAqCcXi48Xhb2f"
+                ],
+                "asm": "OP_DUP OP_HASH160 6efcf883b4b6f9997be9a0600f6c095fe2bd2d92 OP_EQUALVERIFY OP_CHECKSIG",
+                "hex": "76a9146efcf883b4b6f9997be9a0600f6c095fe2bd2d9288ac",
+                "type": "pubkeyhash"
+              },
+              "spentIndex": 1,
+              "spentTxId": "614fe1708825f9c21732394e4784cc6808ac1d8b939736bfdead970567561eec",
+              "value": "0.13677426"
+            }
+          ]
+        }
+      ];
+
+      var bitcoreTxObj = {
+        "hash": "b85334bf2df35c6dd5b294efe92ffc793a78edff75a2ca666fc296ffb04bbba0",
+        "version": 1,
+        "inputs": [
+          {
+            "prevTxId": "87c9b0f27571fff14b8c2d69e55614eacedd0f59fcc490b721320f9dae145aad",
+            "outputIndex": 0,
+            "sequenceNumber": 4294967295,
+            "script": "4830450221008e5df62719cd92d7b137d00bbd27f153f2909bcad3a300960bc1020ec6d5e961022039df51600ff4fb5da5a794d1648c6b47c1f7d277fd5877fb5e52a730a3595f8c014104eb1e0ccd9afcac42229348dd776e991c69551ae3474340fada12e787e51758397e1d3afdba360d6374261125ea3b6ea079a5f202c150dfd729e1062d9176a307",
+            "scriptString": "72 0x30450221008e5df62719cd92d7b137d00bbd27f153f2909bcad3a300960bc1020ec6d5e961022039df51600ff4fb5da5a794d1648c6b47c1f7d277fd5877fb5e52a730a3595f8c01 65 0x04eb1e0ccd9afcac42229348dd776e991c69551ae3474340fada12e787e51758397e1d3afdba360d6374261125ea3b6ea079a5f202c150dfd729e1062d9176a307",
+            "output": {
+              "satoshis": 18535505,
+              "script": "76a9146efcf883b4b6f9997be9a0600f6c095fe2bd2d9288ac"
+            }
+          },
+          {
+            "prevTxId": "d8a10aaedf3dd33b5ddf8979273f3dbf61e4638d1aa6a93c59ea22bc65ac2196",
+            "outputIndex": 0,
+            "sequenceNumber": 4294967295,
+            "script": "4730440220761464d7bab9515d92260762a97af82a9b25d202d8f7197b1aaec81b6fed541f022059f99606de6b06e17b2cd102dceb3807ebdd9e777a5b77c9a0b3672f5eabcb31014104eb1e0ccd9afcac42229348dd776e991c69551ae3474340fada12e787e51758397e1d3afdba360d6374261125ea3b6ea079a5f202c150dfd729e1062d9176a307",
+            "scriptString": "71 0x30440220761464d7bab9515d92260762a97af82a9b25d202d8f7197b1aaec81b6fed541f022059f99606de6b06e17b2cd102dceb3807ebdd9e777a5b77c9a0b3672f5eabcb3101 65 0x04eb1e0ccd9afcac42229348dd776e991c69551ae3474340fada12e787e51758397e1d3afdba360d6374261125ea3b6ea079a5f202c150dfd729e1062d9176a307",
+            "output": {
+              "satoshis": 16419885,
+              "script": "76a9146efcf883b4b6f9997be9a0600f6c095fe2bd2d9288ac"
+            }
+          }
+        ],
+        "outputs": [
+          {
+            "satoshis": 21247964,
+            "script": "76a9144b7b335f978f130269fe661423258ae9642df8a188ac"
+          },
+          {
+            "satoshis": 13677426,
+            "script": "76a9146efcf883b4b6f9997be9a0600f6c095fe2bd2d9288ac"
+          }
+        ],
+        "nLockTime": 0
+      };
+
+      var spentTxId = '614fe1708825f9c21732394e4784cc6808ac1d8b939736bfdead970567561eec';
+      var spentIndex = 1;
+
+      var bitcoreTx = bitcore.Transaction(bitcoreTxObj);
+      bitcoreTx.__blockHash = '0000000000000afa0c3c0afd450c793a1e300ec84cbe9555166e06132f19a8f7';
+      bitcoreTx.__height = 533974;
+      bitcoreTx.__timestamp = 1440987503;
+      bitcoreTx.populateInputs = sinon.stub().callsArg(2);
+      bitcoreTx.toObject = sinon.stub().returns(bitcoreTxObj);
+
+      var transactions = new TxController({
+        getTransactionWithBlockInfo: sinon.stub().callsArgWith(2, null, bitcoreTx),
+        services: {
+          db: {
+            tip: {
+              __height: 534203
+            }
+          },
+          address: {
+            getInputForOutput: function(txid, outputIndex, options, callback) {
+              var data = false;
+              if (txid === 'b85334bf2df35c6dd5b294efe92ffc793a78edff75a2ca666fc296ffb04bbba0' &&
+                outputIndex === 1) {
+                data = {
+                  inputTxId: spentTxId,
+                  inputIndex: spentIndex
+                }
+              }
+              setImmediate(function() {
+                callback(null, data);
+              });
+            }
+          }
+        },
+        network: 'testnet'
+      });
+
+      var req = {};
+
+      transactions.multitransactions(req, {}, function() {
+        should.exist(insight);
+        req.transaction.should.eql(insight);
+        done();
+      }, 'b85334bf2df35c6dd5b294efe92ffc793a78edff75a2ca666fc296ffb04bbba0,87c9b0f27571fff14b8c2d69e55614eacedd0f59fcc490b721320f9dae145aad');
+    });
+
     it('by address', function(done) {
 
       var txinfos = [
@@ -858,6 +1093,37 @@ describe('Transactions', function() {
       };
       var txid = '25a988e54b02e0e5df146a0f8fa7b9db56210533a9f04bdfda5f4ceb6f77aadd';
       transactions.rawTransaction(req, res, next, txid);
+    });
+  });
+
+  describe('/rawtxs/:txids', function() {
+    it('should give the correct data', function(done) {
+      var hexes = [
+        '01000000010000000000000000000000000000000000000000000000000000000000000000ffffffff2303d6250800feb0aae355fe263600000963676d696e6572343208ae5800000000000000ffffffff01c018824a000000001976a91468bedce8982d25c3b6b03f6238cbad00378b8ead88ac00000000',
+        '01000000010000000000000000000000000000000000000000000000000000000000000000ffffffff2303d6250800feb0aae355fe263600000963676d696e6572343208ae5800000000000000ffffffff01c018824a000000001976a91468bedce8982d25c3b6b03f6238cbad00378b8ead88ac00000000'
+      ];
+
+      var stub = sinon.stub();
+
+      stub
+        .onFirstCall()
+        .callsArgWith(2, null, bitcore.Transaction().fromBuffer(new Buffer(hexes[0], 'hex')));
+      stub
+        .onSecondCall()
+        .callsArgWith(2, null, bitcore.Transaction().fromBuffer(new Buffer(hexes[1], 'hex')));
+
+      var req = {};
+      var transactions = new TxController({
+        getTransaction: stub
+      });
+
+      transactions.multiRawTransaction(req, {}, function() {
+        should(req.rawTransaction.rawtx).eql(hexes);
+        done();
+      }, [
+        '25a988e54b02e0e5df146a0f8fa7b9db56210533a9f04bdfda5f4ceb6f77aadd',
+        'b85334bf2df35c6dd5b294efe92ffc793a78edff75a2ca666fc296ffb04bbba0'
+      ].join(','));
     });
   });
 
