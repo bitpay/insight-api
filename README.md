@@ -84,6 +84,12 @@ which is the hash of the Genesis block (0 height)
   /insight-api/addr/mmvP3mTe53qxHdPqXEvdu8WdC7GfQ2vmx5?noTxList=1
 ```
 
+### Multiple Addresses
+```
+  /insight-api/addrs/[:addr1],[:addr2],...,[:addrn][?noTxList=1&noCache=1]
+
+```
+
 ### Address Properties
 ```
   /insight-api/addr/[:addr]/balance
