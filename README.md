@@ -78,6 +78,11 @@ which is the hash of the Genesis block (0 height)
   /insight-api/rawtx/525de308971eabd941b139f46c7198b5af9479325c2395db7f2fb5ae8562556c
 ```
 
+### Multiple Transactions
+```
+  /insight-api/rawtxs/[:rawid1],[:rawid2],...,[:rawidn]
+```
+
 ### Address
 ```
   /insight-api/addr/[:addr][?noTxList=1&noCache=1]
