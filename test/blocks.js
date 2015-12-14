@@ -5,9 +5,6 @@ var BlockController = require('../lib/blocks');
 var bitcore = require('bitcore-lib');
 var sinon = require('sinon');
 var should = require('should');
-var rewire = require('rewire');
-
-var RewiredBlockController = rewire('../lib/blocks');
 
 var blocks = require('./data/blocks.json');
 
@@ -181,30 +178,31 @@ describe('Blocks', function() {
       ].join(','));
     });
 
-    it('should graceful fail on error', function() {
+    it('should graceful fail on error', function(done) {
       var error = {
-          message: 'some error'
+        code: 123,
+        message: 'some error'
       };
 
-      var controller = new RewiredBlockController({
-        getBlock: sinon.stub().callsArgWith(1, error, 'block data')
+      var controller = new BlockController({
+        getBlock: sinon.stub().callsArgWith(1, error)
       });
 
-      var handleErrors = sinon.spy();
+      var res = {
+        status: sinon.stub().returns({
+          send: sinon.spy()
+        })
+      };
 
-      RewiredBlockController.__set__('common', {
-        handleErrors: handleErrors
-      });
-
-      controller.block({}, {}, function(data) {
+      controller.block({}, res, function() {
         assert(false, 'should not call next middleware on fail');
       }, '');
 
-
-      handleErrors.callCount.should.equal(1);
-      handleErrors.callCount.should.equal(1);
-      handleErrors.args[0][0].should.equal(error);
-      handleErrors.args[0][1].should.equal('block data');
+      setTimeout(function() {
+        res.status.callCount.should.equal(1);
+        res.status.args[0][0].should.equal(400);
+        done();
+      });
     });
   });
 
