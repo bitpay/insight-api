@@ -1,10 +1,13 @@
 'use strict';
 
-var should = require('should');
-var sinon = require('sinon');
+var _ = require('lodash');
 var BlockController = require('../lib/blocks');
 var bitcore = require('bitcore-lib');
-var _ = require('lodash');
+var sinon = require('sinon');
+var should = require('should');
+var rewire = require('rewire');
+
+var RewiredBlockController = rewire('../lib/blocks');
 
 var blocks = require('./data/blocks.json');
 
@@ -176,6 +179,32 @@ describe('Blocks', function() {
         '000000000008fbb2e358e382a6f6948b2da24563bba183af447e6e2542e8efc7',
         '00000000000006bd8fe9e53780323c0e85719eca771022e1eb6d10c62195c441'
       ].join(','));
+    });
+
+    it('should graceful fail on error', function() {
+      var error = {
+          message: 'some error'
+      };
+
+      var controller = new RewiredBlockController({
+        getBlock: sinon.stub().callsArgWith(1, error, 'block data')
+      });
+
+      var handleErrors = sinon.spy();
+
+      RewiredBlockController.__set__('common', {
+        handleErrors: handleErrors
+      });
+
+      controller.block({}, {}, function(data) {
+        assert(false, 'should not call next middleware on fail');
+      }, '');
+
+
+      handleErrors.callCount.should.equal(1);
+      handleErrors.callCount.should.equal(1);
+      handleErrors.args[0][0].should.equal(error);
+      handleErrors.args[0][1].should.equal('block data');
     });
   });
 
