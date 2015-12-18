@@ -321,7 +321,7 @@ describe('Addresses', function() {
       addresses = new AddressController(node);
 
       req = {
-        addrs: 'mzkD4nmQ8ixqxySdBgsXTpgvAMK5iRZpNK,moZY18rGNmh4YCPeugtGW46AkkWMQttBUD',
+        addrs: ['mzkD4nmQ8ixqxySdBgsXTpgvAMK5iRZpNK','moZY18rGNmh4YCPeugtGW46AkkWMQttBUD'],
         query: {}
       };
     });
