@@ -176,6 +176,8 @@ describe('Addresses', function() {
     totalReceived: 2782729129,
     totalSpent: 2782729129,
     unconfirmedBalance: 0,
+    unconfirmedSpent: 0,
+    unconfirmedReceived: 0,
     appearances: 2,
     unconfirmedAppearances: 0,
     txids: [
@@ -205,6 +207,10 @@ describe('Addresses', function() {
           "totalSentSat": 2782729129,
           "unconfirmedBalance": 0,
           "unconfirmedBalanceSat": 0,
+          "unconfirmedSent": 0,
+          "unconfirmedSentSat": 0,
+          "unconfirmedReceived": 0,
+          "unconfirmedReceivedSat": 0,
           "unconfirmedTxApperances": 0,
           "txApperances": 2,
           "transactions": [
