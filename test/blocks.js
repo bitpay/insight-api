@@ -1,10 +1,10 @@
 'use strict';
 
-var should = require('should');
-var sinon = require('sinon');
+var _ = require('lodash');
 var BlockController = require('../lib/blocks');
 var bitcore = require('bitcore-lib');
-var _ = require('lodash');
+var sinon = require('sinon');
+var should = require('should');
 
 var blocks = require('./data/blocks.json');
 
@@ -176,6 +176,33 @@ describe('Blocks', function() {
         '000000000008fbb2e358e382a6f6948b2da24563bba183af447e6e2542e8efc7',
         '00000000000006bd8fe9e53780323c0e85719eca771022e1eb6d10c62195c441'
       ].join(','));
+    });
+
+    it('should graceful fail on error', function(done) {
+      var error = {
+        code: 123,
+        message: 'some error'
+      };
+
+      var controller = new BlockController({
+        getBlock: sinon.stub().callsArgWith(1, error)
+      });
+
+      var res = {
+        status: sinon.stub().returns({
+          send: sinon.spy()
+        })
+      };
+
+      controller.block({}, res, function() {
+        assert(false, 'should not call next middleware on fail');
+      }, '');
+
+      setTimeout(function() {
+        res.status.callCount.should.equal(1);
+        res.status.args[0][0].should.equal(400);
+        done();
+      });
     });
   });
 
