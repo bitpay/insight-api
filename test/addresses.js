@@ -170,6 +170,28 @@ var utxos = [
   }
 ];
 
+describe('Addresses Methods', function() {
+  it('#checkAddrs', function(done) {
+    var addresses = new AddressController({});
+    var req = {
+      body: {},
+      params: {}
+    };
+    var status = sinon.stub().returns({
+      send: function(data) {
+        status.args[0][0].should.equal(400);
+        data.should.match(/^Must include address/);
+        done();
+      }
+    })
+    var res = {
+      send: sinon.stub(),
+      status: status
+    };
+    addresses.checkAddr(req, res, function() {});
+  });
+});
+
 describe('Addresses', function() {
   var summary = {
     balance: 0,
