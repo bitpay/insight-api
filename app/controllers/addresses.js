@@ -240,7 +240,7 @@ exports.multitxs = function(req, res, next) {
     }, function(err) { // finished callback
       if (err) return common.handleErrors(err, res);
 
-      if (from == 0) {
+      if (!cache[addrStrs] || from == 0) {
         cache[addrStrs] = txs; 
         // 5 min. just to purge memory. Cache is overwritten in from=0 requests.
         setTimeout(function(){
