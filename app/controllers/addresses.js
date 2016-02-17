@@ -120,8 +120,18 @@ exports.multiutxo = function(req, res, next) {
   }
 };
 
+var stime = 0;
+var logtime = function(str, reset) {
+  if (reset || !stime)
+    stime = Date.now();
+
+  console.log('TIME:', str, ": ", Date.now() - stime);
+};
+
+var cache = {};
 exports.multitxs = function(req, res, next) {
   if (!checkSync(req, res)) return;
+  //logtime('Start', 1);
 
   function processTxs(txs, from, to, cb) {
     txs = _.uniq(_.flatten(txs), 'txid');
@@ -179,6 +189,8 @@ exports.multitxs = function(req, res, next) {
         }
 
         callback();
+      }, {
+        noExtraInfo: true
       });
     }, function(err) {
       if (err) return cb(err);
@@ -199,8 +211,20 @@ exports.multitxs = function(req, res, next) {
 
   var from = req.param('from');
   var to = req.param('to');
+  var addrStrs = req.param('addrs');
+
+  if (cache[addrStrs] && from > 0) {
+    //logtime('Cache hit');
+    txs =cache[addrStrs]; 
+    return processTxs(txs, from, to, function(err, transactions) {
+      //logtime('After process Txs');
+      if (err) return common.handleErrors(err, res)
+      res.jsonp(transactions);
+    });
+  };
 
   var as = getAddrs(req, res, next);
+  //logtime('After getAddrs');
   if (as) {
     var txs = [];
     async.eachLimit(as, RPC_CONCURRENCY, function(a, callback) {
@@ -216,7 +240,17 @@ exports.multitxs = function(req, res, next) {
     }, function(err) { // finished callback
       if (err) return common.handleErrors(err, res);
 
+      if (!cache[addrStrs] || from == 0) {
+        cache[addrStrs] = txs; 
+        // 5 min. just to purge memory. Cache is overwritten in from=0 requests.
+        setTimeout(function(){
+          console.log('Deleting cache');
+          delete cache[addrStrs];
+        }, 5 * 60 * 1000); 
+      }
+
       processTxs(txs, from, to, function(err, transactions) {
+        //logtime('After process Txs');
         if (err) return common.handleErrors(err, res);
         res.jsonp(transactions);
       });
