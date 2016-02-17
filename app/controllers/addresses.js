@@ -128,7 +128,7 @@ var logtime = function(str, reset) {
   console.log('TIME:', str, ": ", Date.now() - stime);
 };
 
-var cache = [];
+var cache = {};
 exports.multitxs = function(req, res, next) {
   if (!checkSync(req, res)) return;
   //logtime('Start', 1);
