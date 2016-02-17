@@ -134,7 +134,6 @@ exports.multitxs = function(req, res, next) {
   //logtime('Start', 1);
 
   function processTxs(txs, from, to, cb) {
-    txs = _.uniq(_.flatten(txs), 'txid');
     var nbTxs = txs.length;
 
     if (_.isUndefined(from) && _.isUndefined(to)) {
@@ -151,15 +150,6 @@ exports.multitxs = function(req, res, next) {
     if (to < 0) to = 0;
     if (from > nbTxs) from = nbTxs;
     if (to > nbTxs) to = nbTxs;
-    var MAX = 9999999999;
-
-    txs.sort(function(a, b) {
-      var b = (b.ts || b.firstSeenTs || MAX) + b.txid;
-      var a = (a.ts || b.firstSeenTs || MAX) + a.txid;
-      if (a > b) return -1;
-      if (a < b) return 1;
-      return 0;
-    });
     txs = txs.slice(from, to);
 
     var txIndex = {};
@@ -239,6 +229,16 @@ exports.multitxs = function(req, res, next) {
       });
     }, function(err) { // finished callback
       if (err) return common.handleErrors(err, res);
+
+      var MAX = 9999999999;
+      txs = _.uniq(_.flatten(txs), 'txid');
+      txs.sort(function(a, b) {
+        var b = (b.ts || b.firstSeenTs || MAX) + b.txid;
+        var a = (a.ts || b.firstSeenTs || MAX) + a.txid;
+        if (a > b) return -1;
+        if (a < b) return 1;
+        return 0;
+      });
 
       if (!cache[addrStrs] || from == 0) {
         cache[addrStrs] = txs; 
