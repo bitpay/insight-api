@@ -131,7 +131,7 @@ var logtime = function(str, reset) {
 var cache = {};
 exports.multitxs = function(req, res, next) {
   if (!checkSync(req, res)) return;
-  //logtime('Start', 1);
+  logtime('Start', 1);
 
   function processTxs(txs, from, to, cb) {
     var nbTxs = txs.length;
@@ -204,7 +204,7 @@ exports.multitxs = function(req, res, next) {
   var addrStrs = req.param('addrs');
 
   if (cache[addrStrs] && from > 0) {
-    //logtime('Cache hit');
+    logtime('Cache hit');
     txs =cache[addrStrs]; 
     return processTxs(txs, from, to, function(err, transactions) {
       //logtime('After process Txs');
@@ -229,6 +229,7 @@ exports.multitxs = function(req, res, next) {
       });
     }, function(err) { // finished callback
       if (err) return common.handleErrors(err, res);
+console.log('[addresses.js.234:txs:]',txs); //TODO
 
       var MAX = 9999999999;
       txs = _.uniq(_.flatten(txs), 'txid');
@@ -244,7 +245,7 @@ exports.multitxs = function(req, res, next) {
         cache[addrStrs] = txs; 
         // 5 min. just to purge memory. Cache is overwritten in from=0 requests.
         setTimeout(function(){
-          console.log('Deleting cache');
+          console.log('Deleting cache:', addrStrs.substr(0,20));
           delete cache[addrStrs];
         }, 5 * 60 * 1000); 
       }
