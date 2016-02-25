@@ -13,15 +13,8 @@ var TransactionDb = imports.TransactionDb || require('../../lib/TransactionDb').
 var BlockDb = imports.BlockDb || require('../../lib/BlockDb').default();
 var config = require('../../config/config');
 var CONCURRENCY = 5;
-var deadCache = {};
 
-function Address(addrStr, deadCacheEnable) {
-
-  if (deadCacheEnable && deadCache[addrStr])
-    return deadCache[addrStr];
-
-  this.deadCacheEnable=deadCacheEnable;
-
+function Address(addrStr) {
   this.balanceSat = 0;
   this.totalReceivedSat = 0;
   this.totalSentSat = 0;
@@ -82,26 +75,6 @@ function Address(addrStr, deadCacheEnable) {
   });
 
 }
-
-
-Address.deleteDeadCache = function(addrStr) {
-  if (deadCache[addrStr]) {
-    console.log('Deleting Dead Address Cache',addrStr); 
-    delete deadCache[addrStr];
-  }
-};
-
-
-Address.prototype.setCache = function() {
-  this.cached = true;
-  deadCache[this.addrStr] = this;
-
-console.log('[Address.js.94] setting DEAD cache for ', this.addrStr); //TODO
-console.log('[Address.js.94] cache size:', _.keys(deadCache).length); //TODO
-
-// TODO expire it...
-};
-
 
 Address.prototype.getObj = function() {
   // Normalize json address
@@ -192,17 +165,6 @@ Address.prototype.update = function(next, opts) {
   if (!('ignoreCache' in opts))
     opts.ignoreCache = config.ignoreCache;
 
-  if (opts.onlyUnspend && opts.includeTxInfo) 
-    return cb('Bad params');
-
-  if (!opts.ignoreCache && this.cached) {
-    if (opts.onlyUnspent && this.unspent) 
-      return next();
-
-    if (opts.includeTxInfo && this.transactions) 
-      return next();
-  }
-
   // should collect txList from address?
   var txList = opts.txLimit === 0 ? null : [];
 
@@ -236,12 +198,6 @@ Address.prototype.update = function(next, opts) {
                 confirmationsFromCache: !!x.isConfirmedCached,
               };
             }), 'scriptPubKey');;
-
-
-            console.log('Addr Data', self.deadCacheEnable, self.unspent.length, txOut.length); //TODO
-            if (self.deadCacheEnable && !self.unspent.length && (txOut.length == 0 || txOut.length == 2)) {
-              self.setCache();
-            }
             return next();
           });
         } else {
@@ -250,12 +206,6 @@ Address.prototype.update = function(next, opts) {
           });
           if (txList)
             self.transactions = txList;
-
-
-          if (self.deadCacheEnable && !self.transactions.length == 2) {
-            self.setCache();
-          }
-
           return next();
         }
       });
