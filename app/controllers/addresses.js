@@ -47,8 +47,10 @@ var getAddrs = function(req, res, next) {
     var addrStrs = req.param('addrs');
     var s = addrStrs.split(',');
     if (s.length === 0) return as;
+    var enableDeadAddresses = s.length > 100;
+console.log('[addresses.js.50:enableDeadAddresses:]',enableDeadAddresses); //TODO
     for (var i = 0; i < s.length; i++) {
-      var a = new Address(s[i]);
+      var a = new Address(s[i], enableDeadAddresses);
       as.push(a);
     }
   } catch (e) {
@@ -244,7 +246,7 @@ exports.multitxs = function(req, res, next) {
         cache[addrStrs] = txs; 
         // 5 min. just to purge memory. Cache is overwritten in from=0 requests.
         setTimeout(function(){
-          console.log('Deleting cache');
+          console.log('Deleting cache:', addrStrs.substr(0,20));
           delete cache[addrStrs];
         }, 5 * 60 * 1000); 
       }

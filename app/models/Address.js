@@ -13,8 +13,19 @@ var TransactionDb = imports.TransactionDb || require('../../lib/TransactionDb').
 var BlockDb = imports.BlockDb || require('../../lib/BlockDb').default();
 var config = require('../../config/config');
 var CONCURRENCY = 5;
+var DAYS_TO_DEAD = 2;
 
-function Address(addrStr) {
+var deadCache = {};
+
+function Address(addrStr, deadCacheEnable) {
+
+  if (deadCacheEnable && deadCache[addrStr]) {
+    console.log('DEAD CACHE HIT:', addrStr, deadCache[addrStr].cached);
+    return deadCache[addrStr];
+  }
+
+  this.deadCacheEnable = deadCacheEnable;
+
   this.balanceSat = 0;
   this.totalReceivedSat = 0;
   this.totalSentSat = 0;
@@ -75,6 +86,26 @@ function Address(addrStr) {
   });
 
 }
+
+
+Address.deleteDeadCache = function(addrStr) {
+  if (deadCache[addrStr]) {
+    console.log('Deleting Dead Address Cache', addrStr);
+    delete deadCache[addrStr];
+  }
+};
+
+
+Address.prototype.setCache = function() {
+  this.cached = true;
+  deadCache[this.addrStr] = this;
+
+  console.log('%%%%%%%% setting DEAD cache for ', this.addrStr, this.unspent.length, this.transactions.length); //TODO
+  console.log('%%%%%%%% cache size:', _.keys(deadCache).length); //TODO
+
+  // TODO expire it...
+};
+
 
 Address.prototype.getObj = function() {
   // Normalize json address
@@ -165,8 +196,28 @@ Address.prototype.update = function(next, opts) {
   if (!('ignoreCache' in opts))
     opts.ignoreCache = config.ignoreCache;
 
+  if (opts.onlyUnspent && opts.includeTxInfo)
+    return cb('Bad params');
+
+  if (!opts.ignoreCache && this.cached) {
+
+console.log('[Address.js.203] CACHED????', this.addrStr, opts.onlyUnspent, opts.includeTxInfo); //TODO
+
+
+    if (opts.onlyUnspent && this.unspent) {
+console.log('[Address.js.206] YES (unspent)'); //TODO
+      return next();
+    }
+
+    if (opts.includeTxInfo && this.transactions.length) {
+console.log('[Address.js.206] YES (TXS)'); //TODO
+      return next();
+    }
+  }
+
   // should collect txList from address?
   var txList = opts.txLimit === 0 ? null : [];
+  var lastUsage, now = Date.now() / 1000;
 
   var tDb = TransactionDb;
   var bDb = BlockDb;
@@ -180,13 +231,15 @@ Address.prototype.update = function(next, opts) {
         // console.log('[Address.js.161:txOut:]',txOut); //TODO
         if (err) return next(err);
         if (opts.onlyUnspent) {
-          txOut = txOut.filter(function(x) {
+
+          var unspent = _.filter(txOut,function(x) {
             return !x.spentTxId;
           });
-          tDb.fillScriptPubKey(txOut, function() {
+
+          tDb.fillScriptPubKey(unspent, function() {
             //_.filter will filterout unspend without scriptPubkey
             //(probably from double spends)
-            self.unspent = _.filter(txOut.map(function(x) {
+            self.unspent = _.filter(unspent.map(function(x) {
               return {
                 address: self.addrStr,
                 txid: x.txid,
@@ -198,14 +251,42 @@ Address.prototype.update = function(next, opts) {
                 confirmationsFromCache: !!x.isConfirmedCached,
               };
             }), 'scriptPubKey');;
+
+            if (self.deadCacheEnable && txOut.length && !self.unspent.length) {
+// console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$    ',self.addrStr); //TODO
+// console.log('[Address.js.242] NO UNSPENT:', self.addrStr, txOut.length); //TODO
+              // Asumes that addresses are ordered by Ts;
+              lastUsage = txOut[txOut.length-1].spentTs || now;
+
+              var daysOld = (now-lastUsage) / (3600 * 24);
+// console.log('[Address.js.253:dayOlds:]',daysOld); //TODO
+              var isOldEnough = daysOld >  DAYS_TO_DEAD;
+
+              // console.log('[Address.js.246:isOldEnough:]', isOldEnough, lastUsage, now); //TODO
+
+              if (isOldEnough) {
+                self.setCache();
+              }
+            }
             return next();
           });
         } else {
+
+console.log('[Address.js.273]'); //TODO
           txOut.forEach(function(txItem) {
             self._addTxItem(txItem, txList, opts.includeTxInfo);
           });
           if (txList)
             self.transactions = txList;
+
+
+console.log('[Address.js.279]', self.addrStr, self.deadCacheEnable , self.cached); //TODO
+          if (self.deadCacheEnable && self.cached) {
+
+console.log('[Address.js.281] WASS DEAD ALREADY! CACHING HISTORY'); //TODO
+            self.setCache();
+          }
+
           return next();
         }
       });
