@@ -48,7 +48,6 @@ var getAddrs = function(req, res, next) {
     var s = addrStrs.split(',');
     if (s.length === 0) return as;
     var enableDeadAddresses = s.length > 100;
-console.log('[addresses.js.50:enableDeadAddresses:]',enableDeadAddresses); //TODO
     for (var i = 0; i < s.length; i++) {
       var a = new Address(s[i], enableDeadAddresses);
       as.push(a);
@@ -191,6 +190,19 @@ exports.multitxs = function(req, res, next) {
       // no longer at bitcoind (for example a double spend)
 
       var transactions = _.compact(_.pluck(txs, 'info'));
+      //rm not used items
+      _.each(transactions, function(t) {
+        t.vin = _.map(t.vin, function(i) {
+          return _.pick(i, ['addr', 'valueSat']);
+        });
+        t.vout = _.map(t.vout, function(o) {
+          return _.pick(o, ['scriptPubKey', 'value']);
+        });
+        delete t.locktime;
+        delete t.version;
+      });
+
+
       transactions = {
         totalItems: nbTxs,
         from: +from,
@@ -207,7 +219,7 @@ exports.multitxs = function(req, res, next) {
 
   if (cache[addrStrs] && from > 0) {
     //logtime('Cache hit');
-    txs =cache[addrStrs]; 
+    txs = cache[addrStrs];
     return processTxs(txs, from, to, function(err, transactions) {
       //logtime('After process Txs');
       if (err) return common.handleErrors(err, res)
@@ -243,12 +255,12 @@ exports.multitxs = function(req, res, next) {
       });
 
       if (!cache[addrStrs] || from == 0) {
-        cache[addrStrs] = txs; 
+        cache[addrStrs] = txs;
         // 5 min. just to purge memory. Cache is overwritten in from=0 requests.
-        setTimeout(function(){
-          console.log('Deleting cache:', addrStrs.substr(0,20));
+        setTimeout(function() {
+          console.log('Deleting cache:', addrStrs.substr(0, 20));
           delete cache[addrStrs];
-        }, 5 * 60 * 1000); 
+        }, 5 * 60 * 1000);
       }
 
       processTxs(txs, from, to, function(err, transactions) {

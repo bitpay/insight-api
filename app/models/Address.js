@@ -13,14 +13,14 @@ var TransactionDb = imports.TransactionDb || require('../../lib/TransactionDb').
 var BlockDb = imports.BlockDb || require('../../lib/BlockDb').default();
 var config = require('../../config/config');
 var CONCURRENCY = 5;
-var DAYS_TO_DEAD = 2;
+var DAYS_TO_DEAD = 40;
 
 var deadCache = {};
 
 function Address(addrStr, deadCacheEnable) {
 
   if (deadCacheEnable && deadCache[addrStr]) {
-    console.log('DEAD CACHE HIT:', addrStr, deadCache[addrStr].cached);
+//    console.log('DEAD CACHE HIT:', addrStr, deadCache[addrStr].cached);
     return deadCache[addrStr];
   }
 
@@ -100,9 +100,7 @@ Address.prototype.setCache = function() {
   this.cached = true;
   deadCache[this.addrStr] = this;
 
-  console.log('%%%%%%%% setting DEAD cache for ', this.addrStr, this.unspent.length, this.transactions.length); //TODO
   console.log('%%%%%%%% cache size:', _.keys(deadCache).length); //TODO
-
   // TODO expire it...
 };
 
@@ -200,17 +198,11 @@ Address.prototype.update = function(next, opts) {
     return cb('Bad params');
 
   if (!opts.ignoreCache && this.cached) {
-
-console.log('[Address.js.203] CACHED????', this.addrStr, opts.onlyUnspent, opts.includeTxInfo); //TODO
-
-
     if (opts.onlyUnspent && this.unspent) {
-console.log('[Address.js.206] YES (unspent)'); //TODO
       return next();
     }
 
     if (opts.includeTxInfo && this.transactions.length) {
-console.log('[Address.js.206] YES (TXS)'); //TODO
       return next();
     }
   }
@@ -272,18 +264,12 @@ console.log('[Address.js.206] YES (TXS)'); //TODO
           });
         } else {
 
-console.log('[Address.js.273]'); //TODO
           txOut.forEach(function(txItem) {
             self._addTxItem(txItem, txList, opts.includeTxInfo);
           });
           if (txList)
             self.transactions = txList;
-
-
-console.log('[Address.js.279]', self.addrStr, self.deadCacheEnable , self.cached); //TODO
           if (self.deadCacheEnable && self.cached) {
-
-console.log('[Address.js.281] WASS DEAD ALREADY! CACHING HISTORY'); //TODO
             self.setCache();
           }
 
