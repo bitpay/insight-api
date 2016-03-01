@@ -11,6 +11,7 @@ var async = require('async');
 
 var MAX_BATCH_SIZE = 100;
 var RPC_CONCURRENCY = 5;
+var SIZE_TO_ENABLE_DEAD_CACHE=100;
 
 var tDb = require('../../lib/TransactionDb').default();
 
@@ -47,7 +48,7 @@ var getAddrs = function(req, res, next) {
     var addrStrs = req.param('addrs');
     var s = addrStrs.split(',');
     if (s.length === 0) return as;
-    var enableDeadAddresses = s.length > 100;
+    var enableDeadAddresses = s.length > SIZE_TO_ENABLE_DEAD_CACHE;
     for (var i = 0; i < s.length; i++) {
       var a = new Address(s[i], enableDeadAddresses);
       as.push(a);
