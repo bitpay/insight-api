@@ -11,7 +11,7 @@ var async = require('async');
 
 var MAX_BATCH_SIZE = 100;
 var RPC_CONCURRENCY = 5;
-var SIZE_TO_ENABLE_DEAD_CACHE=100;
+var SIZE_TO_ENABLE_DEAD_CACHE = 500;
 
 var tDb = require('../../lib/TransactionDb').default();
 
