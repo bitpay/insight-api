@@ -13,9 +13,8 @@ var TransactionDb = imports.TransactionDb || require('../../lib/TransactionDb').
 var BlockDb = imports.BlockDb || require('../../lib/BlockDb').default();
 var config = require('../../config/config');
 var CONCURRENCY = 5;
-//var DAYS_TO_DEAD = 40;
-var DAYS_TO_DEAD = 1;
-var MAX_CACHE_KEYS = 100;
+var DAYS_TO_DEAD = 40;
+var MAX_CACHE_KEYS = 10000;
 
 var deadCache = {};
 
@@ -108,10 +107,13 @@ Address.prototype.setCache = function() {
   if (size > MAX_CACHE_KEYS) {
     console.log('%%%%%%%% deleting ~ 20% of the entries...');
 
+    var skip = _.random(4), i=0;
+
     for (var prop in deadCache)
-        if (Math.random() < 0.2)
+        if ( !( skip++ % 5 ) )
           delete deadCache[prop];
 
+    size = _.keys(deadCache).length;
     console.log('%%%%%%%% cache size:', size); //TODO
   }
   // TODO expire it...
