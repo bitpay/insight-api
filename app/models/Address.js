@@ -107,7 +107,7 @@ Address.prototype.setCache = function() {
   if (size > MAX_CACHE_KEYS) {
     console.log('%%%%%%%% deleting ~ 20% of the entries...');
 
-    var skip = _.random(4), i=0;
+    var skip = _.random(4);
 
     for (var prop in deadCache)
         if ( !( skip++ % 5 ) )
