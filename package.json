@@ -65,6 +65,7 @@
     "bitcore-message": "^1.0.1",
     "body-parser": "^1.13.3",
     "lodash": "^2.4.1",
+    "lru-cache": "^4.0.1",
     "request": "^2.64.0"
   },
   "devDependencies": {
