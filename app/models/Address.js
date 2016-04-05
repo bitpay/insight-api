@@ -14,7 +14,7 @@ var BlockDb = imports.BlockDb || require('../../lib/BlockDb').default();
 var config = require('../../config/config');
 var CONCURRENCY = 5;
 var DAYS_TO_DEAD = 40;
-var MAX_CACHE_KEYS = 10000;
+var MAX_CACHE_KEYS = 50000;
 
 var deadCache = {};
 
@@ -114,7 +114,7 @@ Address.prototype.setCache = function() {
           delete deadCache[prop];
 
     size = _.keys(deadCache).length;
-    console.log('%%%%%%%% cache size:', size); //TODO
+    console.log('%%%%%%%% cache size after delete:', size); //TODO
   }
   // TODO expire it...
 };
