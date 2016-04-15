@@ -50,9 +50,9 @@ describe('Blocks', function() {
       'version': 536870919,
       'merkleroot': 'b06437355844b8178173f3e18ca141472e4b0861daa81ef0f701cf9e51f0283e',
       'tx': [
-          '25a988e54b02e0e5df146a0f8fa7b9db56210533a9f04bdfda5f4ceb6f77aadd',
-          'b85334bf2df35c6dd5b294efe92ffc793a78edff75a2ca666fc296ffb04bbba0',
-          '2e01c7a4a0e335112236b711c4aaddd02e8dc59ba2cda416e8f80ff06dddd7e1'
+        '25a988e54b02e0e5df146a0f8fa7b9db56210533a9f04bdfda5f4ceb6f77aadd',
+        'b85334bf2df35c6dd5b294efe92ffc793a78edff75a2ca666fc296ffb04bbba0',
+        '2e01c7a4a0e335112236b711c4aaddd02e8dc59ba2cda416e8f80ff06dddd7e1'
       ],
       'time': 1440987503,
       'nonce': 1868753784,
