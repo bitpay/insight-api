@@ -334,6 +334,8 @@ describe('Addresses', function() {
           "ts": 1441116143,
           "scriptPubKey": "76a914d2ec20bb8e5f25a52f730384b803d95683250e0b88ac",
           "amount": 0.5332,
+          "height": 534181,
+          "satoshis": 53320000,
           "confirmations": 50,
           "confirmationsFromCache": true
         },
@@ -344,6 +346,8 @@ describe('Addresses', function() {
           "ts": 1441116143,
           "scriptPubKey": "76a914583df9fa56ad961051e00ca93e68dfaf1eab9ec588ac",
           "amount": 0.00289829,
+          "height": 534181,
+          "satoshis": 289829,
           "confirmations": 50,
           "confirmationsFromCache": true
         }
@@ -358,6 +362,11 @@ describe('Addresses', function() {
       ];
 
       var node = {
+        services: {
+          bitcoind: {
+            height: 534230
+          }
+        },
         getAddressUnspentOutputs: sinon.stub().callsArgWith(2, null, utxos)
       };
 
@@ -432,7 +441,10 @@ describe('Addresses', function() {
                   "addresses": [
                     "mxT2KzTUQvsaYYothDtjcdvyAdaHA9ofMp"
                   ]
-                }
+                },
+                "spentHeight": null,
+                "spentIndex": null,
+                "spentTxId": null
               },
               {
                 "value": "0.53320000",
@@ -444,8 +456,11 @@ describe('Addresses', function() {
                   "type": "pubkeyhash",
                   "addresses": [
                     "mzkD4nmQ8ixqxySdBgsXTpgvAMK5iRZpNK"
-                  ]
-                }
+                  ],
+                },
+                "spentHeight": null,
+                "spentIndex": null,
+                "spentTxId": null
               },
               {
                 "value": "0.00289829",
@@ -458,7 +473,10 @@ describe('Addresses', function() {
                   "addresses": [
                     "moZY18rGNmh4YCPeugtGW46AkkWMQttBUD"
                   ]
-                }
+                },
+                "spentHeight": null,
+                "spentIndex": null,
+                "spentTxId": null
               }
             ],
             "blockhash": "0000000000000041ddc94ecf4f86a456a83b2e320c36c6f0c13ff92c7e75f013",
@@ -524,13 +542,8 @@ describe('Addresses', function() {
       var node = {
         getAddressHistory: sinon.stub().callsArgWith(2, null, txinfos2),
         services: {
-          db: {
-            tip: {
-              __height: 534232
-            }
-          },
-          address: {
-            getInputForOutput: sinon.stub().callsArgWith(3, null, false),
+          bitcoind: {
+            height: 534232
           }
         },
         network: 'testnet'
