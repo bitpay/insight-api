@@ -130,38 +130,38 @@ describe('Blocks', function() {
   describe('/blocks route', function() {
 
     var insight = {
-      "blocks": [
+      'blocks': [
         {
-          "height": 533951,
-          "size": 206,
-          "hash": "000000000008fbb2e358e382a6f6948b2da24563bba183af447e6e2542e8efc7",
-          "time": 1440978683,
-          "txlength": 1,
-          "poolInfo": {
-            "poolName": "AntMiner",
-            "url": "https://bitmaintech.com/"
+          'height': 533951,
+          'size': 206,
+          'hash': '000000000008fbb2e358e382a6f6948b2da24563bba183af447e6e2542e8efc7',
+          'time': 1440978683,
+          'txlength': 1,
+          'poolInfo': {
+            'poolName': 'AntMiner',
+            'url': 'https://bitmaintech.com/'
           }
         },
         {
-          "height": 533950,
-          "size": 206,
-          "hash": "00000000000006bd8fe9e53780323c0e85719eca771022e1eb6d10c62195c441",
-          "time": 1440977479,
-          "txlength": 1,
-          "poolInfo": {
-            "poolName": "AntMiner",
-            "url": "https://bitmaintech.com/"
+          'height': 533950,
+          'size': 206,
+          'hash': '00000000000006bd8fe9e53780323c0e85719eca771022e1eb6d10c62195c441',
+          'time': 1440977479,
+          'txlength': 1,
+          'poolInfo': {
+            'poolName': 'AntMiner',
+            'url': 'https://bitmaintech.com/'
           }
         }
       ],
-      "length": 2,
-      "pagination": {
-        "current": "2015-08-30",
-        "currentTs": 1440979199,
-        "isToday": false,
-        "more": false,
-        "next": "2015-08-31",
-        "prev": "2015-08-29"
+      'length': 2,
+      'pagination': {
+        'current': '2015-08-30',
+        'currentTs': 1440979199,
+        'isToday': false,
+        'more': false,
+        'next': '2015-08-31',
+        'prev': '2015-08-29'
       }
     };
 
