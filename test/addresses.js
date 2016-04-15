@@ -155,7 +155,7 @@ var utxos = [
     "timestamp": 1441116143,
     "satoshis": 53320000,
     "script": "76a914d2ec20bb8e5f25a52f730384b803d95683250e0b88ac",
-    "blockHeight": 534181,
+    "height": 534181,
     "confirmations": 50
   },
   {
@@ -165,7 +165,7 @@ var utxos = [
     "timestamp": 1441116143,
     "satoshis": 289829,
     "script": "76a914583df9fa56ad961051e00ca93e68dfaf1eab9ec588ac",
-    "blockHeight": 534181,
+    "height": 534181,
     "confirmations": 50
   }
 ];
@@ -285,6 +285,8 @@ describe('Addresses', function() {
               "scriptPubKey": "76a914d2ec20bb8e5f25a52f730384b803d95683250e0b88ac",
               "amount": 0.5332,
               "confirmations": 50,
+              "height": 534181,
+              "satoshis": 53320000,
               "confirmationsFromCache": true
           }
       ];
@@ -296,7 +298,12 @@ describe('Addresses', function() {
       ];
 
       var node = {
-        getUnspentOutputs: sinon.stub().callsArgWith(2, null, utxos.slice(0, 1))
+        services: {
+          bitcoind: {
+            height: 534230
+          }
+        },
+        getAddressUnspentOutputs: sinon.stub().callsArgWith(2, null, utxos.slice(0, 1))
       };
 
       var addresses = new AddressController(node);
@@ -351,7 +358,7 @@ describe('Addresses', function() {
       ];
 
       var node = {
-        getUnspentOutputs: sinon.stub().callsArgWith(2, null, utxos)
+        getAddressUnspentOutputs: sinon.stub().callsArgWith(2, null, utxos)
       };
 
       var addresses = new AddressController(node);
