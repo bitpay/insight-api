@@ -10,12 +10,12 @@ describe('Utils', function() {
       var node = {
         services: {
           bitcoind: {
-            estimateFee: function(blocks) {
+            estimateFee: function(blocks, callback) {
               switch(blocks) {
-                case 1:
-                  return 1000;
-                case 3:
-                  return 3000;
+              case 1:
+                return callback(null, 1000 / 1e8);
+              case 3:
+                return callback(null, 3000 / 1e8);
               }
             }
           }
