@@ -25,7 +25,7 @@ The API endpoints will be available by default at: `http://localhost:3001/insigh
 ## Notes on Upgrading from v0.3
 
 The unspent outputs format now has `satoshis` and `height`:
-```json
+```
 [
   {
     "address":"mo9ncXisMeAoXwqcV5EWuyncbmCcQN4rVs",
@@ -53,7 +53,7 @@ The `timestamp` property will only be set for unconfirmed transactions and `heig
 There is a new `GET` endpoint or raw blocks at `/rawblock/<blockArg>`, where `blockArg` can be hash or height:
 
 Response format:
-```json
+```
 {
   "rawblock": "blockhexstring.."
 }
@@ -130,7 +130,7 @@ The response contains the value in Satoshis.
   /insight-api/addr/[:addr]/utxo[?noCache=1]
 ```
 Sample return:
-``` json
+```
 [
   {
     "address":"mo9ncXisMeAoXwqcV5EWuyncbmCcQN4rVs",
