@@ -128,7 +128,7 @@ This would return:
 
 ### Address
 ```
-  /insight-api/addr/[:addr][?noTxList=1&noCache=1]
+  /insight-api/addr/[:addr][?noTxList=1]
   /insight-api/addr/mmvP3mTe53qxHdPqXEvdu8WdC7GfQ2vmx5?noTxList=1
 ```
 
@@ -143,7 +143,7 @@ The response contains the value in Satoshis.
 
 ### Unspent Outputs
 ```
-  /insight-api/addr/[:addr]/utxo[?noCache=1]
+  /insight-api/addr/[:addr]/utxo
 ```
 Sample return:
 ```
