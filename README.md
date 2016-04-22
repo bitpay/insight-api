@@ -119,6 +119,42 @@ This would return:
 }
 ```
 
+### Block Summaries
+
+Get block summaries by date:
+```
+  /insight-api/blocks?limit=3&blockDate=2016-04-22
+```
+
+Example response:
+```
+{
+  "blocks": [
+    {
+      "height": 408495,
+      "size": 989237,
+      "hash": "00000000000000000108a1f4d4db839702d72f16561b1154600a26c453ecb378",
+      "time": 1461360083,
+      "txlength": 1695,
+      "poolInfo": {
+        "poolName": "BTCC Pool",
+        "url": "https://pool.btcc.com/"
+      }
+    }
+  ],
+  "length": 1,
+  "pagination": {
+    "next": "2016-04-23",
+    "prev": "2016-04-21",
+    "currentTs": 1461369599,
+    "current": "2016-04-22",
+    "isToday": true,
+    "more": true,
+    "moreTs": 1461369600
+  }
+}
+```
+
 ### Transaction
 ```
   /insight-api/tx/[:txid]
