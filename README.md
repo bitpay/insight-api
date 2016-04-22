@@ -55,7 +55,7 @@ There is a new `GET` endpoint or raw blocks at `/rawblock/<blockArg>`, where `bl
 Response format:
 ```
 {
-  "rawblock": "blockhexstring.."
+  "rawblock": "blockhexstring..."
 }
 ```
 
@@ -98,9 +98,25 @@ Get block hash by height
 ```
 This would return:
 ```
-{"blockHash":"000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f"}
+{
+  "blockHash":"000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f"
+}
 ```
 which is the hash of the Genesis block (0 height)
+
+
+### Raw Block
+```
+  /insight-api/rawblock/[:blockHash]
+  /insight-api/rawblock/[:blockHeight]
+```
+
+This would return:
+```
+{
+  "rawblock":"blockhexstring..."
+}
+```
 
 ### Transaction
 ```
