@@ -263,7 +263,7 @@ POST response:
   /insight-api/sync
 ```
 
-### Live Network P2P Data Sync Status (Bitcoind runs in the same process)
+### Live Network P2P Data Sync Status
 ```
   /insight-api/peer
 ```
@@ -292,7 +292,7 @@ The web socket API is served using [socket.io](http://socket.io).
 
 The following are the events published by insight:
 
-'tx': new transaction received from network. This event is published in the 'inv' room. Data will be a app/models/Transaction object.
+`tx`: new transaction received from network. This event is published in the 'inv' room. Data will be a app/models/Transaction object.
 Sample output:
 ```
 {
@@ -303,7 +303,7 @@ Sample output:
 ```
 
 
-'block': new block received from network. This event is published in the 'inv' room. Data will be a app/models/Block object.
+`block`: new block received from network. This event is published in the `inv` room. Data will be a app/models/Block object.
 Sample output:
 ```
 {
@@ -313,9 +313,9 @@ Sample output:
 }
 ```
 
-'<bitcoinAddress>': new transaction concerning <bitcoinAddress> received from network. This event is published in the '<bitcoinAddress>' room.
+`<bitcoinAddress>`: new transaction concerning <bitcoinAddress> received from network. This event is published in the `<bitcoinAddress>` room.
 
-'status': every 1% increment on the sync task, this event will be triggered. This event is published in the 'sync' room.
+`status`: every 1% increment on the sync task, this event will be triggered. This event is published in the `sync` room.
 
 Sample output:
 ```
