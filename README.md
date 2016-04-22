@@ -44,6 +44,7 @@ The unspent outputs format now has `satoshis` and `height`:
     "scriptPubKey": "76a91453c0307d6851aa0ce7825ba883c6bd9ad242b48688ac",
     "amount": 0.12345678,
     "satoshis: 12345678,
+    "confirmations": 1,
     "height": 300001
   }
 ]
@@ -165,6 +166,7 @@ Sample return:
     "scriptPubKey": "76a91453c0307d6851aa0ce7825ba883c6bd9ad242b48688ac",
     "amount": 0.12345678,
     "satoshis: 12345678,
+    "confirmations": 1,
     "height": 300001
   }
 ]
