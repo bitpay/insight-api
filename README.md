@@ -18,9 +18,37 @@ The API endpoints will be available by default at: `http://localhost:3001/insigh
 
 ## Prerequisites
 
-- [Bitcore Node 0.2.x](https://github.com/bitpay/bitcore-node)
+- [Bitcore Node 3.x](https://github.com/bitpay/bitcore-node)
 
-**Note:** You can use an existing Bitcoin data directory, however `txindex` needs to be set to true in `bitcoin.conf`.
+**Note:** You can use an existing Bitcoin data directory, however `txindex`, `addressindex`, `timestampindex` and `spentindex` needs to be set to true in `bitcoin.conf`, as well as a few other additional fields.
+
+## Notes on Upgrading from v0.3
+
+The unspent outputs format now has `satoshis` and `height`:
+```
+[
+  {
+    "address":"mo9ncXisMeAoXwqcV5EWuyncbmCcQN4rVs",
+    "txid":"d5f8a96faccf79d4c087fa217627bb1120e83f8ea1a7d84b1de4277ead9bbac1",
+    "vout":0,
+    "scriptPubKey":"76a91453c0307d6851aa0ce7825ba883c6bd9ad242b48688ac",
+    "amount":0.000006,
+    "satoshis":600,
+    "confirmations":0,
+    "ts":1461349425
+  },
+  {
+    "address": "mo9ncXisMeAoXwqcV5EWuyncbmCcQN4rVs",
+    "txid": "bc9df3b92120feaee4edc80963d8ed59d6a78ea0defef3ec3cb374f2015bfc6e",
+    "vout": 1,
+    "scriptPubKey": "76a91453c0307d6851aa0ce7825ba883c6bd9ad242b48688ac",
+    "amount": 0.12345678,
+    "satoshis: 12345678,
+    "height": 300001
+  }
+]
+```
+The `timestamp` property will only be set for unconfirmed transactions and `height` can be used for determining block order. The `confirmationsFromCache` is nolonger set or necessary, confirmation count is only cached for the time between blocks.
 
 ## Notes on Upgrading from v0.2
 
@@ -95,25 +123,25 @@ The response contains the value in Satoshis.
 Sample return:
 ``` json
 [
-    {
-      "address": "n2PuaAguxZqLddRbTnAoAuwKYgN2w2hZk7",
-      "txid": "dbfdc2a0d22a8282c4e7be0452d595695f3a39173bed4f48e590877382b112fc",
-      "vout": 0,
-      "ts": 1401276201,
-      "scriptPubKey": "76a914e50575162795cd77366fb80d728e3216bd52deac88ac",
-      "amount": 0.001,
-      "confirmations": 3
-    },
-    {
-      "address": "n2PuaAguxZqLddRbTnAoAuwKYgN2w2hZk7",
-      "txid": "e2b82af55d64f12fd0dd075d0922ee7d6a300f58fe60a23cbb5831b31d1d58b4",
-      "vout": 0,
-      "ts": 1401226410,
-      "scriptPubKey": "76a914e50575162795cd77366fb80d728e3216bd52deac88ac",
-      "amount": 0.001,
-      "confirmation": 6,
-      "confirmationsFromCache": true
-    }
+  {
+    "address":"mo9ncXisMeAoXwqcV5EWuyncbmCcQN4rVs",
+    "txid":"d5f8a96faccf79d4c087fa217627bb1120e83f8ea1a7d84b1de4277ead9bbac1",
+    "vout":0,
+    "scriptPubKey":"76a91453c0307d6851aa0ce7825ba883c6bd9ad242b48688ac",
+    "amount":0.000006,
+    "satoshis":600,
+    "confirmations":0,
+    "ts":1461349425
+  },
+  {
+    "address": "mo9ncXisMeAoXwqcV5EWuyncbmCcQN4rVs",
+    "txid": "bc9df3b92120feaee4edc80963d8ed59d6a78ea0defef3ec3cb374f2015bfc6e",
+    "vout": 1,
+    "scriptPubKey": "76a91453c0307d6851aa0ce7825ba883c6bd9ad242b48688ac",
+    "amount": 0.12345678,
+    "satoshis: 12345678,
+    "height": 300001
+  }
 ]
 ```
 
