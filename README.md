@@ -2,7 +2,7 @@
 
 A Bitcoin blockchain REST and web socket API service for [Bitcore Node](https://github.com/bitpay/bitcore-node).
 
-This is a backend-only service. If you're looking for the web frontend application, take a look at https://github.com/bitpay/insight.
+This is a backend-only service. If you're looking for the web frontend application, take a look at https://github.com/bitpay/insight-ui.
 
 ## Getting Started
 
