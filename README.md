@@ -60,6 +60,13 @@ Response format:
 }
 ```
 
+Some additional general notes:
+- The response for the `/sync` endpoint does not include `startTs` and `endTs` as the sync is no longer relevant as indexes are built in bitcoind.
+- The endpoint for `/peer` is no longer relevant connection to bitcoind is via ZMQ.
+- The list of txids in an address summary does not include orphaned transactions.
+- `/tx` endpoint results will now include block height, and spentTx related fields will be set to `null` if unspent.
+- `/block` endpoint results does not include `confirmations` and will include `poolInfo`.
+
 ## Notes on Upgrading from v0.2
 
 Some of the fields and methods are not supported:
