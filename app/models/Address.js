@@ -21,7 +21,7 @@ var deadCache = {};
 function Address(addrStr, deadCacheEnable) {
 
   if (deadCacheEnable && deadCache[addrStr]) {
-//    console.log('DEAD CACHE HIT:', addrStr, deadCache[addrStr].cached);
+    //    console.log('DEAD CACHE HIT:', addrStr, deadCache[addrStr].cached);
     return deadCache[addrStr];
   }
 
@@ -98,6 +98,7 @@ Address.deleteDeadCache = function(addrStr) {
 
 
 Address.prototype.setCache = function() {
+
   this.cached = true;
   deadCache[this.addrStr] = this;
 
@@ -110,8 +111,8 @@ Address.prototype.setCache = function() {
     var skip = _.random(4);
 
     for (var prop in deadCache)
-        if ( !( skip++ % 5 ) )
-          delete deadCache[prop];
+      if (!(skip++ % 5))
+        delete deadCache[prop];
 
     size = _.keys(deadCache).length;
     console.log('%%%%%%%% cache size after delete:', size); //TODO
@@ -217,7 +218,7 @@ Address.prototype.update = function(next, opts) {
       return next();
     }
 
-    if (opts.includeTxInfo && this.transactions.length) {
+    if (opts.includeTxInfo && this.transactions.length && this.balanceSat == 0) {
       return next();
     }
   }
@@ -239,7 +240,7 @@ Address.prototype.update = function(next, opts) {
         if (err) return next(err);
         if (opts.onlyUnspent) {
 
-          var unspent = _.filter(txOut,function(x) {
+          var unspent = _.filter(txOut, function(x) {
             return !x.spentTxId;
           });
 
@@ -257,17 +258,17 @@ Address.prototype.update = function(next, opts) {
                 confirmations: x.isConfirmedCached ? (config.safeConfirmations) : x.confirmations,
                 confirmationsFromCache: !!x.isConfirmedCached,
               };
-            }), 'scriptPubKey');;
+            }), 'scriptPubKey');
 
             if (self.deadCacheEnable && txOut.length && !self.unspent.length) {
-// console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$    ',self.addrStr); //TODO
-// console.log('[Address.js.242] NO UNSPENT:', self.addrStr, txOut.length); //TODO
+              // console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$    ',self.addrStr); //TODO
+              // console.log('[Address.js.242] NO UNSPENT:', self.addrStr, txOut.length); //TODO
               // Asumes that addresses are ordered by Ts;
-              lastUsage = txOut[txOut.length-1].spentTs || now;
+              lastUsage = txOut[txOut.length - 1].spentTs || now;
 
-              var daysOld = (now-lastUsage) / (3600 * 24);
-// console.log('[Address.js.253:dayOlds:]',daysOld); //TODO
-              var isOldEnough = daysOld >  DAYS_TO_DEAD;
+              var daysOld = (now - lastUsage) / (3600 * 24);
+              // console.log('[Address.js.253:dayOlds:]',daysOld); //TODO
+              var isOldEnough = daysOld > DAYS_TO_DEAD;
 
               // console.log('[Address.js.246:isOldEnough:]', isOldEnough, lastUsage, now); //TODO
 
@@ -284,7 +285,8 @@ Address.prototype.update = function(next, opts) {
           });
           if (txList)
             self.transactions = txList;
-          if (self.deadCacheEnable && self.cached) {
+
+          if (self.deadCacheEnable && self.cached && self.balanceSat == 0) {
             self.setCache();
           }
 
