@@ -83,7 +83,7 @@ describe('Blocks', function() {
     };
 
     it('block data should be correct', function(done) {
-      var controller = new BlockController(node);
+      var controller = new BlockController({node: node});
       var req = {};
       var res = {};
       var next = function() {
@@ -110,7 +110,7 @@ describe('Blocks', function() {
           }
         }
       };
-      var controller = new BlockController(node);
+      var controller = new BlockController({node: node});
       var req = {};
       var res = {};
       var next = function() {
@@ -187,7 +187,7 @@ describe('Blocks', function() {
     };
 
     it('should have correct data', function(done) {
-      var blocks = new BlockController(node);
+      var blocks = new BlockController({node: node});
 
       var req = {
         query: {
@@ -219,7 +219,7 @@ describe('Blocks', function() {
     };
 
     it('should have correct data', function(done) {
-      var blocks = new BlockController(node);
+      var blocks = new BlockController({node: node});
 
       var insight = {
         'blockHash': '0000000000000afa0c3c0afd450c793a1e300ec84cbe9555166e06132f19a8f7'
