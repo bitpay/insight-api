@@ -187,7 +187,11 @@ describe('Transactions', function() {
       };
 
       var transactions = new TxController(node);
-      var req = {};
+      var req = {
+        params: {
+          txid: txid
+        }
+      };
       var res = {};
       var next = function() {
         var merged = _.merge(req.transaction, todos);
@@ -196,7 +200,7 @@ describe('Transactions', function() {
       };
       var txid = 'b85334bf2df35c6dd5b294efe92ffc793a78edff75a2ca666fc296ffb04bbba0';
 
-      transactions.transaction(req, res, next, txid);
+      transactions.transaction(req, res, next);
     });
   });
 
@@ -849,13 +853,17 @@ describe('Transactions', function() {
       var transactions = new TxController(node);
 
       var res = {};
-      var req = {};
+      var req = {
+        params: {
+          txid: txid
+        }
+      };
       var next = function() {
         should(req.rawTransaction.rawtx).eql(hex);
         done();
       };
       var txid = '25a988e54b02e0e5df146a0f8fa7b9db56210533a9f04bdfda5f4ceb6f77aadd';
-      transactions.rawTransaction(req, res, next, txid);
+      transactions.rawTransaction(req, res, next);
     });
   });
 
