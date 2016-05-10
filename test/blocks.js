@@ -84,7 +84,11 @@ describe('Blocks', function() {
 
     it('block data should be correct', function(done) {
       var controller = new BlockController({node: node});
-      var req = {};
+      var req = {
+        params: {
+          blockHash: hash
+        }
+      };
       var res = {};
       var next = function() {
         should.exist(req.block);
@@ -95,7 +99,7 @@ describe('Blocks', function() {
 
       var hash = '0000000000000afa0c3c0afd450c793a1e300ec84cbe9555166e06132f19a8f7';
 
-      controller.block(req, res, next, hash);
+      controller.block(req, res, next);
     });
 
     it('block pool info should be correct', function(done) {
@@ -111,7 +115,11 @@ describe('Blocks', function() {
         }
       };
       var controller = new BlockController({node: node});
-      var req = {};
+      var req = {
+        params: {
+          blockHash: hash
+        }
+      };
       var res = {};
       var next = function() {
         should.exist(req.block);
@@ -123,7 +131,7 @@ describe('Blocks', function() {
 
       var hash = '000000000000000004a118407a4e3556ae2d5e882017e7ce526659d8073f13a4';
 
-      controller.block(req, res, next, hash);
+      controller.block(req, res, next);
     });
 
   });
@@ -225,17 +233,21 @@ describe('Blocks', function() {
         'blockHash': '0000000000000afa0c3c0afd450c793a1e300ec84cbe9555166e06132f19a8f7'
       };
 
-      var req = {};
+      var height = 533974;
+
+      var req = {
+        params: {
+          height: height
+        }
+      };
       var res = {
         jsonp: function(data) {
           should(data).eql(insight);
           done();
         }
       };
-      var next = function() {};
-      var height = 533974;
 
-      blocks.blockIndex(req, res, next, height);
+      blocks.blockIndex(req, res);
     });
   });
 
