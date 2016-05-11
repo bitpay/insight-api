@@ -48,6 +48,56 @@ describe('RateLimiter', function() {
   });
 
   describe('#middleware', function() {
+    it('will set ratelimit headers', function(done) {
+      var limiter = new RateLimiter();
+      var req = {
+        headers: {
+          'cf-connecting-ip': '127.0.0.1'
+        }
+      };
+      var setHeader = sinon.stub();
+      var res = {
+        setHeader: setHeader
+      };
+      limiter.middleware()(req, res, function() {
+        setHeader.callCount.should.equal(2);
+        setHeader.args[0][0].should.equal('X-RateLimit-Limit');
+        setHeader.args[0][1].should.equal(10800);
+        setHeader.args[1][0].should.equal('X-RateLimit-Remaining');
+        setHeader.args[1][1].should.equal(10799);
+        done();
+      });
+    });
+    it('will give rate limit error', function() {
+      var node = {
+        log: {
+          warn: sinon.stub()
+        }
+      };
+      var limiter = new RateLimiter({node: node});
+      limiter.exceeded = sinon.stub().returns(true);
+      var req = {
+        headers: {
+          'cf-connecting-ip': '127.0.0.1'
+        }
+      };
+      var jsonp = sinon.stub();
+      var status = sinon.stub().returns({
+        jsonp: jsonp
+      });
+      var res = {
+        status: status,
+        setHeader: sinon.stub()
+      };
+      limiter.middleware()(req, res);
+      status.callCount.should.equal(1);
+      status.args[0][0].should.equal(429);
+      jsonp.callCount.should.equal(1);
+      jsonp.args[0][0].should.eql({
+        status: 429,
+        error: 'Rate limit exceeded'
+      });
+    });
   });
 
   describe('#exceeded', function() {
