@@ -8,13 +8,13 @@ describe('Status', function() {
   describe('/status', function() {
     var info = {
       version: 110000,
-      protocolversion: 70002,
+      protocolVersion: 70002,
       blocks: 548645,
-      timeoffset: 0,
+      timeOffset: 0,
       connections: 8,
       difficulty: 21546.906405522557,
       testnet: true,
-      relayfee: 1000,
+      relayFee: 1000,
       errors: ''
     };
 
