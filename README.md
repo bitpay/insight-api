@@ -63,10 +63,12 @@ Response format:
 There are a few changes to the `GET` endpoint for `/addr/[:address]`:
 
 - The list of txids in an address summary does not include orphaned transactions
+- The txids will be sorted in block order
 - The list of txids will be limited at 1000 txids
 - There are two new query options "from" and "to" for pagination of the txids (e.g. `/addr/[:address]?from=1000&to=2000`)
 
 Some additional general notes:
+- The transaction history for an address will be sorted in block order
 - The response for the `/sync` endpoint does not include `startTs` and `endTs` as the sync is no longer relevant as indexes are built in bitcoind.
 - The endpoint for `/peer` is no longer relevant connection to bitcoind is via ZMQ.
 - `/tx` endpoint results will now include block height, and spentTx related fields will be set to `null` if unspent.
