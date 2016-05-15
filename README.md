@@ -1,4 +1,4 @@
-# Insight API
+# Insight API [![Build Status](https://travis-ci.org/CoinSpace/insight-api.svg)](https://travis-ci.org/CoinSpace/insight-api)
 
 A Bitcoin blockchain REST and web socket API service for [Bitcore Node](https://github.com/bitpay/bitcore-node).
 
@@ -53,6 +53,11 @@ Caching support has not yet been added in the v0.3 upgrade.
   /insight-api/block/00000000a967199a2fad0877433c93df785a8d8ce062e5f9b451cd1397bdbf62
 ```
 
+#### Multiple blocks
+```
+  /insight-api/block/[:hash1],[:hash2],...,[:hash,]
+```
+
 ### Block Index
 Get block hash by height
 ```
@@ -73,10 +78,22 @@ which is the hash of the Genesis block (0 height)
   /insight-api/rawtx/525de308971eabd941b139f46c7198b5af9479325c2395db7f2fb5ae8562556c
 ```
 
+### Multiple Transactions
+```
+  /insight-api/txs/[:rawid1],[:rawid2],...,[:rawidn]
+  /insight-api/rawtxs/[:rawid1],[:rawid2],...,[:rawidn]
+```
+
 ### Address
 ```
   /insight-api/addr/[:addr][?noTxList=1&noCache=1]
   /insight-api/addr/mmvP3mTe53qxHdPqXEvdu8WdC7GfQ2vmx5?noTxList=1
+```
+
+### Multiple Addresses
+```
+  /insight-api/addrs/[:addr1],[:addr2],...,[:addrn][?noTxList=1&noCache=1]
+
 ```
 
 ### Address Properties

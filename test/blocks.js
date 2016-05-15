@@ -1,10 +1,10 @@
 'use strict';
 
-var should = require('should');
-var sinon = require('sinon');
+var _ = require('lodash');
 var BlockController = require('../lib/blocks');
 var bitcore = require('bitcore-lib');
-var _ = require('lodash');
+var sinon = require('sinon');
+var should = require('should');
 
 var blocks = require('./data/blocks.json');
 
@@ -69,6 +69,7 @@ describe('Blocks', function() {
     var bitcoreBlock = bitcore.Block.fromBuffer(new Buffer(blocks['0000000000000afa0c3c0afd450c793a1e300ec84cbe9555166e06132f19a8f7'], 'hex'));
 
     var node = {
+      name: 'node1',
       getBlock: sinon.stub().callsArgWith(1, null, bitcoreBlock),
       services: {
         bitcoind: {
@@ -103,6 +104,7 @@ describe('Blocks', function() {
     it('block pool info should be correct', function(done) {
       var block = bitcore.Block.fromString(blocks['000000000000000004a118407a4e3556ae2d5e882017e7ce526659d8073f13a4']);
       var node = {
+        name: 'node2',
         getBlock: sinon.stub().callsArgWith(1, null, block),
         services: {
           bitcoind: {
@@ -122,7 +124,10 @@ describe('Blocks', function() {
       var res = {};
       var next = function() {
         should.exist(req.block);
-        var block = req.block;
+        should.exist(req.block.poolInfo);
+        should.exist(req.block.poolInfo.poolName);
+        should.exist(req.block.poolInfo.url);
+
         req.block.poolInfo.poolName.should.equal('Discus Fish');
         req.block.poolInfo.url.should.equal('http://f2pool.com/');
         done();
@@ -133,6 +138,72 @@ describe('Blocks', function() {
       controller.block(req, res, next, hash);
     });
 
+    it('should return combined result on batch request', function(done) {
+      var stub = sinon.stub();
+      stub.onFirstCall().callsArgWith(1, null, bitcore.Block.fromBuffer(blocks['000000000008fbb2e358e382a6f6948b2da24563bba183af447e6e2542e8efc7'], 'hex'));
+      stub.onSecondCall().callsArgWith(1, null, bitcore.Block.fromBuffer(blocks['00000000000006bd8fe9e53780323c0e85719eca771022e1eb6d10c62195c441'], 'hex'))
+      var req = {};
+
+      var node = {
+        getBlock: stub,
+        services: {
+          bitcoind: {
+            getNextBlockHash: sinon.stub().returns('000000000001e866a8057cde0c650796cb8a59e0e6038dc31c69d7ca6649627d'),
+            getBlockIndex: sinon.stub().returns(blockIndexes['000000000000000004a118407a4e3556ae2d5e882017e7ce526659d8073f13a4']),
+            isMainChain: sinon.stub().returns(true)
+          },
+          db: {
+            tip: {
+              __height: 534092
+            }
+          }
+        }
+      };
+
+      var controller = new BlockController(node);
+
+      controller.block(req, {}, function(data) {
+        console.log('data');
+        console.log(data);
+        should.exist(req.block);
+        req.block.should.be.instanceof(Array).and.have.lengthOf(2);
+        should.exist(req.block[0].hash);
+        req.block[0].hash.should.be.equal('000000000008fbb2e358e382a6f6948b2da24563bba183af447e6e2542e8efc7');
+        should.exist(req.block[1].hash);
+        req.block[1].hash.should.be.equal('00000000000006bd8fe9e53780323c0e85719eca771022e1eb6d10c62195c441');
+        done();
+      }, [
+        '000000000008fbb2e358e382a6f6948b2da24563bba183af447e6e2542e8efc7',
+        '00000000000006bd8fe9e53780323c0e85719eca771022e1eb6d10c62195c441'
+      ].join(','));
+    });
+
+    it('should graceful fail on error', function(done) {
+      var error = {
+        code: 123,
+        message: 'some error'
+      };
+
+      var controller = new BlockController({
+        getBlock: sinon.stub().callsArgWith(1, error)
+      });
+
+      var res = {
+        status: sinon.stub().returns({
+          send: sinon.spy()
+        })
+      };
+
+      controller.block({}, res, function() {
+        assert(false, 'should not call next middleware on fail');
+      }, '');
+
+      setTimeout(function() {
+        res.status.callCount.should.equal(1);
+        res.status.args[0][0].should.equal(400);
+        done();
+      });
+    });
   });
 
   describe('/blocks route', function() {

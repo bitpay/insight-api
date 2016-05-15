@@ -35,6 +35,10 @@
     {
       "name": "Braydon Fuller",
       "email": "braydon@bitpay.com"
+    },
+    {
+      "name": "Eugene Krevenets",
+      "email": "ievgenii.krevenets@gmail.com"
     }
   ],
   "bugs": {
@@ -71,6 +75,7 @@
     "chai": "*",
     "mocha": "~1.16.2",
     "proxyquire": "^1.7.2",
+    "rewire": "^2.5.1",
     "should": "^2.1.1",
     "sinon": "^1.10.3"
   }
