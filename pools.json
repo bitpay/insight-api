@@ -197,10 +197,10 @@
     ]
   },
   {
-    "poolName": "Slush",
-    "url": "https://mining.bitcoin.cz/",
+    "poolName": "SlushPool",
+    "url": "https://slushpool.com/",
     "searchStrings": [
-      "slush"
+      "/slush/"
     ]
   },
   {
