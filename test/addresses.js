@@ -283,6 +283,7 @@ describe('Addresses', function() {
               "vout": 1,
               "ts": 1441116143,
               "scriptPubKey": "76a914d2ec20bb8e5f25a52f730384b803d95683250e0b88ac",
+              "amountSat": 53320000,
               "amount": 0.5332,
               "confirmations": 50,
               "confirmationsFromCache": true
@@ -326,6 +327,7 @@ describe('Addresses', function() {
               "vout": 1,
               "ts": 1441116143,
               "scriptPubKey": "76a914d2ec20bb8e5f25a52f730384b803d95683250e0b88ac",
+              "amountSat": 53320000,
               "amount": 0.5332,
               "confirmations": 50,
               "confirmationsFromCache": true
@@ -336,6 +338,7 @@ describe('Addresses', function() {
               "vout": 2,
               "ts": 1441116143,
               "scriptPubKey": "76a914583df9fa56ad961051e00ca93e68dfaf1eab9ec588ac",
+              "amountSat": 289829,
               "amount": 0.00289829,
               "confirmations": 50,
               "confirmationsFromCache": true
