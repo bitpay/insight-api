@@ -225,6 +225,30 @@ describe('Addresses', function() {
       addresses.show(req, res);
     });
 
+    it('handle error', function() {
+      var testnode = {};
+      testnode.log = {};
+      testnode.log.error = sinon.stub();
+      var controller = new AddressController(testnode);
+      controller.getAddressSummary = sinon.stub().callsArgWith(2, new Error('test'));
+      var req = {
+        query: {
+          noTxList: 1
+        },
+        addr: 'mkPvAKZ2rar6qeG3KjBtJHHMSP1wFZH7Er'
+      };
+      var send = sinon.stub();
+      var status = sinon.stub().returns({send: send});
+      var res = {
+        status: status
+      };
+      controller.show(req, res);
+      send.callCount.should.equal(1);
+      status.callCount.should.equal(1);
+      status.args[0][0].should.equal(503);
+      send.args[0][0].should.equal('test');
+    });
+
     it('/balance', function(done) {
       var insight = 0;
 
