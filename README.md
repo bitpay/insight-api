@@ -51,7 +51,7 @@ The unspent outputs format now has `satoshis` and `height`:
 ```
 The `timestamp` property will only be set for unconfirmed transactions and `height` can be used for determining block order. The `confirmationsFromCache` is nolonger set or necessary, confirmation count is only cached for the time between blocks.
 
-There is a new `GET` endpoint or raw blocks at `/rawblock/<blockArg>`, where `blockArg` can be hash or height:
+There is a new `GET` endpoint or raw blocks at `/rawblock/<blockHash>`:
 
 Response format:
 ```
