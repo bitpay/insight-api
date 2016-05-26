@@ -88,6 +88,40 @@ which is the hash of the Genesis block (0 height)
 ```
 The response contains the value in Satoshis.
 
+### Multiple Addresss
+GET method:
+```
+/insight-api/addrs/[:addrs]
+/insight-api/addrs/2NF2baYuJAkCKo5onjUKEPdARQkZ6SYyKd5,2NAre8sX2povnjy4aeiHKeEh97Qhn97tB1f
+```
+
+POST method:
+```
+/insight-api/addrs/[:addrs]
+```
+
+POST params:
+```
+addrs: 2NF2baYuJAkCKo5onjUKEPdARQkZ6SYyKd5,2NAre8sX2povnjy4aeiHKeEh97Qhn97tB1f
+```
+
+### Address Properties for Multiple Addresses
+GET method:
+```
+/insight-api/addrs/[:addrs]/balance
+/insight-api/addrs/[:addrs]/totalReceived
+/insight-api/addrs/[:addrs]/totalSent
+/insight-api/addrs/[:addrs]/unconfirmedBalance
+```
+
+POST method:
+```
+/insight-api/addrs/balance
+/insight-api/addrs/totalReceived
+/insight-api/addrs/totalSent
+/insight-api/addrs/unconfirmedBalance
+```
+
 ### Unspent Outputs
 ```
   /insight-api/addr/[:addr]/utxo[?noCache=1]
