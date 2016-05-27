@@ -7,8 +7,12 @@ var InsightAPI = require('../lib/index');
 describe('Index', function() {
   describe('#cache', function() {
     it('will set cache control header', function(done) {
+      var node = {
+        log: sinon.stub()
+      };
       var index = new InsightAPI({
-        enableCache: true
+        enableCache: true,
+        node: node
       });
       var req = {};
       var res = {
@@ -23,8 +27,12 @@ describe('Index', function() {
       });
     });
     it('will NOT set cache control header', function(done) {
+      var node = {
+        log: sinon.stub()
+      };
       var index = new InsightAPI({
-        enableCache: false
+        enableCache: false,
+        node: node
       });
       var req = {};
       var res = {
@@ -39,9 +47,13 @@ describe('Index', function() {
   });
   describe('#cacheShort', function() {
     it('will set SHORT cache control header', function(done) {
+      var node = {
+        log: sinon.stub()
+      };
       var index = new InsightAPI({
         enableCache: true,
-        cacheShortSeconds: 35
+        cacheShortSeconds: 35,
+        node: node
       });
       var req = {};
       var res = {
@@ -56,8 +68,12 @@ describe('Index', function() {
       });
     });
     it('will set SHORT DEFAULT cache control header', function(done) {
+      var node = {
+        log: sinon.stub()
+      };
       var index = new InsightAPI({
-        enableCache: true
+        enableCache: true,
+        node: node
       });
       var req = {};
       var res = {
@@ -74,9 +90,13 @@ describe('Index', function() {
   });
   describe('#cacheLong', function() {
     it('will set LONG cache control header', function(done) {
+      var node = {
+        log: sinon.stub()
+      };
       var index = new InsightAPI({
         enableCache: true,
-        cacheLongSeconds: 86400000
+        cacheLongSeconds: 86400000,
+        node: node
       });
       var req = {};
       var res = {
@@ -91,8 +111,12 @@ describe('Index', function() {
       });
     });
     it('will set LONG DEFAULT cache control header', function(done) {
+      var node = {
+        log: sinon.stub()
+      };
       var index = new InsightAPI({
-        enableCache: true
+        enableCache: true,
+        node: node
       });
       var req = {};
       var res = {

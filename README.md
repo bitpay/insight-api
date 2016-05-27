@@ -18,9 +18,61 @@ The API endpoints will be available by default at: `http://localhost:3001/insigh
 
 ## Prerequisites
 
-- [Bitcore Node 0.2.x](https://github.com/bitpay/bitcore-node)
+- [Bitcore Node 3.x](https://github.com/bitpay/bitcore-node)
 
-**Note:** You can use an existing Bitcoin data directory, however `txindex` needs to be set to true in `bitcoin.conf`.
+**Note:** You can use an existing Bitcoin data directory, however `txindex`, `addressindex`, `timestampindex` and `spentindex` needs to be set to true in `bitcoin.conf`, as well as a few other additional fields.
+
+## Notes on Upgrading from v0.3
+
+The unspent outputs format now has `satoshis` and `height`:
+```
+[
+  {
+    "address":"mo9ncXisMeAoXwqcV5EWuyncbmCcQN4rVs",
+    "txid":"d5f8a96faccf79d4c087fa217627bb1120e83f8ea1a7d84b1de4277ead9bbac1",
+    "vout":0,
+    "scriptPubKey":"76a91453c0307d6851aa0ce7825ba883c6bd9ad242b48688ac",
+    "amount":0.000006,
+    "satoshis":600,
+    "confirmations":0,
+    "ts":1461349425
+  },
+  {
+    "address": "mo9ncXisMeAoXwqcV5EWuyncbmCcQN4rVs",
+    "txid": "bc9df3b92120feaee4edc80963d8ed59d6a78ea0defef3ec3cb374f2015bfc6e",
+    "vout": 1,
+    "scriptPubKey": "76a91453c0307d6851aa0ce7825ba883c6bd9ad242b48688ac",
+    "amount": 0.12345678,
+    "satoshis: 12345678,
+    "confirmations": 1,
+    "height": 300001
+  }
+]
+```
+The `timestamp` property will only be set for unconfirmed transactions and `height` can be used for determining block order. The `confirmationsFromCache` is nolonger set or necessary, confirmation count is only cached for the time between blocks.
+
+There is a new `GET` endpoint or raw blocks at `/rawblock/<blockHash>`:
+
+Response format:
+```
+{
+  "rawblock": "blockhexstring..."
+}
+```
+
+There are a few changes to the `GET` endpoint for `/addr/[:address]`:
+
+- The list of txids in an address summary does not include orphaned transactions
+- The txids will be sorted in block order
+- The list of txids will be limited at 1000 txids
+- There are two new query options "from" and "to" for pagination of the txids (e.g. `/addr/[:address]?from=1000&to=2000`)
+
+Some additional general notes:
+- The transaction history for an address will be sorted in block order
+- The response for the `/sync` endpoint does not include `startTs` and `endTs` as the sync is no longer relevant as indexes are built in bitcoind.
+- The endpoint for `/peer` is no longer relevant connection to bitcoind is via ZMQ.
+- `/tx` endpoint results will now include block height, and spentTx related fields will be set to `null` if unspent.
+- `/block` endpoint results does not include `confirmations` and will include `poolInfo`.
 
 ## Notes on Upgrading from v0.2
 
@@ -61,9 +113,61 @@ Get block hash by height
 ```
 This would return:
 ```
-{"blockHash":"000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f"}
+{
+  "blockHash":"000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f"
+}
 ```
 which is the hash of the Genesis block (0 height)
+
+
+### Raw Block
+```
+  /insight-api/rawblock/[:blockHash]
+  /insight-api/rawblock/[:blockHeight]
+```
+
+This would return:
+```
+{
+  "rawblock":"blockhexstring..."
+}
+```
+
+### Block Summaries
+
+Get block summaries by date:
+```
+  /insight-api/blocks?limit=3&blockDate=2016-04-22
+```
+
+Example response:
+```
+{
+  "blocks": [
+    {
+      "height": 408495,
+      "size": 989237,
+      "hash": "00000000000000000108a1f4d4db839702d72f16561b1154600a26c453ecb378",
+      "time": 1461360083,
+      "txlength": 1695,
+      "poolInfo": {
+        "poolName": "BTCC Pool",
+        "url": "https://pool.btcc.com/"
+      }
+    }
+  ],
+  "length": 1,
+  "pagination": {
+    "next": "2016-04-23",
+    "prev": "2016-04-21",
+    "currentTs": 1461369599,
+    "current": "2016-04-22",
+    "isToday": true,
+    "more": true,
+    "moreTs": 1461369600
+  }
+}
+```
 
 ### Transaction
 ```
@@ -75,8 +179,9 @@ which is the hash of the Genesis block (0 height)
 
 ### Address
 ```
-  /insight-api/addr/[:addr][?noTxList=1&noCache=1]
+  /insight-api/addr/[:addr][?noTxList=1][&from=&to=]
   /insight-api/addr/mmvP3mTe53qxHdPqXEvdu8WdC7GfQ2vmx5?noTxList=1
+  /insight-api/addr/mmvP3mTe53qxHdPqXEvdu8WdC7GfQ2vmx5?from=1000&to=2000
 ```
 
 ### Address Properties
@@ -90,30 +195,31 @@ The response contains the value in Satoshis.
 
 ### Unspent Outputs
 ```
-  /insight-api/addr/[:addr]/utxo[?noCache=1]
+  /insight-api/addr/[:addr]/utxo
 ```
 Sample return:
-``` json
+```
 [
-    {
-      "address": "n2PuaAguxZqLddRbTnAoAuwKYgN2w2hZk7",
-      "txid": "dbfdc2a0d22a8282c4e7be0452d595695f3a39173bed4f48e590877382b112fc",
-      "vout": 0,
-      "ts": 1401276201,
-      "scriptPubKey": "76a914e50575162795cd77366fb80d728e3216bd52deac88ac",
-      "amount": 0.001,
-      "confirmations": 3
-    },
-    {
-      "address": "n2PuaAguxZqLddRbTnAoAuwKYgN2w2hZk7",
-      "txid": "e2b82af55d64f12fd0dd075d0922ee7d6a300f58fe60a23cbb5831b31d1d58b4",
-      "vout": 0,
-      "ts": 1401226410,
-      "scriptPubKey": "76a914e50575162795cd77366fb80d728e3216bd52deac88ac",
-      "amount": 0.001,
-      "confirmation": 6,
-      "confirmationsFromCache": true
-    }
+  {
+    "address":"mo9ncXisMeAoXwqcV5EWuyncbmCcQN4rVs",
+    "txid":"d5f8a96faccf79d4c087fa217627bb1120e83f8ea1a7d84b1de4277ead9bbac1",
+    "vout":0,
+    "scriptPubKey":"76a91453c0307d6851aa0ce7825ba883c6bd9ad242b48688ac",
+    "amount":0.000006,
+    "satoshis":600,
+    "confirmations":0,
+    "ts":1461349425
+  },
+  {
+    "address": "mo9ncXisMeAoXwqcV5EWuyncbmCcQN4rVs",
+    "txid": "bc9df3b92120feaee4edc80963d8ed59d6a78ea0defef3ec3cb374f2015bfc6e",
+    "vout": 1,
+    "scriptPubKey": "76a91453c0307d6851aa0ce7825ba883c6bd9ad242b48688ac",
+    "amount": 0.12345678,
+    "satoshis: 12345678,
+    "confirmations": 1,
+    "height": 300001
+  }
 ]
 ```
 
@@ -226,7 +332,7 @@ POST response:
   /insight-api/sync
 ```
 
-### Live Network P2P Data Sync Status (Bitcoind runs in the same process)
+### Live Network P2P Data Sync Status
 ```
   /insight-api/peer
 ```
@@ -255,7 +361,7 @@ The web socket API is served using [socket.io](http://socket.io).
 
 The following are the events published by insight:
 
-'tx': new transaction received from network. This event is published in the 'inv' room. Data will be a app/models/Transaction object.
+`tx`: new transaction received from network. This event is published in the 'inv' room. Data will be a app/models/Transaction object.
 Sample output:
 ```
 {
@@ -266,7 +372,7 @@ Sample output:
 ```
 
 
-'block': new block received from network. This event is published in the 'inv' room. Data will be a app/models/Block object.
+`block`: new block received from network. This event is published in the `inv` room. Data will be a app/models/Block object.
 Sample output:
 ```
 {
@@ -276,9 +382,9 @@ Sample output:
 }
 ```
 
-'<bitcoinAddress>': new transaction concerning <bitcoinAddress> received from network. This event is published in the '<bitcoinAddress>' room.
+`<bitcoinAddress>`: new transaction concerning <bitcoinAddress> received from network. This event is published in the `<bitcoinAddress>` room.
 
-'status': every 1% increment on the sync task, this event will be triggered. This event is published in the 'sync' room.
+`status`: every 1% increment on the sync task, this event will be triggered. This event is published in the `sync` room.
 
 Sample output:
 ```
