@@ -1,7 +1,7 @@
 {
   "name": "insight-api",
   "description": "A Bitcoin blockchain REST and web socket API service for Bitcore Node.",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "repository": "git://github.com/bitpay/insight-api.git",
   "contributors": [
     {
