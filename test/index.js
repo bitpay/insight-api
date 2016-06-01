@@ -5,6 +5,31 @@ var sinon = require('sinon');
 var InsightAPI = require('../lib/index');
 
 describe('Index', function() {
+  describe('@constructor', function() {
+    it('will set rate limiter options', function() {
+      var options = {};
+      var node = {};
+      var index = new InsightAPI({
+        rateLimiterOptions: options,
+        node: node
+      });
+      index.rateLimiterOptions.should.equal(options);
+    });
+  });
+  describe('#_getRateLimiter', function() {
+    it('will pass options to rate limiter', function() {
+      var options = {
+        whitelist: ['127.0.0.1']
+      };
+      var node = {};
+      var index = new InsightAPI({
+        rateLimiterOptions: options,
+        node: node
+      });
+      var limiter = index._getRateLimiter();
+      limiter.whitelist.should.eql(['127.0.0.1']);
+    });
+  });
   describe('#cache', function() {
     it('will set cache control header', function(done) {
       var node = {
