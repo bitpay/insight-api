@@ -15,6 +15,14 @@ describe('Index', function() {
       });
       index.rateLimiterOptions.should.equal(options);
     });
+    it('will set disable rate limiter option', function() {
+      var node = {};
+      var index = new InsightAPI({
+        disableRateLimiter: true,
+        node: node
+      });
+      index.disableRateLimiter.should.equal(true);
+    });
   });
   describe('#_getRateLimiter', function() {
     it('will pass options to rate limiter', function() {
@@ -154,6 +162,48 @@ describe('Index', function() {
         res.header.args[0][1].should.equal('public, max-age=86400');
         done();
       });
+    });
+  });
+  describe('#setupRoutes', function() {
+    it('will use rate limiter by default', function() {
+      var node = {};
+      var index = new InsightAPI({
+        node: node
+      });
+      var middlewareFunc = sinon.stub();
+      var middleware = sinon.stub().returns(middlewareFunc);
+      var limiter = {
+        middleware: middleware
+      };
+      index._getRateLimiter = sinon.stub().returns(limiter);
+      var use = sinon.stub();
+      var app = {
+        use: use,
+        get: sinon.stub(),
+        param: sinon.stub(),
+        post: sinon.stub()
+      };
+      index.setupRoutes(app);
+      use.callCount.should.be.above(0);
+      use.args[0][0].should.equal(middlewareFunc);
+      middleware.callCount.should.equal(1);
+    });
+    it('will NOT use rate limiter if disabled', function() {
+      var node = {};
+      var index = new InsightAPI({
+        node: node,
+        disableRateLimiter: true
+      });
+      index._getRateLimiter = sinon.stub();
+      var use = sinon.stub();
+      var app = {
+        use: use,
+        get: sinon.stub(),
+        param: sinon.stub(),
+        post: sinon.stub()
+      };
+      index.setupRoutes(app);
+      index._getRateLimiter.callCount.should.equal(0);
     });
   });
 });
