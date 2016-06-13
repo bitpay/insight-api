@@ -145,6 +145,7 @@ exports.list = function(req, res) {
               time: b.ts || info.time,
               txlength: info.tx.length,
               poolInfo: info.poolInfo
+              algo: info.pow_algo
             });
           });
         }, function(err, allblocks) {
