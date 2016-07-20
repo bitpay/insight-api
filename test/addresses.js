@@ -714,4 +714,57 @@ describe('Addresses', function() {
       addresses.multitxs(req, res);
     });
   });
+  describe('#_getTransformOptions', function() {
+    it('will return false with value of string "0"', function() {
+      var node = {};
+      var addresses = new AddressController(node);
+      var req = {
+        query: {
+          noAsm: '0',
+          noScriptSig: '0',
+          noSpent: '0'
+        }
+      };
+      var options = addresses._getTransformOptions(req);
+      options.should.eql({
+        noAsm: false,
+        noScriptSig: false,
+        noSpent: false
+      });
+    });
+    it('will return true with value of string "1"', function() {
+      var node = {};
+      var addresses = new AddressController(node);
+      var req = {
+        query: {
+          noAsm: '1',
+          noScriptSig: '1',
+          noSpent: '1'
+        }
+      };
+      var options = addresses._getTransformOptions(req);
+      options.should.eql({
+        noAsm: true,
+        noScriptSig: true,
+        noSpent: true
+      });
+    });
+    it('will return true with value of number "1"', function() {
+      var node = {};
+      var addresses = new AddressController(node);
+      var req = {
+        query: {
+          noAsm: 1,
+          noScriptSig: 1,
+          noSpent: 1
+        }
+      };
+      var options = addresses._getTransformOptions(req);
+      options.should.eql({
+        noAsm: true,
+        noScriptSig: true,
+        noSpent: true
+      });
+    });
+  });
 });
