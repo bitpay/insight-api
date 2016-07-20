@@ -268,6 +268,9 @@ POST params:
 addrs: 2NF2baYuJAkCKo5onjUKEPdARQkZ6SYyKd5,2NAre8sX2povnjy4aeiHKeEh97Qhn97tB1f
 from (optional): 0
 to (optional): 20
+noAsm (optional): 1 (will omit script asm from results)
+noScriptSig (optional): 1 (will omit the scriptSig from all inputs)
+noSpent (option): 1 (will omit spent information per output)
 ```
 
 Sample output:
