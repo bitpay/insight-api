@@ -97,6 +97,30 @@ Plug-in support for Insight API is also no longer available, as well as the endp
 
 Caching support has not yet been added in the v0.3 upgrade.
 
+## Queries Limit
+
+To protect the server, insight-api has a built it query rate limiter. It can be configurable in `bitcore-node.json` with:
+``` json
+  "servicesConfig": {
+    "insight-api": {
+      "rateLimiterOptions": {
+        "whitelist": ["::ffff:127.0.0.1"]
+      }
+    }
+  }
+```
+With all the configuration options available: https://github.com/bitpay/insight-api/blob/master/lib/ratelimiter.js#L10-17
+
+Or disabled entirely with:
+``` json
+  "servicesConfig": {
+    "insight-api": {
+      "disableRateLimiter": true
+    }
+  }
+  ```
+  
+
 ## API HTTP Endpoints
 
 ### Block
