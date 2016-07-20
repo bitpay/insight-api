@@ -6,7 +6,7 @@ This is a backend-only service. If you're looking for the web frontend applicati
 
 ## Getting Started
 
-```bash
+```bashl
 npm install -g bitcore-node@latest
 bitcore-node create mynode
 cd mynode
@@ -97,7 +97,7 @@ Plug-in support for Insight API is also no longer available, as well as the endp
 
 Caching support has not yet been added in the v0.3 upgrade.
 
-## Queries Limit
+## Query Rate Limit
 
 To protect the server, insight-api has a built it query rate limiter. It can be configurable in `bitcore-node.json` with:
 ``` json
