@@ -4,3 +4,4 @@ node_js:
   - 'v4'
 install:
   - npm install
+  - npm install bitcore-lib
