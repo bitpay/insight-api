@@ -3,5 +3,6 @@ node_js:
   - 'v0.12.7'
   - 'v4'
 install:
+  # When all dependencies declare bitcore-lib as a peerDependency this can be bumped up, but this matches the current version expected by dependencies
+  - npm install bitcore-lib@0.13.7
   - npm install
-  - npm install bitcore-lib
