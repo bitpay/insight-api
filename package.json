@@ -61,8 +61,8 @@
   "bitcoreNode": "lib",
   "dependencies": {
     "async": "*",
-    "bitcore-lib": "satoshilabs/bitcore-lib#9f7930f9e4e3849938e09fcec985de4ef85a535d",
-    "bitcore-message": "satoshilabs/bitcore-message#c6d416f6a8cc6e02d6988c1cf1e343c488672160",
+    "bitcore-lib": "satoshilabs/bitcore-lib#8e2caed768aa269b433a14981f0e36c0838a3d91",
+    "bitcore-message": "satoshilabs/bitcore-message#3c91c372285018d4a840dca8731899107b7c31df",
     "body-parser": "^1.13.3",
     "compression": "^1.6.1",
     "lodash": "^2.4.1",
