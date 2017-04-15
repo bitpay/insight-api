@@ -3,7 +3,7 @@
       "poolName":"MinersPoolEU",
       "url":"https://www.miners-pool.eu/",
       "searchStrings":[
-         "MinersPoolEU"
+         "minersPoolEU"
       ]   
    }, 
    { 
@@ -11,14 +11,14 @@
       "poolName":"DigiHash",
       "url":"http://digihash.co",
       "searchStrings":[
-         "digihash.co"
+         "DigiHash"
       ]   
    }, 
    {
-      "poolName":"CryptoPoolMining.com",
-      "url":"https://www.cryptopoolmining.com",
+      "poolName":"ZPOOL",
+      "url":"https://www.zpool.ca",
       "searchStrings":[
-         "cryptopoolmining.com"
+         "www.zpool.ca"
       ]
    },
    {
@@ -26,13 +26,6 @@
       "url":"https://dgb-sha.theblocksfactory.com",
       "searchStrings":[
          "theblocksfactory.com"
-      ]
-   },
-   {
-      "poolName":"CoinMinePW",
-      "url":"http://www.coinmine.pw/",
-      "searchStrings":[
-         "CoinMinePW"
       ]
    },
    {
