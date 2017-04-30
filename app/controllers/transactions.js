@@ -92,6 +92,44 @@ exports.showRaw = function(req, res) {
   }
 };
 
+/**
+ * Get needed fee (BTC) for given fee rate (BTC/kB)
+ */
+exports.getCpfpFee = function(req, res) {
+
+  if (req.transaction) {
+    if (req.transaction.confirmations > 0) {
+      return res.jsonp({extraFeeNeeded: 0});
+    } else {
+      bitcoreRpc.getRawMemPool(true, function(err, rawMemPool) {
+        if (err || !rawMemPool) {
+          console.log(err);
+          return res.status(500).send('Internal Server Error');
+        }
+
+        if (rawMemPool.hasOwnProperty(req.transaction.txid)) {
+          var size = rawMemPool[req.transaction.txid].ancestorsize
+          var fees = rawMemPool[req.transaction.txid].ancestorfees
+
+          var targetFeeRate = parseFloat(req.query.feeRate) // BTC/kB
+
+          var targetFee = targetFeeRate * (size / 1000) // BTC
+
+          var missingFee = targetFee - (fees / 1e8) // BTC
+
+          if (missingFee < (1 / 1e8)) { // if missing fee less than one satoshi
+            return res.jsonp({extraFeeNeeded: 0});
+          } else {
+            return res.jsonp({extraFeeNeeded: missingFee});
+          }
+        } else { // txid was not in rawMemPool even though confirmations == 0
+          return res.status(500).send('Internal Server Error'); // should we just return 0?
+        }
+      })
+    }
+  }
+};
+
 
 var getTransaction = function(txid, cb) {
 
