@@ -9,6 +9,8 @@ var Address = require('../models/Address');
 var common = require('./common');
 var async = require('async');
 
+var RPC_CONCURRENCY = 5;
+
 var tDb = require('../../lib/TransactionDb').default();
 
 var getAddr = function(req, res, next) {
@@ -101,7 +103,7 @@ exports.multitxs = function(req, res, next) {
 
     if (paginated) {
       txs.sort(function(a, b) {
-        return (b.ts || b.ts) - (a.ts || a.ts);
+        return (b.firstSeenTs || b.ts) - (a.firstSeenTs || a.ts);
       });
       var start = Math.max(from || 0, 0);
       var end = Math.min(to || txs.length, txs.length);
@@ -111,10 +113,15 @@ exports.multitxs = function(req, res, next) {
     var txIndex = {};
     _.each(txs, function (tx) { txIndex[tx.txid] = tx; });
 
-    async.each(txs, function (tx, callback) {
-      tDb.fromIdWithInfo(tx.txid, function(err, tx) {
+    async.eachLimit(txs, RPC_CONCURRENCY, function(tx2, callback) {
+      tDb.fromIdWithInfo(tx2.txid, function(err, tx) {
         if (err) console.log(err);
         if (tx && tx.info) {
+
+          if (tx2.firstSeenTs)
+            tx.info.firstSeenTs = tx2.firstSeenTs;
+
+
           txIndex[tx.txid].info = tx.info;
         }
         callback();
