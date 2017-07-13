@@ -1,7 +1,7 @@
 {
   "name": "insight-api",
   "description": "A Bitcoin blockchain REST and web socket API service for Bitcore Node.",
-  "version": "0.3.2",
+  "version": "0.4.3",
   "repository": "git://github.com/bitpay/insight-api.git",
   "contributors": [
     {
@@ -61,17 +61,20 @@
   "bitcoreNode": "lib",
   "dependencies": {
     "async": "*",
-    "bitcore-lib": "^0.13.7",
-    "bitcore-message": "^1.0.1",
+    "bitcore-lib": "satoshilabs/bitcore-lib#8e2caed768aa269b433a14981f0e36c0838a3d91",
+    "bitcore-message": "satoshilabs/bitcore-message#3c91c372285018d4a840dca8731899107b7c31df",
     "body-parser": "^1.13.3",
+    "compression": "^1.6.1",
     "lodash": "^2.4.1",
+    "lru-cache": "^4.0.1",
+    "morgan": "^1.7.0",
     "request": "^2.64.0"
   },
   "devDependencies": {
-    "chai": "*",
-    "mocha": "~1.16.2",
+    "chai": "^3.5.0",
+    "mocha": "^2.4.5",
     "proxyquire": "^1.7.2",
-    "should": "^2.1.1",
+    "should": "^8.3.1",
     "sinon": "^1.10.3"
   }
 }

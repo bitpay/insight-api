@@ -8,13 +8,13 @@ describe('Status', function() {
   describe('/status', function() {
     var info = {
       version: 110000,
-      protocolversion: 70002,
+      protocolVersion: 70002,
       blocks: 548645,
-      timeoffset: 0,
+      timeOffset: 0,
       connections: 8,
       difficulty: 21546.906405522557,
       testnet: true,
-      relayfee: 1000,
+      relayFee: 1000,
       errors: ''
     };
 
@@ -31,13 +31,9 @@ describe('Status', function() {
     var node = {
       services: {
         bitcoind: {
-          getInfo: sinon.stub().returns(info),
-          getBestBlockHash: sinon.stub().returns(outSetInfo.bestblock)
-        },
-        db: {
-          tip: {
-            hash: outSetInfo.bestblock
-          }
+          getInfo: sinon.stub().callsArgWith(0, null, info),
+          getBestBlockHash: sinon.stub().callsArgWith(0, null, outSetInfo.bestblock),
+          tiphash: outSetInfo.bestblock
         }
       }
     };
@@ -118,15 +114,10 @@ describe('Status', function() {
     it('should have correct data', function(done) {
       var node = {
         services: {
-          db: {
-            tip: {
-              __height: 500000
-            }
-          },
           bitcoind: {
             height: 500000,
-            isSynced: sinon.stub().returns(true),
-            syncPercentage: sinon.stub().returns(99.99)
+            isSynced: sinon.stub().callsArgWith(0, null, true),
+            syncPercentage: sinon.stub().callsArgWith(0, null, 99.99)
           }
         }
       };
