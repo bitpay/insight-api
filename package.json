@@ -61,6 +61,7 @@
   "bitcoreNode": "lib",
   "dependencies": {
     "async": "*",
+    "bcoin": "bcoin-org/bcoin#886008a1822ce1da7fa8395ee7db4bcc1750a28a",
     "bitcore-lib": "bitpay/bitcore-lib#transitional",
     "bitcore-message": "^1.0.1",
     "body-parser": "^1.13.3",
