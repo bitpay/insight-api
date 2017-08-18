@@ -1,42 +1,8 @@
 {
   "name": "insight-api",
   "description": "A Bitcoin blockchain REST and web socket API service for Bitcore Node.",
-  "version": "0.4.3",
+  "version": "5.0.0-beta.1",
   "repository": "git://github.com/bitpay/insight-api.git",
-  "contributors": [
-    {
-      "name": "Gustavo Cortez",
-      "email": "cmgustavo83@gmail.com"
-    },
-    {
-      "name": "Ivan Socolsky",
-      "email": "jungans@gmail.com"
-    },
-    {
-      "name": "Juan Ignacio Sosa Lopez",
-      "email": "bechilandia@gmail.com"
-    },
-    {
-      "name": "Manuel Araoz",
-      "email": "manuelaraoz@gmail.com"
-    },
-    {
-      "name": "Matias Alejo Garcia",
-      "email": "ematiu@gmail.com"
-    },
-    {
-      "name": "Mario Colque",
-      "email": "colquemario@gmail.com"
-    },
-    {
-      "name": "Patrick Nagurny",
-      "email": "patrick@bitpay.com"
-    },
-    {
-      "name": "Braydon Fuller",
-      "email": "braydon@bitpay.com"
-    }
-  ],
   "bugs": {
     "url": "https://github.com/bitpay/insight-api/issues"
   },
@@ -52,7 +18,7 @@
     "bitcore"
   ],
   "engines": {
-    "node": ">=0.12.0"
+    "node": ">=8.2.0"
   },
   "scripts": {
     "test": "NODE_ENV=test mocha -R spec --recursive"
