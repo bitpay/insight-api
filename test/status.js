@@ -30,10 +30,10 @@ describe('Status', function() {
 
     var node = {
       services: {
-        bitcoind: {
-          getInfo: sinon.stub().callsArgWith(0, null, info),
+        header: { getInfo: sinon.stub().callsArgWith(0, null, info) },
+        block: {
+          getTip: sinon.stub().returns({ hash: outSetInfo.bestblock }),
           getBestBlockHash: sinon.stub().callsArgWith(0, null, outSetInfo.bestblock),
-          tiphash: outSetInfo.bestblock
         }
       }
     };
@@ -54,6 +54,7 @@ describe('Status', function() {
           should.exist(data.info.difficulty);
           should.exist(data.info.testnet);
           should.exist(data.info.relayfee);
+
           done();
         }
       };
@@ -114,10 +115,11 @@ describe('Status', function() {
     it('should have correct data', function(done) {
       var node = {
         services: {
-          bitcoind: {
-            height: 500000,
+          header: { getInfo: sinon.stub() },
+          block: {
             isSynced: sinon.stub().callsArgWith(0, null, true),
-            syncPercentage: sinon.stub().callsArgWith(0, null, 99.99)
+            syncPercentage: sinon.stub().callsArgWith(0, null, 100),
+            getTip: sinon.stub().returns({ height: 500000, hash: 'aa' })
           }
         }
       };
@@ -146,7 +148,11 @@ describe('Status', function() {
 
   describe('/peer', function() {
     it('should have correct data', function(done) {
-      var node = {};
+      var node = {
+        services: {
+          block: { getTip: sinon.stub().returns({ height: 123 }) }
+        }
+      };
 
       var expected = {
         connected: true,
@@ -170,7 +176,14 @@ describe('Status', function() {
 
   describe('/version', function() {
     it('should have correct data', function(done) {
-      var node = {};
+      var node = {
+        services: {
+          block: {
+            getTip: sinon.stub().returns({ height: 123 })
+          }
+        }
+      };
+
       var expected = {
         version: require('../package.json').version
       };

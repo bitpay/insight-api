@@ -175,12 +175,8 @@ describe('Transactions', function() {
       };
 
       var node = {
+        services: { block: { getTip: sinon.stub().returns({ height: 534203 }) } },
         getDetailedTransaction: sinon.stub().callsArgWith(1, null, detailedTransaction),
-        services: {
-          bitcoind: {
-            height: 534203
-          },
-        },
         network: 'testnet'
       };
 
@@ -352,14 +348,10 @@ describe('Transactions', function() {
       };
 
       var node = {
+        services: { block: { getTip: sinon.stub().returns({ height: 534209 }) } },
         getBlockOverview: sinon.stub().callsArgWith(1, null, blockOverview),
         getDetailedTransaction: function(txid, callback) {
           callback(null, transactionDetails[txid]);
-        },
-        services: {
-          bitcoind: {
-            height: 534209
-          }
         },
         network: 'testnet'
       };
@@ -738,12 +730,8 @@ describe('Transactions', function() {
       txinfos[1].tx.outputs[1].spentHeight = 112;
 
       var node = {
+        services: { block: { getTip: sinon.stub().returns({ height: 534223 }) } },
         getAddressHistory: sinon.stub().callsArgWith(2, null, historyResult),
-        services: {
-          bitcoind: {
-            height: 534223
-          }
-        },
         network: 'testnet'
       };
 
@@ -948,6 +936,7 @@ describe('Transactions', function() {
       var hex = '01000000010000000000000000000000000000000000000000000000000000000000000000ffffffff2303d6250800feb0aae355fe263600000963676d696e6572343208ae5800000000000000ffffffff01c018824a000000001976a91468bedce8982d25c3b6b03f6238cbad00378b8ead88ac00000000';
 
       var node = {
+        services: { block: { getTip: sinon.stub().returns({ height: 534233 }) } },
         getTransaction: sinon.stub().callsArgWith(1, null, bitcore.Transaction().fromBuffer(new Buffer(hex, 'hex')))
       };
 
@@ -988,6 +977,7 @@ describe('Transactions', function() {
       var tx = bitcore.Transaction().fromBuffer(new Buffer(rawTx, 'hex'));
 
       var node = {
+        services: { block: { getTip: sinon.stub().returns({ height: 534233 }) } },
         network: bitcore.Networks.livenet
       };
 
@@ -1012,6 +1002,7 @@ describe('Transactions', function() {
       var tx = bitcore.Transaction().fromBuffer(new Buffer(rawTx, 'hex'));
 
       var node = {
+        services: { block: { getTip: sinon.stub().returns({ height: 534233 }) } },
         network: bitcore.Networks.testnet
       };
 
@@ -1032,6 +1023,7 @@ describe('Transactions', function() {
       ];
 
       var node = {
+        services: { block: { getTip: sinon.stub().returns({ height: 534233 }) } },
         network: bitcore.Networks.livenet
       };
 

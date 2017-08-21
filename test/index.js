@@ -8,7 +8,9 @@ describe('Index', function() {
   describe('@constructor', function() {
     it('will set rate limiter options', function() {
       var options = {};
-      var node = {};
+      var node = { services: { block: {} },
+        log: sinon.stub()
+      };
       var index = new InsightAPI({
         rateLimiterOptions: options,
         node: node
@@ -16,7 +18,9 @@ describe('Index', function() {
       index.rateLimiterOptions.should.equal(options);
     });
     it('will set disable rate limiter option', function() {
-      var node = {};
+      var node = { services: { block: {} },
+        log: sinon.stub()
+      };
       var index = new InsightAPI({
         disableRateLimiter: true,
         node: node
@@ -29,7 +33,9 @@ describe('Index', function() {
       var options = {
         whitelist: ['127.0.0.1']
       };
-      var node = {};
+      var node = { services: { block: {} },
+        log: sinon.stub()
+      };
       var index = new InsightAPI({
         rateLimiterOptions: options,
         node: node
@@ -40,7 +46,7 @@ describe('Index', function() {
   });
   describe('#cache', function() {
     it('will set cache control header', function(done) {
-      var node = {
+      var node = { services: { block: {} },
         log: sinon.stub()
       };
       var index = new InsightAPI({
@@ -60,9 +66,11 @@ describe('Index', function() {
       });
     });
     it('will NOT set cache control header', function(done) {
-      var node = {
+
+      var node = { services: { block: {} },
         log: sinon.stub()
       };
+
       var index = new InsightAPI({
         enableCache: false,
         node: node
@@ -80,7 +88,7 @@ describe('Index', function() {
   });
   describe('#cacheShort', function() {
     it('will set SHORT cache control header', function(done) {
-      var node = {
+      var node = { services: { block: {} },
         log: sinon.stub()
       };
       var index = new InsightAPI({
@@ -101,7 +109,7 @@ describe('Index', function() {
       });
     });
     it('will set SHORT DEFAULT cache control header', function(done) {
-      var node = {
+      var node = { services: { block: {} },
         log: sinon.stub()
       };
       var index = new InsightAPI({
@@ -123,7 +131,7 @@ describe('Index', function() {
   });
   describe('#cacheLong', function() {
     it('will set LONG cache control header', function(done) {
-      var node = {
+      var node = { services: { block: {} },
         log: sinon.stub()
       };
       var index = new InsightAPI({
@@ -144,7 +152,8 @@ describe('Index', function() {
       });
     });
     it('will set LONG DEFAULT cache control header', function(done) {
-      var node = {
+
+      var node = { services: { block: {} },
         log: sinon.stub()
       };
       var index = new InsightAPI({
@@ -166,7 +175,7 @@ describe('Index', function() {
   });
   describe('#setupRoutes', function() {
     it('will use rate limiter by default', function() {
-      var node = {};
+      var node = { services: { block: {} } };
       var index = new InsightAPI({
         node: node
       });
@@ -189,7 +198,7 @@ describe('Index', function() {
       middleware.callCount.should.equal(1);
     });
     it('will NOT use rate limiter if disabled', function() {
-      var node = {};
+      var node = { services: { block: {} } };
       var index = new InsightAPI({
         node: node,
         disableRateLimiter: true

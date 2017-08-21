@@ -191,6 +191,7 @@ describe('Addresses', function() {
   };
   describe('/addr/:addr', function() {
     var node = {
+      services: { address: {} },
       getAddressSummary: sinon.stub().callsArgWith(2, null, summary)
     };
 
@@ -229,7 +230,7 @@ describe('Addresses', function() {
     });
 
     it('handle error', function() {
-      var testnode = {};
+      var testnode = { services: { address: { getTip: sinon.stub().returns({ height: 123 }) } } };
       testnode.log = {};
       testnode.log.error = sinon.stub();
       var controller = new AddressController(testnode);
@@ -328,11 +329,7 @@ describe('Addresses', function() {
       ];
 
       var node = {
-        services: {
-          bitcoind: {
-            height: 534230
-          }
-        },
+        services: { address: {}, block: { getTip: sinon.stub().returns({ height: 534230 }) } },
         getAddressUnspentOutputs: sinon.stub().callsArgWith(2, null, utxos.slice(0, 1))
       };
 
@@ -392,11 +389,7 @@ describe('Addresses', function() {
       ];
 
       var node = {
-        services: {
-          bitcoind: {
-            height: 534230
-          }
-        },
+        services: { address: {}, block: { getTip: sinon.stub().returns({ height: 534230 }) } },
         getAddressUnspentOutputs: sinon.stub().callsArgWith(2, null, utxos)
       };
 
@@ -550,11 +543,7 @@ describe('Addresses', function() {
 
       var node = {
         getAddressHistory: sinon.stub().callsArgWith(2, null, txinfos2),
-        services: {
-          bitcoind: {
-            height: 534232
-          }
-        },
+        services: { address: {}, block: { getTip: sinon.stub().returns({ height: 534232 }) } },
         network: 'testnet'
       };
 
@@ -687,11 +676,7 @@ describe('Addresses', function() {
 
       var node = {
         getAddressHistory: sinon.stub().callsArgWith(2, null, txinfos2),
-        services: {
-          bitcoind: {
-            height: 534232
-          }
-        },
+        services: { block: { getTip: sinon.stub().returns({ height: 534232 }) }, address: {} },
         network: 'testnet'
       };
 
@@ -716,7 +701,7 @@ describe('Addresses', function() {
   });
   describe('#_getTransformOptions', function() {
     it('will return false with value of string "0"', function() {
-      var node = {};
+      var node = { services: { address: {}, block: {} } };
       var addresses = new AddressController(node);
       var req = {
         query: {
@@ -733,7 +718,7 @@ describe('Addresses', function() {
       });
     });
     it('will return true with value of string "1"', function() {
-      var node = {};
+      var node = { services: { address: {}, block: {} } };
       var addresses = new AddressController(node);
       var req = {
         query: {
@@ -750,7 +735,7 @@ describe('Addresses', function() {
       });
     });
     it('will return true with value of number "1"', function() {
-      var node = {};
+      var node = { services: { address: {}, block: {} } };
       var addresses = new AddressController(node);
       var req = {
         query: {
