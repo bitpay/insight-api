@@ -9,7 +9,7 @@ describe('Utils', function() {
     it('should give the correct fee', function(done) {
       var node = {
         services: {
-          bitcoind: {
+          fee: {
             estimateFee: function(blocks, callback) {
               switch(blocks) {
               case 1:
