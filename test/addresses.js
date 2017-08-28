@@ -184,8 +184,8 @@ var utxos = [
 describe('Addresses', function() {
   var summary = {
     balance: 0,
-    totalReceived: 2782729129,
-    totalSpent: 2782729129,
+    totalReceivedSat: 2782729129,
+    totalSent: 2782729129,
     unconfirmedBalance: 0,
     appearances: 2,
     unconfirmedAppearances: 0,

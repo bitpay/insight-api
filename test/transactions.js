@@ -13,60 +13,60 @@ describe('Transactions', function() {
     it('should have correct data', function(done) {
 
       var insight = {
-        "txid": "eac9723230b8b632117ac3d75288d6f8eb81cf1ea553eb9fd42562d5f767d54a",
-        "version": 1,
-        "locktime": 0,
-        "vin": [
+        'txid': 'eac9723230b8b632117ac3d75288d6f8eb81cf1ea553eb9fd42562d5f767d54a',
+        'version': 1,
+        'locktime': 0,
+        'vin': [
           {
-            "txid": "46e58a68bb9ec9b458a9599dc2bac1e1fa09ad15c29c7f923c8f6f0aa33d6456",
-            "vout": 1,
-            "sequence": 4294967295,
-            "n": 0,
-            "scriptSig": {
-              "hex": "47304402203ddb49db43074b421ec6d5604ae91aac37f4715139e0c83ea1145379e8cbf02702207fbc92c4038ad501989b097844ae4e337c9388f0713110620b40e582b85fdff3012102cd90aa18ec8e3b35c0447ffc713c945cb837429d33d075d1b0f050c72ea838d2",
-              "asm": "304402203ddb49db43074b421ec6d5604ae91aac37f4715139e0c83ea1145379e8cbf02702207fbc92c4038ad501989b097844ae4e337c9388f0713110620b40e582b85fdff301 02cd90aa18ec8e3b35c0447ffc713c945cb837429d33d075d1b0f050c72ea838d2"
+            'txid': '46e58a68bb9ec9b458a9599dc2bac1e1fa09ad15c29c7f923c8f6f0aa33d6456',
+            'vout': 1,
+            'sequence': 4294967295,
+            'n': 0,
+            'scriptSig': {
+              'hex': '47304402203ddb49db43074b421ec6d5604ae91aac37f4715139e0c83ea1145379e8cbf02702207fbc92c4038ad501989b097844ae4e337c9388f0713110620b40e582b85fdff3012102cd90aa18ec8e3b35c0447ffc713c945cb837429d33d075d1b0f050c72ea838d2',
+              'asm': '304402203ddb49db43074b421ec6d5604ae91aac37f4715139e0c83ea1145379e8cbf02702207fbc92c4038ad501989b097844ae4e337c9388f0713110620b40e582b85fdff301 02cd90aa18ec8e3b35c0447ffc713c945cb837429d33d075d1b0f050c72ea838d2'
             },
-            "addr": "1NqgMfGUeELP2BfxD4hQuJSRq2d3DVJcCi",
-            "valueSat": 1546063700,
-            "value": 15.460637,
-            "doubleSpentTxID": null
+            'addr': '1NqgMfGUeELP2BfxD4hQuJSRq2d3DVJcCi',
+            'valueSat': 1546063700,
+            'value': 15.460637,
+            'doubleSpentTxID': null
           }
         ],
-        "vout": [
+        'vout': [
           {
-            "value": "0.37100000",
-            "n": 0,
-            "scriptPubKey": {
-              "hex": "76a914bc345e0e0e5b0dbddb7b35ef3430fedd528dd1b788ac",
-              "asm": "OP_DUP OP_HASH160 bc345e0e0e5b0dbddb7b35ef3430fedd528dd1b7 OP_EQUALVERIFY OP_CHECKSIG",
-              "addresses": [
-                "1JA8mcfrBv1YYsASAp9jtohm8x2q7LnUhs"
+            'value': '0.37100000',
+            'n': 0,
+            'scriptPubKey': {
+              'hex': '76a914bc345e0e0e5b0dbddb7b35ef3430fedd528dd1b788ac',
+              'asm': 'OP_DUP OP_HASH160 bc345e0e0e5b0dbddb7b35ef3430fedd528dd1b7 OP_EQUALVERIFY OP_CHECKSIG',
+              'addresses': [
+                '1JA8mcfrBv1YYsASAp9jtohm8x2q7LnUhs'
               ],
-              "type": "pubkeyhash"
+              'type': 'pubkeyhash'
             }
           },
           {
-            "value": "15.08763700",
-            "n": 1,
-            "scriptPubKey": {
-              "hex": "76a914c2c74d7519d4425fc1a253f066d980164341554a88ac",
-              "asm": "OP_DUP OP_HASH160 c2c74d7519d4425fc1a253f066d980164341554a OP_EQUALVERIFY OP_CHECKSIG",
-              "addresses": [
-                "1Jktr121Hm63qtWBMV8dCNJNW2KtWXy4fp"
+            'value': '15.08763700',
+            'n': 1,
+            'scriptPubKey': {
+              'hex': '76a914c2c74d7519d4425fc1a253f066d980164341554a88ac',
+              'asm': 'OP_DUP OP_HASH160 c2c74d7519d4425fc1a253f066d980164341554a OP_EQUALVERIFY OP_CHECKSIG',
+              'addresses': [
+                '1Jktr121Hm63qtWBMV8dCNJNW2KtWXy4fp'
               ],
-              "type": "pubkeyhash"
+              'type': 'pubkeyhash'
             }
           }
         ],
-        "blockhash": "0000000000000000009d2e9b7a984d55c6c99ba62f98e9bc7dad8b1e779045a3",
-        "blockheight": 481763,
-        "confirmations": 4,
-        "time": 1503507151,
-        "blocktime": 1503507151,
-        "valueOut": 15.458637,
-        "size": 225,
-        "valueIn": 15.460637,
-        "fees": 0.002
+        'blockhash': '0000000000000000009d2e9b7a984d55c6c99ba62f98e9bc7dad8b1e779045a3',
+        'blockheight': 481763,
+        'confirmations': 4,
+        'time': 1503507151,
+        'blocktime': 1503507151,
+        'valueOut': 15.458637,
+        'size': 225,
+        'valueIn': 15.460637,
+        'fees': 0.002
       };
 
       var bcoinTx = bcoin.tx.fromRaw('010000000156643da30a6f8f3c927f9cc215ad09fae1c1bac29d59a958b4c99ebb688ae546010000006a47304402203ddb49db43074b421ec6d5604ae91aac37f4715139e0c83ea1145379e8cbf02702207fbc92c4038ad501989b097844ae4e337c9388f0713110620b40e582b85fdff3012102cd90aa18ec8e3b35c0447ffc713c945cb837429d33d075d1b0f050c72ea838d2ffffffff02e0193602000000001976a914bc345e0e0e5b0dbddb7b35ef3430fedd528dd1b788ac34e8ed59000000001976a914c2c74d7519d4425fc1a253f066d980164341554a88ac00000000', 'hex');
@@ -85,7 +85,7 @@ describe('Transactions', function() {
             getTip: sinon.stub().returns({ height: 481766 })
           },
           transaction: {
-            getDetailedTransaction: sinon.stub().callsArgWith(1, null, bcoinTx)
+            getDetailedTransaction: sinon.stub().callsArgWith(2, null, bcoinTx)
           }
         }
       };
@@ -156,41 +156,41 @@ describe('Transactions', function() {
       var transactions = new TxController(node);
 
       var insight = {
-        "pagesTotal": 1,
-        "txs": [
+        'pagesTotal': 1,
+        'txs': [
           {
-            "txid": "9b0fc92260312ce44e74ef369f5c66bbb85848f2eddd5a7a1cde251e54ccfdd5",
-            "version": 1,
-            "locktime": 0,
-            "vin": [
+            'txid': '9b0fc92260312ce44e74ef369f5c66bbb85848f2eddd5a7a1cde251e54ccfdd5',
+            'version': 1,
+            'locktime': 0,
+            'vin': [
               {
-                "coinbase": "04ffff001d010b",
-                "sequence": 4294967295,
-                "n": 0
+                'coinbase': '04ffff001d010b',
+                'sequence': 4294967295,
+                'n': 0
               }
             ],
-            "vout": [
+            'vout': [
               {
-                "value": "50.00000000",
-                "n": 0,
-                "scriptPubKey": {
-                  "hex": "41047211a824f55b505228e4c3d5194c1fcfaa15a456abdf37f9b9d97a4040afc073dee6c89064984f03385237d92167c13e236446b417ab79a0fcae412ae3316b77ac",
-                  "asm": "047211a824f55b505228e4c3d5194c1fcfaa15a456abdf37f9b9d97a4040afc073dee6c89064984f03385237d92167c13e236446b417ab79a0fcae412ae3316b77 OP_CHECKSIG",
-                  "addresses": [
-                    "1HLoD9E4SDFFPDiYfNYnkBLQ85Y51J3Zb1"
+                'value': '50.00000000',
+                'n': 0,
+                'scriptPubKey': {
+                  'hex': '41047211a824f55b505228e4c3d5194c1fcfaa15a456abdf37f9b9d97a4040afc073dee6c89064984f03385237d92167c13e236446b417ab79a0fcae412ae3316b77ac',
+                  'asm': '047211a824f55b505228e4c3d5194c1fcfaa15a456abdf37f9b9d97a4040afc073dee6c89064984f03385237d92167c13e236446b417ab79a0fcae412ae3316b77 OP_CHECKSIG',
+                  'addresses': [
+                    '1HLoD9E4SDFFPDiYfNYnkBLQ85Y51J3Zb1'
                   ],
-                  "type": "pubkeyhash"
+                  'type': 'pubkeyhash'
                 }
               }
             ],
-            "blockhash": "000000006a625f06636b8bb6ac7b960a8d03705d1ace08b1a19da3fdcc99ddbd",
-            "blockheight": 2,
-            "confirmations": 481772,
-            "time": 1231469744,
-            "blocktime": 1231469744,
-            "isCoinBase": true,
-            "valueOut": 50,
-            "size": 134
+            'blockhash': '000000006a625f06636b8bb6ac7b960a8d03705d1ace08b1a19da3fdcc99ddbd',
+            'blockheight': 2,
+            'confirmations': 481772,
+            'time': 1231469744,
+            'blocktime': 1231469744,
+            'isCoinBase': true,
+            'valueOut': 50,
+            'size': 134
           }
         ]
       };
@@ -238,49 +238,49 @@ describe('Transactions', function() {
       };
 
       var insight = {
-        "pagesTotal": 1,
-        "txs": [
+        'pagesTotal': 1,
+        'txs': [
           {
-            "txid": "1c01a2090db0850e1f1049bea02e4bbf44b6790dfeb8e054f2beb69339ef52d4",
-            "version": 1,
-            "locktime": 0,
-            "vin": [
+            'txid': '1c01a2090db0850e1f1049bea02e4bbf44b6790dfeb8e054f2beb69339ef52d4',
+            'version': 1,
+            'locktime': 0,
+            'vin': [
               {
-                "coinbase": "03835807244d696e656420627920416e74506f6f6c6a2f4542312f4144362f4e59412f1d205999aaa02b1200001fff0200",
-                "sequence": 4294967295,
-                "n": 0
+                'coinbase': '03835807244d696e656420627920416e74506f6f6c6a2f4542312f4144362f4e59412f1d205999aaa02b1200001fff0200',
+                'sequence': 4294967295,
+                'n': 0
               }
             ],
-            "vout": [
+            'vout': [
               {
-                "value": "12.85927535",
-                "n": 0,
-                "scriptPubKey": {
-                  "hex": "76a914ad7309dfc032d7f6b652e0c29ee353e63fffec6688ac",
-                  "asm": "OP_DUP OP_HASH160 ad7309dfc032d7f6b652e0c29ee353e63fffec66 OP_EQUALVERIFY OP_CHECKSIG",
-                  "addresses": [
-                    "1Gp7iCzDGMZiV55Kt8uKsux6VyoHe1aJaN"
+                'value': '12.85927535',
+                'n': 0,
+                'scriptPubKey': {
+                  'hex': '76a914ad7309dfc032d7f6b652e0c29ee353e63fffec6688ac',
+                  'asm': 'OP_DUP OP_HASH160 ad7309dfc032d7f6b652e0c29ee353e63fffec66 OP_EQUALVERIFY OP_CHECKSIG',
+                  'addresses': [
+                    '1Gp7iCzDGMZiV55Kt8uKsux6VyoHe1aJaN'
                   ],
-                  "type": "pubkeyhash"
+                  'type': 'pubkeyhash'
                 }
               },
               {
-                "value": "0.00000000",
-                "n": 1,
-                "scriptPubKey": {
-                  "hex": "6a24aa21a9ed55882e9fed16c5d3b6d77e4160a56f58c70d354d02888a99486125b638231c81",
-                  "asm": "OP_RETURN aa21a9ed55882e9fed16c5d3b6d77e4160a56f58c70d354d02888a99486125b638231c81"
+                'value': '0.00000000',
+                'n': 1,
+                'scriptPubKey': {
+                  'hex': '6a24aa21a9ed55882e9fed16c5d3b6d77e4160a56f58c70d354d02888a99486125b638231c81',
+                  'asm': 'OP_RETURN aa21a9ed55882e9fed16c5d3b6d77e4160a56f58c70d354d02888a99486125b638231c81'
                 }
               }
             ],
-            "blockhash": "000000000000000000926a0cd4a05ef116514cbf1852edc306d13eb951ec0b54",
-            "blockheight": 481411,
-            "confirmations": 52813,
-            "time": 1503242912,
-            "blocktime": 1503242912,
-            "isCoinBase": true,
-            "valueOut": 12.85927535,
-            "size": 181
+            'blockhash': '000000000000000000926a0cd4a05ef116514cbf1852edc306d13eb951ec0b54',
+            'blockheight': 481411,
+            'confirmations': 52813,
+            'time': 1503242912,
+            'blocktime': 1503242912,
+            'isCoinBase': true,
+            'valueOut': 12.85927535,
+            'size': 181
           }
         ]
       };
@@ -321,6 +321,7 @@ describe('Transactions', function() {
 
       var transactions = new TxController(node);
 
+      var txid = '25a988e54b02e0e5df146a0f8fa7b9db56210533a9f04bdfda5f4ceb6f77aadd';
       var res = {};
       var req = {
         params: {
@@ -331,7 +332,6 @@ describe('Transactions', function() {
         should(req.rawTransaction.rawtx).eql(hex);
         done();
       };
-      var txid = '25a988e54b02e0e5df146a0f8fa7b9db56210533a9f04bdfda5f4ceb6f77aadd';
       transactions.rawTransaction(req, res, next);
     });
   });
