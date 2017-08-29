@@ -1,6 +1,5 @@
 language: node_js
 node_js:
-  - 'v0.12.7'
-  - 'v4'
+  - 'v8'
 install:
   - npm install

@@ -8,6 +8,9 @@ var fs = require('fs');
 var async = require('async');
 var RPC = require('bitcoind-rpc');
 var http = require('http');
+var bitcore = require('bitcore-lib');
+var PrivateKey = bitcore.PrivateKey;
+var Transaction = bitcore.Transaction;
 
 var rpc1Address;
 var rpc2Address;
@@ -308,7 +311,7 @@ describe('Address', function() {
       function(next) {
         setTimeout(function() {
           startBitcore(next);
-        }, 6000);
+        }, 8000);
       }
     ], function(err) {
         if (err) {
@@ -324,6 +327,8 @@ describe('Address', function() {
       shutdownBitcoind(done);
     });
   });
+
+
 
   it('should get address info correctly: /addr/:addr', function(done) {
 
@@ -761,6 +766,122 @@ describe('Address', function() {
 
   });
 
+  it('should index addresses correctly', function(done) {
+    // if we send a tx that has an address in both the input and the output, does it index correctly?
+   var txid;
+   var pk1;
+   var tx;
+    async.waterfall([
+      function(next) {
+        rpc1.listUnspent(function(err, res) {
+
+          if (err) {
+            return next(err);
+          }
+
+          next(null, res.result[0]);
+
+        });
+      },
+      function(utxo, next) {
+        rpc1.dumpPrivKey(utxo.address, function(err, res) {
+          if (err) {
+            return next(err);
+          }
+          var pk = new PrivateKey(res.result);
+          pk1 = new PrivateKey('testnet');
+          var change = new PrivateKey('testnet');
+          var changeAddress = change.toAddress();
+          var from = {
+            txId: utxo.txid,
+            address: utxo.address,
+            script: utxo.scriptPubKey,
+            satoshis: utxo.amount * 1e8,
+            outputIndex: utxo.vout
+          };
+          tx = new Transaction().from(from).to(pk1.toAddress(), 2500000000).change(changeAddress).sign(pk);
+
+          rpc2.sendRawTransaction(tx.serialize(), function(err, res) {
+            if (err) {
+              return next(err);
+            }
+            txid = res.result;
+            console.log(txid);
+            next();
+          });
+        });
+      },
+      function(next) {
+        rpc2.generate(1, function() {
+          setTimeout(next, 2000);
+        });
+      },
+      function(next) {
+        var tx2 = new Transaction().from({
+          txId: txid,
+          satoshis: 2500000000,
+          outputIndex: 0,
+          script: tx.outputs[0].script.toHex(),
+          address: pk1.toAddress()
+        }).to(pk1.toAddress(), 2500000000 - 1000).sign(pk1);
+        rpc2.sendRawTransaction(tx2.serialize(), function(err, res) {
+          if (err) {
+            return next(err);
+          }
+          txid = res.result;
+          console.log(txid);
+          next();
+
+        });
+      },
+      function(next) {
+        rpc2.generate(1, function() {
+          setTimeout(next, 2000);
+        });
+      },
+    ], function(err) {
+        if (err) {
+          return done(err);
+        }
+
+        var request = http.request('http://localhost:53001/api/addr/' + pk1.toAddress(), function(res) {
+
+          var error;
+          if (res.statusCode !== 200 && res.statusCode !== 201) {
+            if (error) {
+              return;
+            }
+            return done('Error from bitcore-node webserver: ' + res.statusCode);
+          }
+
+          var resError;
+          var resData = '';
+
+          res.on('error', function(e) {
+            resError = e;
+          });
+
+          res.on('data', function(data) {
+            resData += data;
+          });
+
+          res.on('end', function() {
+            if (error) {
+              return;
+            }
+            var data = JSON.parse(resData);
+            console.log(data);
+            expect(data.transactions.length).to.equal(2);
+            done();
+          });
+
+        });
+        request.write('');
+        request.end();
+
+    });
+
+  });
 });
 
 
