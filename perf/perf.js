@@ -12,6 +12,8 @@ var bitcore = require('bitcore-lib');
 var PrivateKey = bitcore.PrivateKey;
 var Transaction = bitcore.Transaction;
 
+console.log('This test takes a really long time to run, be patient.');
+
 var rpcConfig = {
   protocol: 'http',
   user: 'local',

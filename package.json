@@ -1,7 +1,7 @@
 {
   "name": "insight-api",
   "description": "A Bitcoin blockchain REST and web socket API service for Bitcore Node.",
-  "version": "5.0.0-beta.3",
+  "version": "5.0.0-beta.4",
   "repository": "git://github.com/bitpay/insight-api.git",
   "bugs": {
     "url": "https://github.com/bitpay/insight-api/issues"
@@ -22,7 +22,8 @@
   },
   "scripts": {
     "test": "NODE_ENV=test mocha -R spec --recursive",
-    "regtest": "mocha -R spec regtest"
+    "regtest": "mocha -R spec regtest",
+    "perf": "mocha -R spec perf"
   },
   "main": "lib",
   "bitcoreNode": "lib",
@@ -41,7 +42,7 @@
   },
   "devDependencies": {
     "bitcoind-rpc": "^0.7.0",
-    "bitcore-p2p": "^1.1.2",
+    "bitcore-p2p": "5.0.0-beta.2",
     "chai": "^3.5.0",
     "mkdirp": "^0.5.1",
     "mocha": "^2.4.5",

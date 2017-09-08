@@ -225,7 +225,7 @@ describe('Reorg', function() {
         var msg = messages.Inventory([inv]);
         tcpSocket.write(msg.toBuffer());
 
-        // wait 2 secs until the reorg happens, if it takes any longer the test ought to fail anyway
+        // wait 5 secs until the reorg happens, if it takes any longer the test ought to fail anyway
         setTimeout(function() {
           var error;
           var request = http.request('http://localhost:53001/api/block/' + reorgBlock.rhash(), function(res) {
@@ -267,7 +267,7 @@ describe('Reorg', function() {
 
           request.write('');
           request.end();
-        }, 2000);
+        }, 5000);
     }, 2000);
 
 
