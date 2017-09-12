@@ -30,8 +30,8 @@ describe('Status', function() {
 
     var node = {
       services: {
-        header: { getInfo: sinon.stub().callsArgWith(0, null, info) },
         block: {
+          getInfo: sinon.stub().callsArgWith(0, null, info),
           getTip: sinon.stub().returns({ hash: outSetInfo.bestblock }),
           getBestBlockHash: sinon.stub().callsArgWith(0, null, outSetInfo.bestblock),
         }
@@ -115,8 +115,8 @@ describe('Status', function() {
     it('should have correct data', function(done) {
       var node = {
         services: {
-          header: { getInfo: sinon.stub() },
           block: {
+            getInfo: sinon.stub(),
             isSynced: sinon.stub().callsArgWith(0, null, true),
             syncPercentage: sinon.stub().callsArgWith(0, null, 100),
             getTip: sinon.stub().returns({ height: 500000, hash: 'aa' })

@@ -14,6 +14,7 @@ var Transaction = bitcore.Transaction;
 
 var rpc1Address;
 var rpc2Address;
+var blocksGenerated = 0;
 
 var rpcConfig = {
   protocol: 'http',
@@ -39,7 +40,7 @@ var bitcoin = {
     server: 1,
     rpcuser: 'local',
     rpcpassword: 'localtest',
-    //printtoconsole: 1
+    //printtoconsole: 1,
     rpcport: 58332,
   },
   datadir: null,
@@ -89,6 +90,76 @@ var bitcore = {
   exec: 'bitcored',  //if this isn't on your PATH, then provide the absolute path, e.g. /usr/local/bin/bitcored
   args: ['start'],
   process: null
+};
+
+var request = function(httpOpts, callback) {
+
+  var request = http.request(httpOpts, function(res) {
+
+    if (res.statusCode !== 200 && res.statusCode !== 201) {
+      return callback('Error from bitcore-node webserver: ' + res.statusCode);
+    }
+
+    var resError;
+    var resData = '';
+
+    res.on('error', function(e) {
+      resError = e;
+    });
+
+    res.on('data', function(data) {
+      resData += data;
+    });
+
+    res.on('end', function() {
+
+      if (resError) {
+        return callback(resError);
+      }
+      var data = JSON.parse(resData);
+      callback(null, data);
+
+    });
+
+  });
+
+  request.on('error', function(err) {
+    callback(err);
+  });
+
+  if (httpOpts.body) {
+    request.write(httpOpts.body);
+  } else {
+    request.write('');
+  }
+  request.end();
+};
+
+var waitForBlocksGenerated = function(callback) {
+
+  var httpOpts = {
+    hostname: 'localhost',
+    port: 53001,
+    path: '/api/status',
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  };
+
+  async.retry({ interval: 1000, times: 100 }, function(next) {
+
+    request(httpOpts, function(err, data) {
+      if (err) {
+        return next(err);
+      }
+      if (data.info.blocks < blocksGenerated) {
+        return next(data);
+      }
+      next();
+    });
+
+  }, callback);
 };
 
 var startBitcoind = function(count, callback) {
@@ -159,7 +230,18 @@ var startBitcoind = function(count, callback) {
       });
 
       console.log(count + ' bitcoind\'s started at pid(s): ' + pids);
-      callback();
+
+      async.retry({ interval: 1000, times: 1000 }, function(next) {
+        rpc1.getInfo(function(err, res) {
+          if (err) {
+            return next(err);
+          }
+          // there is a bit of time even after the rpc server comes online that the rpc server is not truly ready
+          setTimeout(function(err) {
+            next();
+          }, 1000);
+        });
+      }, callback);
   });
 };
 
@@ -183,7 +265,7 @@ var buildInitialChain = function(callback) {
   async.waterfall([
     function(next) {
       console.log('checking to see if bitcoind\'s are connected to each other.');
-      rpc1.getinfo(function(err, res) {
+      rpc1.getInfo(function(err, res) {
         if (err || res.result.connections !== 1) {
           next(err || new Error('bitcoind\'s not connected to each other.'));
         }
@@ -192,6 +274,7 @@ var buildInitialChain = function(callback) {
     },
     function(next) {
       console.log('generating 101 blocks');
+      blocksGenerated += 101;
       rpc1.generate(101, next);
     },
     function(res, next) {
@@ -210,7 +293,8 @@ var buildInitialChain = function(callback) {
     },
     function(res, next) {
       console.log('TXID: ' + res.result);
-      console.log('generating 6 blocks');
+      console.log('generating 7 blocks');
+      blocksGenerated += 7;
       rpc1.generate(7, next);
     },
     function(res, next) {
@@ -236,6 +320,7 @@ var buildInitialChain = function(callback) {
       txid = res.result;
       console.log('sending from rpc2Address TXID: ', res);
       console.log('generating 6 blocks');
+      blocksGenerated += 6;
       rpc2.generate(6, next);
     }
   ], function(err) {
@@ -285,11 +370,10 @@ var startBitcore = function(callback) {
 
       });
 
-      callback();
+      waitForBlocksGenerated(callback);
     });
 
   });
-
 
 };
 
@@ -304,21 +388,12 @@ describe('Address', function() {
         startBitcoind(2, next);
       },
       function(next) {
-        setTimeout(function() {
-          buildInitialChain(next);
-        }, 8000);
+        buildInitialChain(next);
       },
       function(next) {
-        setTimeout(function() {
-          startBitcore(next);
-        }, 8000);
+        startBitcore(next);
       }
-    ], function(err) {
-        if (err) {
-          return done(err);
-        }
-        setTimeout(done, 2000);
-    });
+    ], done);
 
   });
 
@@ -332,126 +407,85 @@ describe('Address', function() {
 
   it('should get address info correctly: /addr/:addr', function(done) {
 
+    var httpOpts = {
+      hostname: 'localhost',
+      port: 53001,
+      path: 'http://localhost:53001/api/addr/' + rpc2Address,
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    };
 
-    var request = http.request('http://localhost:53001/api/addr/' + rpc2Address, function(res) {
+    request(httpOpts, function(err, data) {
 
-      var error;
-      if (res.statusCode !== 200 && res.statusCode !== 201) {
-        if (error) {
-          return;
-        }
-        return done('Error from bitcore-node webserver: ' + res.statusCode);
+      if(err) {
+        return done(err);
       }
 
-      var resError;
-      var resData = '';
-
-      res.on('error', function(e) {
-        resError = e;
-      });
-
-      res.on('data', function(data) {
-        resData += data;
-      });
-
-      res.on('end', function() {
-        if (error) {
-          return;
-        }
-        var data = JSON.parse(resData);
-        console.log(data);
-        expect(data.balance).to.equal(0);
-        expect(data.totalSent).to.equal(25);
-        done();
-      });
+      console.log(data);
+      expect(data.balance).to.equal(0);
+      expect(data.totalSent).to.equal(25);
+      done();
 
     });
-    request.write('');
-    request.end();
+
   });
 
   it('should get a utxo: /addr/:addr/utxo', function(done) {
 
-    var request = http.request('http://localhost:53001/api/addr/' + rpc1Address + '/utxo', function(res) {
+    var httpOpts = {
+      hostname: 'localhost',
+      port: 53001,
+      path: 'http://localhost:53001/api/addr/' + rpc1Address + '/utxo',
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    };
 
-      var error;
-      if (res.statusCode !== 200 && res.statusCode !== 201) {
-        if (error) {
-          return;
-        }
-        return done('Error from bitcore-node webserver: ' + res.statusCode);
+    request(httpOpts, function(err, data) {
+
+      if(err) {
+        return done(err);
       }
 
-      var resError;
-      var resData = '';
-
-      res.on('error', function(e) {
-        resError = e;
-      });
-
-      res.on('data', function(data) {
-        resData += data;
-      });
-
-      res.on('end', function() {
-        if (error) {
-          return;
-        }
-        var data = JSON.parse(resData);
-        console.log(data);
-        expect(data.length).equal(1);
-        expect(data[0].amount).equal(20);
-        expect(data[0].satoshis).equal(2000000000);
-        expect(data[0].confirmations).equal(6);
-        done();
-      });
+      console.log(data);
+      expect(data.length).equal(1);
+      expect(data[0].amount).equal(20);
+      expect(data[0].satoshis).equal(2000000000);
+      expect(data[0].confirmations).equal(6);
+      done();
 
     });
-
-    request.write('');
-    request.end();
 
   });
 
   it('should get multi-address utxos: /addrs/:addrs/utxo', function(done) {
 
-    var request = http.request('http://localhost:53001/api/addrs/' + rpc2Address + ',' + rpc1Address + '/utxo', function(res) {
+    var httpOpts = {
+      hostname: 'localhost',
+      port: 53001,
+      path: 'http://localhost:53001/api/addrs/' + rpc2Address + ',' + rpc1Address + '/utxo',
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    };
 
-      var error;
-      if (res.statusCode !== 200 && res.statusCode !== 201) {
-        if (error) {
-          return;
-        }
-        return done('Error from bitcore-node webserver: ' + res.statusCode);
+    request(httpOpts, function(err, data) {
+
+      if(err) {
+        return done(err);
       }
 
-      var resError;
-      var resData = '';
-
-      res.on('error', function(e) {
-        resError = e;
-      });
-
-      res.on('data', function(data) {
-        resData += data;
-      });
-
-      res.on('end', function() {
-        if (error) {
-          return;
-        }
-        var data = JSON.parse(resData);
-        console.log(data);
-        expect(data.length).to.equal(1);
-        expect(data[0].amount).to.equal(20);
-        expect(data[0].satoshis).to.equal(2000000000);
-        done();
-      });
+      console.log(data);
+      expect(data.length).to.equal(1);
+      expect(data[0].amount).to.equal(20);
+      expect(data[0].satoshis).to.equal(2000000000);
+      done();
 
     });
-
-    request.write('');
-    request.end();
 
   });
 
@@ -466,49 +500,26 @@ describe('Address', function() {
       port: 53001,
       path: '/api/addrs/utxo',
       method: 'POST',
+      body: body,
       headers: {
         'Content-Type': 'application/json',
         'Content-Length': body.length
-      }
+      },
     };
 
-    var request = http.request(httpOpts, function(res) {
+    request(httpOpts, function(err, data) {
 
-      var error;
-      if (res.statusCode !== 200 && res.statusCode !== 201) {
-        if (error) {
-          return;
-        }
-        return done('Error from bitcore-node webserver: ' + res.statusCode);
+      if(err) {
+        return done(err);
       }
 
-      var resError;
-      var resData = '';
-
-      res.on('error', function(e) {
-        resError = e;
-      });
-
-      res.on('data', function(data) {
-        resData += data;
-      });
-
-      res.on('end', function() {
-        if (error) {
-          return;
-        }
-        var data = JSON.parse(resData);
-        console.log(data);
-        expect(data.length).to.equal(1);
-        expect(data[0].amount).to.equal(20);
-        expect(data[0].satoshis).to.equal(2000000000);
-        done();
-      });
+      console.log(data);
+      expect(data.length).to.equal(1);
+      expect(data[0].amount).to.equal(20);
+      expect(data[0].satoshis).to.equal(2000000000);
+      done();
 
     });
-
-    request.write(body);
-    request.end();
 
   });
 
@@ -521,43 +532,19 @@ describe('Address', function() {
       method: 'GET'
     };
 
-    var request = http.request(httpOpts, function(res) {
+    request(httpOpts, function(err, data) {
 
-      var error;
-      if (res.statusCode !== 200 && res.statusCode !== 201) {
-        if (error) {
-          return;
-        }
-        return done('Error from bitcore-node webserver: ' + res.statusCode);
+      if(err) {
+        return done(err);
       }
 
-      var resError;
-      var resData = '';
-
-      res.on('error', function(e) {
-        resError = e;
-      });
-
-      res.on('data', function(data) {
-        resData += data;
-      });
-
-      res.on('end', function() {
-        if (error) {
-          return;
-        }
-        var data = JSON.parse(resData);
-        console.log(resData);
-        expect(data.items.length).to.equal(3);
-        expect(data.from).to.equal(0);
-        expect(data.to).to.equal(3);
-        done();
-      });
+      console.log(data);
+      expect(data.items.length).to.equal(3);
+      expect(data.from).to.equal(0);
+      expect(data.to).to.equal(3);
+      done();
 
     });
-
-    request.write('');
-    request.end();
 
   });
 
@@ -572,48 +559,25 @@ describe('Address', function() {
       port: 53001,
       path: '/api/addrs/txs',
       method: 'POST',
+      body: body,
       headers: {
         'Content-Type': 'application/json'
       }
     };
 
-    var request = http.request(httpOpts, function(res) {
+    request(httpOpts, function(err, data) {
 
-      var error;
-      if (res.statusCode !== 200 && res.statusCode !== 201) {
-        if (error) {
-          return;
-        }
-        return done('Error from bitcore-node webserver: ' + res.statusCode);
+      if(err) {
+        return done(err);
       }
 
-      var resError;
-      var resData = '';
-
-      res.on('error', function(e) {
-        resError = e;
-      });
-
-      res.on('data', function(data) {
-        resData += data;
-      });
-
-      res.on('end', function() {
-        if (error) {
-          return;
-        }
-        var data = JSON.parse(resData);
-        console.log(resData);
-        expect(data.items.length).to.equal(3);
-        expect(data.from).to.equal(0);
-        expect(data.to).to.equal(3);
-        done();
-      });
+      console.log(data);
+      expect(data.items.length).to.equal(3);
+      expect(data.from).to.equal(0);
+      expect(data.to).to.equal(3);
+      done();
 
     });
-
-    request.write(body);
-    request.end();
 
   });
 
@@ -629,44 +593,20 @@ describe('Address', function() {
       }
     };
 
-    var request = http.request(httpOpts, function(res) {
+    request(httpOpts, function(err, data) {
 
-      var error;
-      if (res.statusCode !== 200 && res.statusCode !== 201) {
-        if (error) {
-          return;
-        }
-        return done('Error from bitcore-node webserver: ' + res.statusCode);
+      if(err) {
+        return done(err);
       }
 
-      var resError;
-      var resData = '';
-
-      res.on('error', function(e) {
-        resError = e;
-      });
-
-      res.on('data', function(data) {
-        resData += data;
-      });
-
-      res.on('end', function() {
-
-        if (error) {
-          return;
-        }
-
-        var data = JSON.parse(resData);
-        expect(data).to.equal(2000000000);
-        done();
-      });
+      var data = JSON.parse(data);
+      expect(data).to.equal(2000000000);
+      done();
 
     });
 
-    request.write('');
-    request.end();
-
   });
+
 
   it('should get totalSent for an address: /addr/:addr/totalSent', function(done) {
 
@@ -680,40 +620,16 @@ describe('Address', function() {
       }
     };
 
-    var request = http.request(httpOpts, function(res) {
+    request(httpOpts, function(err, data) {
 
-      var error;
-      if (res.statusCode !== 200 && res.statusCode !== 201) {
-        if (error) {
-          return;
-        }
-        return done('Error from bitcore-node webserver: ' + res.statusCode);
+      if(err) {
+        return done(err);
       }
 
-      var resError;
-      var resData = '';
-
-      res.on('error', function(e) {
-        resError = e;
-      });
-
-      res.on('data', function(data) {
-        resData += data;
-      });
-
-      res.on('end', function() {
-        if (error) {
-          return;
-        }
-        var data = JSON.parse(resData);
-        expect(data).to.equal(0);
-        done();
-      });
-
+      var data = JSON.parse(data);
+      expect(data).to.equal(0);
+      done();
     });
-
-    request.write('');
-    request.end();
 
   });
 
@@ -729,94 +645,55 @@ describe('Address', function() {
       }
     };
 
-    var request = http.request(httpOpts, function(res) {
+    request(httpOpts, function(err, data) {
 
-      var error;
-      if (res.statusCode !== 200 && res.statusCode !== 201) {
-        if (error) {
-          return;
-        }
-        return done('Error from bitcore-node webserver: ' + res.statusCode);
+      if(err) {
+        return done(err);
       }
 
-      var resError;
-      var resData = '';
-
-      res.on('error', function(e) {
-        resError = e;
-      });
-
-      res.on('data', function(data) {
-        resData += data;
-      });
-
-      res.on('end', function() {
-        if (error) {
-          return;
-        }
-        var data = JSON.parse(resData);
-        expect(data).to.equal(0);
-        done();
-      });
-
+      var data = JSON.parse(data);
+      expect(data).to.equal(0);
+      done();
     });
-
-    request.write('');
-    request.end();
 
   });
 
   it('should index addresses correctly', function(done) {
     // if we send a tx that has an address in both the input and the output, does it index correctly?
-   var txid;
-   var pk1;
-   var tx;
+    var txid;
+    var pk1;
+    var tx;
+    var utxo;
+
     async.waterfall([
       function(next) {
-        rpc1.listUnspent(function(err, res) {
-
-          if (err) {
-            return next(err);
-          }
-
-          next(null, res.result[0]);
-
-        });
+        rpc1.listUnspent(next);
       },
-      function(utxo, next) {
-        rpc1.dumpPrivKey(utxo.address, function(err, res) {
-          if (err) {
-            return next(err);
-          }
-          var pk = new PrivateKey(res.result);
-          pk1 = new PrivateKey('testnet');
-          var change = new PrivateKey('testnet');
-          var changeAddress = change.toAddress();
-          var from = {
-            txId: utxo.txid,
-            address: utxo.address,
-            script: utxo.scriptPubKey,
-            satoshis: utxo.amount * 1e8,
-            outputIndex: utxo.vout
-          };
-          tx = new Transaction().from(from).to(pk1.toAddress(), 2500000000).change(changeAddress).sign(pk);
-
-          rpc2.sendRawTransaction(tx.serialize(), function(err, res) {
-            if (err) {
-              return next(err);
-            }
-            txid = res.result;
-            console.log(txid);
-            next();
-          });
-        });
+      function(res, next) {
+        utxo = res.result[0];
+        rpc1.dumpPrivKey(utxo.address, next);
       },
-      function(next) {
-        rpc2.generate(1, function() {
-          setTimeout(next, 2000);
-        });
+      function(res, next) {
+        var pk = new PrivateKey(res.result);
+        pk1 = new PrivateKey('testnet');
+        var change = new PrivateKey('testnet');
+        var changeAddress = change.toAddress();
+        var from = {
+          txId: utxo.txid,
+          address: utxo.address,
+          script: utxo.scriptPubKey,
+          satoshis: utxo.amount * 1e8,
+          outputIndex: utxo.vout
+        };
+        tx = new Transaction().from(from).to(pk1.toAddress(), 2500000000).change(changeAddress).sign(pk);
+        rpc2.sendRawTransaction(tx.serialize(), next);
       },
-      function(next) {
+      function(res, next) {
+        txid = res.result;
+        blocksGenerated += 1;
+        rpc2.generate(1, next);
+      },
+      function(res, next) {
         var tx2 = new Transaction().from({
           txId: txid,
           satoshis: 2500000000,
@@ -824,64 +701,45 @@ describe('Address', function() {
           script: tx.outputs[0].script.toHex(),
           address: pk1.toAddress()
         }).to(pk1.toAddress(), 2500000000 - 1000).sign(pk1);
-        rpc2.sendRawTransaction(tx2.serialize(), function(err, res) {
-          if (err) {
-            return next(err);
-          }
-          txid = res.result;
-          console.log(txid);
-          next();
+        rpc2.sendRawTransaction(tx2.serialize(), next);
+      },
+      function(res, next) {
+        txid = res.result;
+        blocksGenerated += 1;
+        rpc2.generate(1, next);
+      },
+      function(res, next) {
+        waitForBlocksGenerated(next);
+      },
 
-        });
-      },
-      function(next) {
-        rpc2.generate(1, function() {
-          setTimeout(next, 2000);
-        });
-      },
     ], function(err) {
-        if (err) {
+
+      if (err) {
+        return done(err);
+      }
+
+      var httpOpts = {
+        hostname: 'localhost',
+        port: 53001,
+        path: 'http://localhost:53001/api/addr/' + pk1.toAddress(),
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      };
+
+      request(httpOpts, function(err, data) {
+
+        if(err) {
           return done(err);
         }
 
-        var request = http.request('http://localhost:53001/api/addr/' + pk1.toAddress(), function(res) {
+        console.log(data);
+        expect(data.transactions.length).to.equal(2);
+        done();
 
-          var error;
-          if (res.statusCode !== 200 && res.statusCode !== 201) {
-            if (error) {
-              return;
-            }
-            return done('Error from bitcore-node webserver: ' + res.statusCode);
-          }
-
-          var resError;
-          var resData = '';
-
-          res.on('error', function(e) {
-            resError = e;
-          });
-
-          res.on('data', function(data) {
-            resData += data;
-          });
-
-          res.on('end', function() {
-            if (error) {
-              return;
-            }
-            var data = JSON.parse(resData);
-            console.log(data);
-            expect(data.transactions.length).to.equal(2);
-            done();
-          });
-
-        });
-        request.write('');
-        request.end();
-
+      });
     });
 
   });
 });
-
-

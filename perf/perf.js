@@ -162,7 +162,9 @@ var startBitcoind = function(count, callback) {
       });
 
       console.log(count + ' bitcoind\'s started at pid(s): ' + pids);
-      callback();
+      async.retry({ interval: 1000, times: 1000 }, function(next) {
+        rpc1.getInfo(next);
+      }, callback);
   });
 };
 
@@ -399,21 +401,12 @@ describe('Address Performance', function() {
         startBitcoind(bitcoinDataDirs.length, next);
       },
       function(next) {
-        setTimeout(function() {
-          buildInitialChain(next);
-        }, 8000);
+        buildInitialChain(next);
       },
       function(next) {
         startBitcore(next);
       }
-    ], function(err) {
-
-        if (err) {
-          return done(err);
-        }
-
-        setTimeout(done, 2000);
-    });
+    ], done);
 
   });
 
