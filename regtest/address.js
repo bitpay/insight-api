@@ -232,12 +232,12 @@ var startBitcoind = function(count, callback) {
       console.log(count + ' bitcoind\'s started at pid(s): ' + pids);
 
       async.retry({ interval: 1000, times: 1000 }, function(next) {
-        rpc1.getInfo(function(err, res) {
+        rpc1.getInfo(function(err) {
           if (err) {
             return next(err);
           }
           // there is a bit of time even after the rpc server comes online that the rpc server is not truly ready
-          setTimeout(function(err) {
+          setTimeout(function() {
             next();
           }, 1000);
         });
@@ -292,14 +292,14 @@ var buildInitialChain = function(callback) {
       rpc1.sendToAddress(rpc2Address, 25, next);
     },
     function(res, next) {
-      console.log('TXID: ' + res.result);
+      //console.log('TXID: ' + res.result);
       console.log('generating 7 blocks');
       blocksGenerated += 7;
       rpc1.generate(7, next);
     },
     function(res, next) {
       rpc2.getBalance(function(err, res) {
-        console.log(res);
+        //console.log(res);
         next();
       });
     },
@@ -318,7 +318,7 @@ var buildInitialChain = function(callback) {
     },
     function(res, next) {
       txid = res.result;
-      console.log('sending from rpc2Address TXID: ', res);
+      //console.log('sending from rpc2Address TXID: ', res);
       console.log('generating 6 blocks');
       blocksGenerated += 6;
       rpc2.generate(6, next);
@@ -329,7 +329,7 @@ var buildInitialChain = function(callback) {
       return callback(err);
     }
     rpc1.getInfo(function(err, res) {
-      console.log(res);
+      //console.log(res);
       callback();
     });
   });
@@ -423,7 +423,7 @@ describe('Address', function() {
         return done(err);
       }
 
-      console.log(data);
+      //console.log(data);
       expect(data.balance).to.equal(0);
       expect(data.totalSent).to.equal(25);
       done();
@@ -450,7 +450,7 @@ describe('Address', function() {
         return done(err);
       }
 
-      console.log(data);
+      //console.log(data);
       expect(data.length).equal(1);
       expect(data[0].amount).equal(20);
       expect(data[0].satoshis).equal(2000000000);
@@ -479,7 +479,7 @@ describe('Address', function() {
         return done(err);
       }
 
-      console.log(data);
+      //console.log(data);
       expect(data.length).to.equal(1);
       expect(data[0].amount).to.equal(20);
       expect(data[0].satoshis).to.equal(2000000000);
@@ -513,7 +513,7 @@ describe('Address', function() {
         return done(err);
       }
 
-      console.log(data);
+      //console.log(data);
       expect(data.length).to.equal(1);
       expect(data[0].amount).to.equal(20);
       expect(data[0].satoshis).to.equal(2000000000);
@@ -538,7 +538,7 @@ describe('Address', function() {
         return done(err);
       }
 
-      console.log(data);
+      //console.log(data);
       expect(data.items.length).to.equal(3);
       expect(data.from).to.equal(0);
       expect(data.to).to.equal(3);
@@ -571,7 +571,7 @@ describe('Address', function() {
         return done(err);
       }
 
-      console.log(data);
+      //console.log(data);
       expect(data.items.length).to.equal(3);
       expect(data.from).to.equal(0);
       expect(data.to).to.equal(3);
@@ -599,7 +599,7 @@ describe('Address', function() {
         return done(err);
       }
 
-      var data = JSON.parse(data);
+      data = JSON.parse(data);
       expect(data).to.equal(2000000000);
       done();
 
@@ -626,7 +626,7 @@ describe('Address', function() {
         return done(err);
       }
 
-      var data = JSON.parse(data);
+      data = JSON.parse(data);
       expect(data).to.equal(0);
       done();
     });
@@ -650,8 +650,7 @@ describe('Address', function() {
       if(err) {
         return done(err);
       }
-
-      var data = JSON.parse(data);
+      data = JSON.parse(data);
       expect(data).to.equal(0);
       done();
     });
@@ -664,6 +663,7 @@ describe('Address', function() {
     var pk1;
     var tx;
     var utxo;
+    var amt = 0;
 
     async.waterfall([
       function(next) {
@@ -678,14 +678,15 @@ describe('Address', function() {
         pk1 = new PrivateKey('testnet');
         var change = new PrivateKey('testnet');
         var changeAddress = change.toAddress();
+        amt = utxo.amount * 1e8;
         var from = {
           txId: utxo.txid,
           address: utxo.address,
           script: utxo.scriptPubKey,
-          satoshis: utxo.amount * 1e8,
+          satoshis: amt,
           outputIndex: utxo.vout
         };
-        tx = new Transaction().from(from).to(pk1.toAddress(), 2500000000).change(changeAddress).sign(pk);
+        tx = new Transaction().from(from).to(pk1.toAddress(), amt - 1000).change(changeAddress).sign(pk);
         rpc2.sendRawTransaction(tx.serialize(), next);
       },
       function(res, next) {
@@ -696,11 +697,11 @@ describe('Address', function() {
       function(res, next) {
         var tx2 = new Transaction().from({
           txId: txid,
-          satoshis: 2500000000,
+          satoshis: amt - 1000,
           outputIndex: 0,
           script: tx.outputs[0].script.toHex(),
           address: pk1.toAddress()
-        }).to(pk1.toAddress(), 2500000000 - 1000).sign(pk1);
+        }).to(pk1.toAddress(), amt - 2000).sign(pk1);
         rpc2.sendRawTransaction(tx2.serialize(), next);
       },
       function(res, next) {
@@ -734,7 +735,7 @@ describe('Address', function() {
           return done(err);
         }
 
-        console.log(data);
+        //console.log(data);
         expect(data.transactions.length).to.equal(2);
         done();
 

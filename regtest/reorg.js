@@ -28,6 +28,7 @@ var bitcore = require('bitcore-lib');
 
 */
 
+var reorgBlock;
 var blocksGenerated = 0;
 
 var rpcConfig = {
@@ -322,6 +323,23 @@ var startBitcore = function(callback) {
 
 };
 
+var sync100Blocks = function(callback) {
+  // regtests can generate high numbers of blocks all at one time, but
+  // the full node may not relay those blocks faithfully. This is a problem
+  // with the full node and not bitcore. So, generate blocks at a slow rate
+  async.timesSeries(100, function(n, next) {
+    rpc2.generate(1, function(err) {
+      if (err) {
+        return next(err);
+      }
+      setTimeout(function() {
+        next();
+      }, 100);
+    });
+  }, callback);
+
+};
+
 var performTest = function(callback) {
   async.series([
 
@@ -410,7 +428,7 @@ var performTest = function(callback) {
       console.log('step 8: generating 100 blocks on bitcoin 2.');
       blocksGenerated += 100;
       console.log('generating 100 blocks on bitcoin 2.');
-      rpc2.generate(100, next);
+      sync100Blocks(next);
     },
     // 9. let bitcore connect and sync those 100 blocks
     function(next) {
@@ -443,7 +461,13 @@ var performTest = function(callback) {
       console.log('step 12: generating one block');
       // resetting height to 11
       blocksGenerated = 11;
-      rpc1.generate(1, next);
+      rpc1.generate(1, function(err, res) {
+        if(err) {
+          return next(err);
+        }
+        reorgBlock = res.result[0];
+        next();
+      });
     },
     // 13. let bitcore sync that block and reorg back to it
     function(next) {
@@ -464,13 +488,19 @@ describe('Reorg', function() {
   this.timeout(60000);
 
   after(function(done) {
-    shutdownBitcoind(done);
+    shutdownBitcore(function() {
+      shutdownBitcoind(done);
+    });
   });
 
   it('should reorg correctly when starting and a reorg happen whilst shutdown', function(done) {
 
     performTest(function(err) {
-      return done();
+
+      if(err) {
+        return done(err);
+      }
+
       var httpOpts = {
         hostname: 'localhost',
         port: 53001,
@@ -488,6 +518,7 @@ describe('Reorg', function() {
         }
 
         console.log(data);
+        expect(data.height).to.equal(11);
         done();
 
       });
