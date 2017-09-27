@@ -11,6 +11,7 @@ var http = require('http');
 var bitcore = require('bitcore-lib');
 var PrivateKey = bitcore.PrivateKey;
 var Transaction = bitcore.Transaction;
+var exec = require('child_process').exec;
 
 var rpc1Address;
 var rpc2Address;
@@ -353,24 +354,34 @@ var startBitcore = function(callback) {
       fs.writeFileSync(bitcore.configFile.file, JSON.stringify(bitcore.configFile.conf));
 
       var args = bitcore.args;
-      bitcore.process = spawn(bitcore.exec, args, bitcore.opts);
+      console.log('starting bitcore using this binary: ');
+      exec('which bitcored', function(err, stdout, stderr) {
 
-      bitcore.process.stdout.on('data', function(data) {
-
-        if (debug) {
-          process.stdout.write(data.toString());
+        if(err) {
+          return callback(err);
         }
 
+        console.log(stdout.toString('hex'), stderr.toString('hex'));
+
+        bitcore.process = spawn(bitcore.exec, args, bitcore.opts);
+
+        bitcore.process.stdout.on('data', function(data) {
+
+          if (debug) {
+            process.stdout.write(data.toString());
+          }
+
+        });
+        bitcore.process.stderr.on('data', function(data) {
+
+          if (debug) {
+            process.stderr.write(data.toString());
+          }
+
+        });
+
+        waitForBlocksGenerated(callback);
       });
-      bitcore.process.stderr.on('data', function(data) {
-
-        if (debug) {
-          process.stderr.write(data.toString());
-        }
-
-      });
-
-      waitForBlocksGenerated(callback);
     });
 
   });
