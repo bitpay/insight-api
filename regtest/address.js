@@ -414,8 +414,6 @@ describe('Address', function() {
     });
   });
 
-
-
   it('should get address info correctly: /addr/:addr', function(done) {
 
     var httpOpts = {
@@ -434,7 +432,7 @@ describe('Address', function() {
         return done(err);
       }
 
-      //console.log(data);
+      console.log(data);
       expect(data.balance).to.equal(0);
       expect(data.totalSent).to.equal(25);
       done();

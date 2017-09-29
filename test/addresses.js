@@ -162,20 +162,20 @@ var utxos = [
   {
     'address': 'mzkD4nmQ8ixqxySdBgsXTpgvAMK5iRZpNK',
     'txid': '63b68becb0e514b32317f4b29a5cf0627d4087e54ac17f686fcb1d9a27680f73',
-    'outputIndex': 1,
+    'vout': 1,
     'timestamp': 1441116143,
     'satoshis': 53320000,
-    'script': '76a914d2ec20bb8e5f25a52f730384b803d95683250e0b88ac',
+    'scriptPubKey': '76a914d2ec20bb8e5f25a52f730384b803d95683250e0b88ac',
     'height': 534181,
     'confirmations': 50
   },
   {
     'address': 'moZY18rGNmh4YCPeugtGW46AkkWMQttBUD',
     'txid': '63b68becb0e514b32317f4b29a5cf0627d4087e54ac17f686fcb1d9a27680f73',
-    'outputIndex': 2,
+    'vout': 2,
     'timestamp': 1441116143,
     'satoshis': 289829,
-    'script': '76a914583df9fa56ad961051e00ca93e68dfaf1eab9ec588ac',
+    'scriptPubKey': '76a914583df9fa56ad961051e00ca93e68dfaf1eab9ec588ac',
     'height': 534181,
     'confirmations': 50
   }
