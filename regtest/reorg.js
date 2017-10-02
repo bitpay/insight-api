@@ -49,6 +49,14 @@ var SimpleMap = function SimpleMap() {
     return array.length !== _.compact(array).length;
   };
 
+  this.remove = function(item) {
+    var index = object[item];
+    if (index) {
+      delete object[item];
+      array.splice(index, 1);
+    }
+  };
+
   this.get = function (key) {
     return array[object[key]];
   };
@@ -79,24 +87,6 @@ var SimpleMap = function SimpleMap() {
 var reorgBlock;
 var blocksGenerated = 0;
 
-var getHeaders = function() {
-  var blocks = require('./data/blocks.json');
-  return blocks.map(function(block) {
-    var blk = new Block(new Buffer(block, 'hex'));
-    return blk.header;
-  });
-};
-
-var getBlocks = function() {
-  var ret = new SimpleMap();
-  var blocks = require('./data/blocks.json');
-  blocks.forEach(function(raw) {
-    var blk = BcoinBlock.fromRaw(raw, 'hex');
-    ret.set(blk.rhash(), blk);
-  });
-  return ret;
-};
-
 var getReorgBlock = function() {
   return BcoinBlock.fromRaw(require('./data/blocks_reorg.json')[0], 'hex');
 };
@@ -107,7 +97,26 @@ var TestBitcoind = function TestBitcoind() {
   self.blocks = [];
   self.currentBlockIndex = 0;
 
+  self._getHeaders = function() {
+    var ret = [];
+    for(var i = 0; i < self.blocks.length; i++) {
+      var hdr = new Block(self.blocks.getIndex(i).toRaw()).header;
+      ret.push(hdr);
+    }
+    return ret;
+  };
+
+  self._getBlocks = function() {
+    self.blocks = new SimpleMap();
+    var blocks = require('./data/blocks.json');
+    blocks.forEach(function(raw) {
+      var blk = BcoinBlock.fromRaw(raw, 'hex');
+      self.blocks.set(blk.rhash(), blk);
+    });
+  };
+
   self.start = function() {
+    self._getBlocks();
     self._server = net.createServer(self._setOnDataHandlers.bind(self));
     self._server.listen(18444, '127.0.0.1');
   };
@@ -134,7 +143,7 @@ var TestBitcoind = function TestBitcoind() {
       }
 
       if (command === 'getheaders') {
-        msg.push(messages.Headers(getHeaders())); // these are bitcore block headers
+        msg.push(messages.Headers(self._getHeaders())); // these are bitcore block headers
       }
 
       if (command === 'getblocks') {
@@ -171,6 +180,8 @@ var TestBitcoind = function TestBitcoind() {
   // prompting them to send a getdata message back to us with the hash
   // of the resource.
   self.sendBlock = function(block) {
+    var lastHash = self.blocks.getLastIndex().rhash();
+    self.blocks.remove(lastHash);
     self.blocks.set(block.rhash(), block);
     var inv = p2p.Inventory.forBlock(block.rhash());
     var message = messages.Inventory([inv]);
@@ -675,7 +686,6 @@ var performTest2 = function(fakeServer, callback) {
     // 2. init server with blocks (the initial set from which bitcore will sync)
     function(next) {
       console.log('step 2: init server with blocks (the initial set from which bitcore will sync)');
-      fakeServer.blocks = getBlocks();
       next();
     },
     // 3. start bitcore in slow mode (slow the block service's sync speed down so we
@@ -727,7 +737,6 @@ var performTest3 = function(fakeServer, callback) {
     // 2. init server with blocks (the initial set from which bitcore will sync)
     function(next) {
       console.log('step 2: init server with blocks (the initial set from which bitcore will sync)');
-      fakeServer.blocks = getBlocks();
       next();
     },
     // 3. start bitcore in slow mode (slow the block service's sync speed down so we
