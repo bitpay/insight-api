@@ -45,10 +45,6 @@ var SimpleMap = function SimpleMap() {
   this.size = 0;
   this.length = 0;
 
-  this.hasNullItems = function() {
-    return array.length !== _.compact(array).length;
-  };
-
   this.remove = function(item) {
     var index = object[item];
     if (index) {
