@@ -2,13 +2,13 @@
 
 /*
 
-  Reorg states (enumerated):
+   Reorg states (enumerated):
 
-  1. block service fully sync'ed, p2p block subscription active  (normal operating mode)
-  2. block service not sync'ed, reorg common ancestor height greater than current block service tip height  (reorg while sync, not affected)
-  3. block service not sync'ed, reorg common ancestor height less than current block service tip height   (reorg while sync, affected)
-  4. system shutdown, reorg wipes out header and block tip  (reorg while shutdown, affected)
-  5. system shutdown, reorg common ancestor height greater than the current header tip  (reorg while shutdown, not affected)
+   1. block service fully sync'ed, p2p block subscription active  (normal operating mode)
+   2. block service not sync'ed, reorg common ancestor height greater than current block service tip height  (reorg while sync, not affected)
+   3. block service not sync'ed, reorg common ancestor height less than current block service tip height   (reorg while sync, affected)
+   4. system shutdown, reorg wipes out header and block tip  (reorg while shutdown, affected)
+   5. reorg from a block that was mined from an already-orphaned block
 
 */
 
@@ -31,7 +31,6 @@ var Block = bitcore.Block;
 var bcoin = require('bcoin');
 var BcoinBlock = bcoin.block;
 var BcoinTx = bcoin.tx;
-var _ = require('lodash');
 
 var tx = BcoinTx.fromRaw('0200000001d7cf6999aa1eeee5bf954071d974bff51aa7126494a071ec0ba7820d98fc3106010000006a473044022072a784b07c68abde667a27587eb3979ee1f3ca5dc78e665801150492268c1307022054fdd4aafdcb15fc4cb7555c3a38a9ade8bb8af57c95be974b06ed16a713355d012103d3b1e94531d8b7ed3eb54751abe79786c1aa9adc1b5bc35cfced49693095b68dfeffffff0245519103000000001976a914beac8701ec4a6970ed239a47671c967b50da43d588ac80969800000000001976a914c98d54f2eb6c8970d50f7e90c9b3f4b71af9493088ac00000000', 'hex');
 
@@ -87,11 +86,20 @@ var getReorgBlock = function() {
   return BcoinBlock.fromRaw(require('./data/blocks_reorg.json')[0], 'hex');
 };
 
+var getOrphanedBlock = function() {
+  return BcoinBlock.fromRaw(require('./data/blocks_orphaned.json')[0], 'hex');
+};
+
 var TestBitcoind = function TestBitcoind() {
 
   var self = this;
-  self.blocks = [];
-  self.currentBlockIndex = 0;
+  self._orphans = {};
+
+  self.reorientData = function(block) {
+    var lastHash = self.blocks.getLastIndex().rhash();
+    self.blocks.remove(lastHash);
+    self.blocks.set(block.rhash(), block);
+  };
 
   self._getHeaders = function() {
     var ret = [];
@@ -160,7 +168,11 @@ var TestBitcoind = function TestBitcoind() {
         if (hash === tx.txid()) {
           return msg.push(messages.Transaction(tx, { Transaction: BcoinTx }));
         }
-        msg.push(messages.Block(self.blocks.get(hash), { Block: BcoinBlock }));
+        var block = self.blocks.get(hash);
+        if (!block) {
+          block = self._orphans[hash];
+        }
+        msg.push(messages.Block(block, { Block: BcoinBlock }));
       }
 
       if (msg.length > 0) {
@@ -175,10 +187,14 @@ var TestBitcoind = function TestBitcoind() {
   // this will kick out an unsolicited inventory message to the peer
   // prompting them to send a getdata message back to us with the hash
   // of the resource.
-  self.sendBlock = function(block) {
-    var lastHash = self.blocks.getLastIndex().rhash();
-    self.blocks.remove(lastHash);
-    self.blocks.set(block.rhash(), block);
+  self.sendBlock = function(block, doNotChangeHeaders) {
+    if (!doNotChangeHeaders) {
+      var lastHash = self.blocks.getLastIndex().rhash();
+      self.blocks.remove(lastHash);
+      self.blocks.set(block.rhash(), block);
+    } else {
+      self._orphans[block.rhash()] = block;
+    }
     var inv = p2p.Inventory.forBlock(block.rhash());
     var message = messages.Inventory([inv]);
     self._socket.write(message.toBuffer());
@@ -707,7 +723,7 @@ var performTest2 = function(fakeServer, callback) {
 };
 
 /*
-  3. block service not sync'ed, reorg common ancestor height less than current block service tip heigh   (reorg while sync, affected)
+ 3. block service not sync'ed, reorg common ancestor height less than current block service tip heigh   (reorg while sync, affected)
 */
 var performTest3 = function(fakeServer, callback) {
   async.series([
@@ -759,15 +775,103 @@ var performTest3 = function(fakeServer, callback) {
 };
 
 /*
- 4. system shutdown, reorg wipes out header and block tip  (reorg while shutdown, affected)
+  4. system shutdown, reorg wipes out header and block tip  (reorg while shutdown, affected)
 */
-var performTest4 = function() {
+var performTest4 = function(fakeServer, callback) {
+  async.series([
+    // 0. reset the test directories
+    function(next) {
+      console.log('step 0: setting up directories.');
+      var dirs = bitcoinDataDirs.concat([bitcoreDataDir]);
+      resetDirs(dirs, function(err) {
+        if (err) {
+          return next(err);
+        }
+        writeBitcoreConf();
+        next();
+      });
+    },
+    // 1. start fake server
+    function(next) {
+      console.log('step 1: starting fake server.');
+      fakeServer.start();
+      next();
+    },
+    // 2. start bitcore
+    function(next) {
+      console.log('step 2: start bitcore and let sync.');
+      blocksGenerated = 7;
+      startBitcore(next);
+    },
+    // 3. shutdown bitcore
+    function(next) {
+      console.log('step 3: shut down bitcore.');
+      shutdownBitcore(next);
+    },
+    // 4. setup the fake server to send a reorg'ed set of headers
+    function(next) {
+      console.log('step 4: setup fake server to send reorg set of headers.');
+      var reorgBlock = getReorgBlock();
+      fakeServer.reorientData(reorgBlock);
+      next();
+    },
+    // 5. start up bitcore once again
+    function(next) {
+      console.log('step 5: start up bitcore.');
+      blocksGenerated = 7;
+      startBitcore(next);
+    }
+  ], function(err) {
+    if (err) {
+      return callback(err);
+    }
+    callback();
+  });
 };
 
 /*
-  5. system shutdown, reorg common ancestor height greater than the current header tip  (reorg while shutdown, not affected)
+  5. reorg from a block that was mined from an already-orphaned block
 */
-var performTest5 = function() {
+var performTest5 = function(fakeServer, callback) {
+  async.series([
+    // 0. reset the test directories
+    function(next) {
+      console.log('step 0: setting up directories.');
+      var dirs = bitcoinDataDirs.concat([bitcoreDataDir]);
+      resetDirs(dirs, function(err) {
+        if (err) {
+          return next(err);
+        }
+        writeBitcoreConf();
+        next();
+      });
+    },
+    // 1. start fake server
+    function(next) {
+      console.log('step 1: starting fake server.');
+      fakeServer.start();
+      next();
+    },
+    // 2. start bitcore
+    function(next) {
+      console.log('step 2: start bitcore and let sync.');
+      blocksGenerated = 7;
+      startBitcore(next);
+    },
+    // 3. send in a block that has nothing to do with anything in my chain.
+    function(next) {
+      console.log('step 3: send in an orphaned block.');
+      var orphanedBlock = getOrphanedBlock();
+      fakeServer.sendBlock(orphanedBlock, true);
+      next();
+    }
+  ], function(err) {
+    if (err) {
+      return callback(err);
+    }
+    callback();
+  });
+
 };
 
 describe('Reorg', function() {
@@ -785,22 +889,22 @@ describe('Reorg', function() {
     // case 1.
     it('should reorg correctly when bitcore reconnects to a peer that is not yet sync\'ed, but when a block does come in, it is a reorg block.', function(done) {
       /*
-       What this test does:
+         What this test does:
 
-       step 0: set up directories
-       step 1: start 2 bitcoinds.
-       step 2: check to see if bitcoind's are connected to each other.
-       step 3: generate 10 blocks on bitcoin 1.
-       step 4: check for synced blocks between bitcoinds.
-       step 5: start bitcore
-       step 6: shut down all bitcoind's.
-       step 7: change config of bitcoin 2 and restart it.
-       step 8: generate 100 blocks on bitcoin 2.
-       step 9: sync 100 blocks to bitcore.
-       step 10: shut down bitcoin 2.
-       step 11: start up bitcoin 1
-       step 12: generate 1 block
-       step 13: Wait for bitcore to reorg to block height 11.
+         step 0: set up directories
+         step 1: start 2 bitcoinds.
+         step 2: check to see if bitcoind's are connected to each other.
+         step 3: generate 10 blocks on bitcoin 1.
+         step 4: check for synced blocks between bitcoinds.
+         step 5: start bitcore
+         step 6: shut down all bitcoind's.
+         step 7: change config of bitcoin 2 and restart it.
+         step 8: generate 100 blocks on bitcoin 2.
+         step 9: sync 100 blocks to bitcore.
+         step 10: shut down bitcoin 2.
+         step 11: start up bitcoin 1
+         step 12: generate 1 block
+         step 13: Wait for bitcore to reorg to block height 11.
        */
 
 
@@ -839,124 +943,209 @@ describe('Reorg', function() {
   describe('Reorg case 2: block service not sync\'ed, reorg common ancestor height greater than ' +
     'current block service tip height  (reorg while sync, not affected)', function() {
 
-    var fakeServer;
-    before(function(done) {
-      fakeServer = new TestBitcoind();
-      done();
-    });
-
-    after(function(done) {
-      shutdownBitcore(function() {
-        fakeServer.stop();
+      var fakeServer;
+      before(function(done) {
+        fakeServer = new TestBitcoind();
         done();
       });
-    });
 
-    it('should reorg correctly when the block service is initially syncing, but it has not sync\'ed to the point where the reorg has happened.', function(done) {
-
-      /*
-        What this test does:
-
-        step 0: setup directories
-        step 1: start fake server (fake bitcoin)
-        step 2: init server with blocks (the initial set from which bitcore will sync)
-        step 3: start bitcore in slow mode (slow the block service's sync speed down so we
-          can send a reorg block to the header service while the block service is still syncing.
-        step 4: send an inventory message with a reorg block hash
-
-        the header service will get this message, discover the reorg, handle the reorg
-          and call onHeaders on the block service, query bitcore for the results
-      */
-      performTest2(fakeServer, function(err) {
-
-        if(err) {
-          return done(err);
-        }
-        setTimeout(function() {
-          var httpOpts = {
-            hostname: 'localhost',
-            port: 53001,
-            path: 'http://localhost:53001/api/block/' + getReorgBlock().rhash(),
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json'
-            }
-          };
-
-          request(httpOpts, function(err, data) {
-
-            if(err) {
-              return done(err);
-            }
-
-            console.log(data);
-            expect(data.height).to.equal(7);
-            done();
-
-          });
-        }, 2000);
+      after(function(done) {
+        shutdownBitcore(function() {
+          fakeServer.stop();
+          done();
+        });
       });
-    });
+
+      it('should reorg correctly when the block service is initially syncing, but it has not sync\'ed to the point where the reorg has happened.', function(done) {
+
+        /*
+           What this test does:
+
+           step 0: setup directories
+           step 1: start fake server (fake bitcoin)
+           step 2: init server with blocks (the initial set from which bitcore will sync)
+           step 3: start bitcore in slow mode (slow the block service's sync speed down so we
+           can send a reorg block to the header service while the block service is still syncing.
+           step 4: send an inventory message with a reorg block hash
+
+           the header service will get this message, discover the reorg, handle the reorg
+           and call onHeaders on the block service, query bitcore for the results
+         */
+        performTest2(fakeServer, function(err) {
+
+          if(err) {
+            return done(err);
+          }
+          setTimeout(function() {
+            var httpOpts = {
+              hostname: 'localhost',
+              port: 53001,
+              path: 'http://localhost:53001/api/block/' + getReorgBlock().rhash(),
+              method: 'GET',
+              headers: {
+                'Content-Type': 'application/json'
+              }
+            };
+
+            request(httpOpts, function(err, data) {
+
+              if(err) {
+                return done(err);
+              }
+
+              console.log(data);
+              expect(data.height).to.equal(7);
+              done();
+
+            });
+          }, 2000);
+        });
+      });
   });
 
   describe('Reorg case 3: block service not sync\'ed, reorg common ancestor height less than ' +
-    'current block service tip height  (reorg while sync, not affected)', function() {
+      'current block service tip height  (reorg while sync, not affected)', function() {
 
-    var fakeServer;
-    before(function(done) {
-      fakeServer = new TestBitcoind();
-      done();
-    });
+        var fakeServer;
+        before(function(done) {
+          fakeServer = new TestBitcoind();
+          done();
+        });
 
-    after(function(done) {
-      shutdownBitcore(function() {
-        fakeServer.stop();
-        done();
-      });
-    });
+        after(function(done) {
+          shutdownBitcore(function() {
+            fakeServer.stop();
+            done();
+          });
+        });
 
-    it('should reorg correctly when the block service is initially syncing and the block service has received at least the common header.', function(done) {
+        it('should reorg correctly when the block service is initially syncing and the block service has received at least the common header.', function(done) {
 
-      /*
-        What this test does:
+          /*
+             What this test does:
 
-        step 0: setup directories
-        step 1: start fake server (fake bitcoin)
-        step 2: init server with blocks (the initial set from which bitcore will sync)
-        step 3: start bitcore in slow mode
-        step 4: send an inventory message with a reorg block hash
+             step 0: setup directories
+             step 1: start fake server (fake bitcoin)
+             step 2: init server with blocks (the initial set from which bitcore will sync)
+             step 3: start bitcore in slow mode
+             step 4: send an inventory message with a reorg block hash
 
-      */
-      performTest3(fakeServer, function(err) {
-
-        if(err) {
-          return done(err);
-        }
-        setTimeout(function() {
-          var httpOpts = {
-            hostname: 'localhost',
-            port: 53001,
-            path: 'http://localhost:53001/api/block/' + getReorgBlock().rhash(),
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json'
-            }
-          };
-
-          request(httpOpts, function(err, data) {
+         */
+          performTest3(fakeServer, function(err) {
 
             if(err) {
               return done(err);
             }
+            setTimeout(function() {
+              var httpOpts = {
+                hostname: 'localhost',
+                port: 53001,
+                path: 'http://localhost:53001/api/block/' + getReorgBlock().rhash(),
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+              };
 
-            console.log(data);
-            expect(data.height).to.equal(7);
-            done();
+              request(httpOpts, function(err, data) {
 
-          });
-        }, 2000);
+                if(err) {
+                  return done(err);
+                }
+
+                console.log(data);
+                expect(data.height).to.equal(7);
+                done();
+
+              });
+            }, 2000);
+        });
+      });
+    });
+
+    describe('Case 4: system shutdown, reorg wipes out header and block tip  (reorg while shutdown, affected)', function() {
+
+      var fakeServer;
+      before(function(done) {
+        fakeServer = new TestBitcoind();
+        done();
+      });
+
+      after(function(done) {
+        shutdownBitcore(function() {
+          fakeServer.stop();
+          done();
+        });
+      });
+
+      it('should reorg when, while the node is shut down, our header tip is reorged out of existence.', function(done) {
+        performTest4(fakeServer, function(err) {
+          if (err) {
+            return done(err);
+          }
+          setTimeout(function() {
+            var httpOpts = {
+              hostname: 'localhost',
+              port: 53001,
+              path: 'http://localhost:53001/api/block/' + getReorgBlock().rhash(),
+              method: 'GET',
+              headers: {
+                'Content-Type': 'application/json'
+              }
+            };
+            request(httpOpts, function(err, data) {
+              if(err) {
+                return done(err);
+              }
+              console.log(data);
+              expect(data.height).to.equal(7);
+              done();
+            });
+          }, 2000);
       });
     });
   });
 
+  describe('Case 5: reorg from a block that was mined from an already-orphaned block', function() {
+
+      var fakeServer;
+      before(function(done) {
+        fakeServer = new TestBitcoind();
+        done();
+      });
+
+      after(function(done) {
+        shutdownBitcore(function() {
+          fakeServer.stop();
+          done();
+        });
+      });
+
+      it('should launch a reorg, yet no mainchain blocks will be affected when a new block comes in that is not mainchain to begin with', function(done) {
+        performTest5(fakeServer, function(err) {
+          if (err) {
+            return done(err);
+          }
+          setTimeout(function() {
+            var httpOpts = {
+              hostname: 'localhost',
+              port: 53001,
+              path: 'http://localhost:53001/api/block/' + fakeServer.blocks.getLastIndex().rhash(),
+              method: 'GET',
+              headers: {
+                'Content-Type': 'application/json'
+              }
+            };
+            request(httpOpts, function(err, data) {
+              if(err) {
+                return done(err);
+              }
+              console.log(data);
+              expect(data.height).to.equal(7);
+              done();
+            });
+          }, 2000);
+      });
+    });
+  });
 });

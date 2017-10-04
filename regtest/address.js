@@ -548,9 +548,9 @@ describe('Address', function() {
       }
 
       //console.log(data);
-      expect(data.items.length).to.equal(3);
+      expect(data.items.length).to.equal(2);
       expect(data.from).to.equal(0);
-      expect(data.to).to.equal(3);
+      expect(data.to).to.equal(2);
       done();
 
     });
@@ -581,9 +581,9 @@ describe('Address', function() {
       }
 
       //console.log(data);
-      expect(data.items.length).to.equal(3);
+      expect(data.items.length).to.equal(2);
       expect(data.from).to.equal(0);
-      expect(data.to).to.equal(3);
+      expect(data.to).to.equal(2);
       done();
 
     });
