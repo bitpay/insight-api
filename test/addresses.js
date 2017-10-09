@@ -149,6 +149,7 @@ var rawHex = "010000000100000000000000000000000000000000000000000000000000000000
 
 var bcoinTx = bcoin.tx.fromRaw(rawHex, 'hex');
 bcoinTx.__blockhash = '0000000000000041ddc94ecf4f86a456a83b2e320c36c6f0c13ff92c7e75f013';
+bcoinTx.blockhash = '0000000000000041ddc94ecf4f86a456a83b2e320c36c6f0c13ff92c7e75f013';
 bcoinTx.__height = 534181;
 bcoinTx.__timestamp = 1441116143;
 bcoinTx.outputSatoshis = 53829829;
@@ -450,7 +451,10 @@ describe('Addresses', function() {
                   'addresses': [
                     '1HLoD9E4SDFFPDiYfNYnkBLQ85Y51J3Zb1'
                   ]
-                }
+                },
+                spentHeight: null,
+                spentIndex: null,
+                spentTxId: null
               }
             ],
             'blockhash': '0000000000000041ddc94ecf4f86a456a83b2e320c36c6f0c13ff92c7e75f013',

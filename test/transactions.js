@@ -28,7 +28,10 @@ describe('Transactions', function() {
             'addr': '1NqgMfGUeELP2BfxD4hQuJSRq2d3DVJcCi',
             'valueSat': 1546063700,
             'value': 15.460637,
-            'doubleSpentTxID': null
+            'doubleSpentTxID': null,
+            'isConfirmed': null,
+            'confirmations': null,
+            'unconfirmedInput': null
           }
         ],
         'vout': [
@@ -42,7 +45,10 @@ describe('Transactions', function() {
                 '1JA8mcfrBv1YYsASAp9jtohm8x2q7LnUhs'
               ],
               'type': 'pubkeyhash'
-            }
+            },
+            'spentHeight': null,
+            'spentIndex': null,
+            'spentTxId': null
           },
           {
             'value': '15.08763700',
@@ -54,7 +60,10 @@ describe('Transactions', function() {
                 '1Jktr121Hm63qtWBMV8dCNJNW2KtWXy4fp'
               ],
               'type': 'pubkeyhash'
-            }
+            },
+            'spentHeight': null,
+            'spentIndex': null,
+            'spentTxId': null
           }
         ],
         'blockhash': '0000000000000000009d2e9b7a984d55c6c99ba62f98e9bc7dad8b1e779045a3',
@@ -71,6 +80,7 @@ describe('Transactions', function() {
       var bcoinTx = bcoin.tx.fromRaw('010000000156643da30a6f8f3c927f9cc215ad09fae1c1bac29d59a958b4c99ebb688ae546010000006a47304402203ddb49db43074b421ec6d5604ae91aac37f4715139e0c83ea1145379e8cbf02702207fbc92c4038ad501989b097844ae4e337c9388f0713110620b40e582b85fdff3012102cd90aa18ec8e3b35c0447ffc713c945cb837429d33d075d1b0f050c72ea838d2ffffffff02e0193602000000001976a914bc345e0e0e5b0dbddb7b35ef3430fedd528dd1b788ac34e8ed59000000001976a914c2c74d7519d4425fc1a253f066d980164341554a88ac00000000', 'hex');
 
       bcoinTx.__blockhash = '0000000000000000009d2e9b7a984d55c6c99ba62f98e9bc7dad8b1e779045a3';
+      bcoinTx.blockhash = '0000000000000000009d2e9b7a984d55c6c99ba62f98e9bc7dad8b1e779045a3';
       bcoinTx.__height = 481763;
       bcoinTx.__inputValues = [ 1546063700 ];
       bcoinTx.__timestamp = 1503507151;
@@ -130,6 +140,7 @@ describe('Transactions', function() {
       var bcoinTx = bcoin.tx.fromRaw('01000000010000000000000000000000000000000000000000000000000000000000000000ffffffff0704ffff001d010bffffffff0100f2052a010000004341047211a824f55b505228e4c3d5194c1fcfaa15a456abdf37f9b9d97a4040afc073dee6c89064984f03385237d92167c13e236446b417ab79a0fcae412ae3316b77ac00000000', 'hex');
 
       bcoinTx.__blockhash = '000000006a625f06636b8bb6ac7b960a8d03705d1ace08b1a19da3fdcc99ddbd';
+      bcoinTx.blockhash = '000000006a625f06636b8bb6ac7b960a8d03705d1ace08b1a19da3fdcc99ddbd';
       bcoinTx.__height = 2;
       bcoinTx.__inputValues = [ 1546063700 ];
       bcoinTx.__timestamp = 1231469744;
@@ -179,7 +190,10 @@ describe('Transactions', function() {
                     '1HLoD9E4SDFFPDiYfNYnkBLQ85Y51J3Zb1'
                   ],
                   'type': 'pubkeyhash'
-                }
+                },
+                'spentHeight': null,
+                'spentIndex': null,
+                'spentTxId': null
               }
             ],
             'blockhash': '000000006a625f06636b8bb6ac7b960a8d03705d1ace08b1a19da3fdcc99ddbd',
@@ -219,6 +233,7 @@ describe('Transactions', function() {
       bcoinTx.outputSatoshis = 1285927535;
       bcoinTx.__timestamp = 1503242912;
       bcoinTx.__blockhash = '000000000000000000926a0cd4a05ef116514cbf1852edc306d13eb951ec0b54';
+      bcoinTx.blockhash = '000000000000000000926a0cd4a05ef116514cbf1852edc306d13eb951ec0b54';
 
       var node = {
         services: {
@@ -261,7 +276,10 @@ describe('Transactions', function() {
                     '1Gp7iCzDGMZiV55Kt8uKsux6VyoHe1aJaN'
                   ],
                   'type': 'pubkeyhash'
-                }
+                },
+                'spentHeight': null,
+                'spentIndex': null,
+                'spentTxId': null
               },
               {
                 'value': '0.00000000',
@@ -269,7 +287,10 @@ describe('Transactions', function() {
                 'scriptPubKey': {
                   'hex': '6a24aa21a9ed55882e9fed16c5d3b6d77e4160a56f58c70d354d02888a99486125b638231c81',
                   'asm': 'OP_RETURN aa21a9ed55882e9fed16c5d3b6d77e4160a56f58c70d354d02888a99486125b638231c81'
-                }
+                },
+                'spentHeight': null,
+                'spentIndex': null,
+                'spentTxId': null
               }
             ],
             'blockhash': '000000000000000000926a0cd4a05ef116514cbf1852edc306d13eb951ec0b54',
