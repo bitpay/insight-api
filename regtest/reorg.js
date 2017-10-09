@@ -155,6 +155,10 @@ var TestBitcoind = function TestBitcoind() {
         var plusOneBlockHash = data.slice(-32).reverse().toString('hex');
         if (plusOneBlockHash !== '0000000000000000000000000000000000000000000000000000000000000000') {
           var nextBlock = self.blocks.get(plusOneBlockHash);
+          if (!nextBlock) {
+            console.log('did not find next block!!!!');
+            return;
+          }
           blockHash = bcoin.util.revHex(nextBlock.prevBlock);
         } else {
           blockHash = self.blocks.getLastIndex().rhash();
