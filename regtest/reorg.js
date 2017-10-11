@@ -766,6 +766,12 @@ var performTest3 = function(fakeServer, callback) {
       console.log('step 4: send a block in to reorg the header service without reorging the block service.');
       var reorgBlock = getReorgBlock();
       fakeServer.sendBlock(reorgBlock);
+      next();
+    },
+    function(next) {
+      setTimeout(next, 2000);
+    },
+    function(next) {
       blocksGenerated = 7;
       waitForBlocksGenerated(next);
     }
@@ -773,6 +779,7 @@ var performTest3 = function(fakeServer, callback) {
     if (err) {
       return callback(err);
     }
+    console.log('calling back from perform test 3');
     callback();
   });
 
@@ -1008,7 +1015,7 @@ describe('Reorg', function() {
   });
 
   describe('Reorg case 3: block service not sync\'ed, reorg common ancestor height less than ' +
-      'current block service tip height  (reorg while sync, not affected)', function() {
+      'current block service tip height  (reorg while sync, affected)', function() {
 
         var fakeServer;
         before(function(done) {
@@ -1062,7 +1069,7 @@ describe('Reorg', function() {
                 done();
 
               });
-            }, 2000);
+            }, 4000);
         });
       });
     });
