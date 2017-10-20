@@ -1,6 +1,7 @@
 'use strict';
-var sinon = require('sinon');
+
 var should = require('should');
+var sinon = require('sinon');
 var AddressController = require('../lib/addresses');
 var _ = require('lodash');
 var bitcore = require('bitcore-lib');
@@ -360,8 +361,7 @@ describe('Addresses', function() {
           'amount': 0.5332,
           'height': 534181,
           'satoshis': 53320000,
-          'confirmations': 50,
-          'confirmationsFromCache': true
+          'confirmations': 50
         },
         {
           'address': 'moZY18rGNmh4YCPeugtGW46AkkWMQttBUD',
@@ -372,16 +372,7 @@ describe('Addresses', function() {
           'amount': 0.00289829,
           'height': 534181,
           'satoshis': 289829,
-          'confirmations': 50,
-          'confirmationsFromCache': true
-        }
-      ];
-
-      var todos = [
-        {
-          confirmationsFromCache: true
-        }, {
-          confirmationsFromCache: true
+          'confirmations': 50
         }
       ];
 
@@ -407,10 +398,15 @@ describe('Addresses', function() {
         addrs: 'mzkD4nmQ8ixqxySdBgsXTpgvAMK5iRZpNK,moZY18rGNmh4YCPeugtGW46AkkWMQttBUD'
       };
 
+      var finalData = '';
+
       var res = {
-        jsonp: function(data) {
-          var merged = _.merge(data, todos);
-          should(merged).eql(insight);
+        write: function(data) {
+          finalData += data;
+        },
+        end: function() {
+          var finalObject = JSON.parse(finalData);
+          finalObject.should.eql(insight);
           done();
         }
       };
