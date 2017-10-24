@@ -272,6 +272,9 @@ var bitcore = {
         },
         'insight-api': {
           'routePrefix': 'api'
+        },
+        'block': {
+          'readAheadBlockCount': 1
         }
       }
     }
