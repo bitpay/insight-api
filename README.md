@@ -1,26 +1,26 @@
 # Insight API
 
-A Bitcoin blockchain REST and web socket API service for [Bitcore Node](https://github.com/bitpay/bitcore-node).
+A Vertcoin blockchain REST and web socket API service for [Vertcore Node](https://github.com/Cubey2019/vertcore-node).
 
-This is a backend-only service. If you're looking for the web frontend application, take a look at https://github.com/bitpay/insight-ui.
+This is a backend-only service. If you're looking for the web frontend application, take a look at https://github.com/Cubey2019/insight-vtc-ui.
 
 ## Getting Started
 
 ```bashl
-npm install -g bitcore-node@latest
-bitcore-node create mynode
+npm install -g vertcore-node@latest
+vertcore-node create mynode
 cd mynode
-bitcore-node install insight-api
-bitcore-node start
+vertcore-node install insight-vtc-api
+vertcore-node start
 ```
 
 The API endpoints will be available by default at: `http://localhost:3001/insight-api/`
 
 ## Prerequisites
 
-- [Bitcore Node 3.x](https://github.com/bitpay/bitcore-node)
+- [Vertcore Node 3.x](https://github.com/Cubey2019/vertcore-node)
 
-**Note:** You can use an existing Bitcoin data directory, however `txindex`, `addressindex`, `timestampindex` and `spentindex` needs to be set to true in `bitcoin.conf`, as well as a few other additional fields.
+**Note:** You can use an existing Vertcoin data directory, however `txindex`, `addressindex`, `timestampindex` and `spentindex` needs to be set to true in `vertcoin.conf`, as well as a few other additional fields.
 
 ## Notes on Upgrading from v0.3
 
@@ -69,8 +69,8 @@ There are a few changes to the `GET` endpoint for `/addr/[:address]`:
 
 Some additional general notes:
 - The transaction history for an address will be sorted in block order
-- The response for the `/sync` endpoint does not include `startTs` and `endTs` as the sync is no longer relevant as indexes are built in bitcoind.
-- The endpoint for `/peer` is no longer relevant connection to bitcoind is via ZMQ.
+- The response for the `/sync` endpoint does not include `startTs` and `endTs` as the sync is no longer relevant as indexes are built in vertcoind.
+- The endpoint for `/peer` is no longer relevant connection to vertcoind is via ZMQ.
 - `/tx` endpoint results will now include block height, and spentTx related fields will be set to `null` if unspent.
 - `/block` endpoint results does not include `confirmations` and will include `poolInfo`.
 
@@ -89,7 +89,7 @@ The `/tx/<txid>` endpoint JSON response will not include the following fields on
 object.
 - `spentTs`
 
-The `/status?q=getTxOutSetInfo` method has also been removed due to the query being very slow and locking bitcoind.
+The `/status?q=getTxOutSetInfo` method has also been removed due to the query being very slow and locking vertcoind.
 
 Plug-in support for Insight API is also no longer available, as well as the endpoints:
 - `/email/retrieve`
@@ -99,7 +99,7 @@ Caching support has not yet been added in the v0.3 upgrade.
 
 ## Query Rate Limit
 
-To protect the server, insight-api has a built it query rate limiter. It can be configurable in `bitcore-node.json` with:
+To protect the server, insight-api has a built it query rate limiter. It can be configurable in `vertcore-node.json` with:
 ``` json
   "servicesConfig": {
     "insight-api": {
@@ -109,7 +109,7 @@ To protect the server, insight-api has a built it query rate limiter. It can be 
     }
   }
 ```
-With all the configuration options available: https://github.com/bitpay/insight-api/blob/master/lib/ratelimiter.js#L10-17
+With all the configuration options available: https://github.com/Cubey2019/insight-vtc-api/blob/master/lib/ratelimiter.js#L10-17
 
 Or disabled entirely with:
 ``` json
@@ -364,7 +364,7 @@ POST response:
   /insight-api/peer
 ```
 
-### Status of the Bitcoin Network
+### Status of the Vertcoin Network
 ```
   /insight-api/status?q=xxx
 ```
@@ -409,7 +409,7 @@ Sample output:
 }
 ```
 
-`<bitcoinAddress>`: new transaction concerning <bitcoinAddress> received from network. This event is published in the `<bitcoinAddress>` room.
+`<vertcoinAddress>`: new transaction concerning <vertcoinAddress> received from network. This event is published in the `<vertcoinAddress>` room.
 
 `status`: every 1% increment on the sync task, this event will be triggered. This event is published in the `sync` room.
 

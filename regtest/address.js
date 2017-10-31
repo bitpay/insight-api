@@ -8,7 +8,7 @@ var fs = require('fs');
 var async = require('async');
 var RPC = require('bitcoind-rpc');
 var http = require('http');
-var bitcore = require('bitcore-lib');
+var bitcore = require('vertcore-lib');
 var PrivateKey = bitcore.PrivateKey;
 var Transaction = bitcore.Transaction;
 var exec = require('child_process').exec;
@@ -30,8 +30,8 @@ var rpc1 = new RPC(rpcConfig);
 rpcConfig.port++;
 var rpc2 = new RPC(rpcConfig);
 var debug = true;
-var bitcoreDataDir = '/tmp/bitcore';
-var bitcoinDataDirs = ['/tmp/bitcoin1', '/tmp/bitcoin2'];
+var bitcoreDataDir = '/tmp/vertcore';
+var bitcoinDataDirs = ['/tmp/vertcoin1', '/tmp/vertcoin2'];
 
 var bitcoin = {
   args: {
@@ -45,13 +45,13 @@ var bitcoin = {
     rpcport: 58332,
   },
   datadir: null,
-  exec: 'bitcoind', //if this isn't on your PATH, then provide the absolute path, e.g. /usr/local/bin/bitcoind
+  exec: 'vertcoind', //if this isn't on your PATH, then provide the absolute path, e.g. /usr/local/bin/vertcoind
   processes: []
 };
 
 var bitcore = {
   configFile: {
-    file: bitcoreDataDir + '/bitcore-node.json',
+    file: bitcoreDataDir + '/vertcore-node.json',
     conf: {
       network: 'regtest',
       port: 53001,
@@ -88,7 +88,7 @@ var bitcore = {
   },
   opts: { cwd: bitcoreDataDir },
   datadir: bitcoreDataDir,
-  exec: 'bitcored',  //if this isn't on your PATH, then provide the absolute path, e.g. /usr/local/bin/bitcored
+  exec: 'vertcored',  //if this isn't on your PATH, then provide the absolute path, e.g. /usr/local/bin/vertcored
   args: ['start'],
   process: null
 };
@@ -98,7 +98,7 @@ var request = function(httpOpts, callback) {
   var request = http.request(httpOpts, function(res) {
 
     if (res.statusCode !== 200 && res.statusCode !== 201) {
-      return callback('Error from bitcore-node webserver: ' + res.statusCode);
+      return callback('Error from vertcore-node webserver: ' + res.statusCode);
     }
 
     var resError;
@@ -230,7 +230,7 @@ var startBitcoind = function(count, callback) {
         return process.pid;
       });
 
-      console.log(count + ' bitcoind\'s started at pid(s): ' + pids);
+      console.log(count + ' vertcoind\'s started at pid(s): ' + pids);
 
       async.retry({ interval: 1000, times: 1000 }, function(next) {
         rpc1.getInfo(function(err) {
@@ -265,10 +265,10 @@ var txid;
 var buildInitialChain = function(callback) {
   async.waterfall([
     function(next) {
-      console.log('checking to see if bitcoind\'s are connected to each other.');
+      console.log('checking to see if vertcoind\'s are connected to each other.');
       rpc1.getInfo(function(err, res) {
         if (err || res.result.connections !== 1) {
-          next(err || new Error('bitcoind\'s not connected to each other.'));
+          next(err || new Error('vertcoind\'s not connected to each other.'));
         }
         next();
       });
@@ -354,8 +354,8 @@ var startBitcore = function(callback) {
       fs.writeFileSync(bitcore.configFile.file, JSON.stringify(bitcore.configFile.conf));
 
       var args = bitcore.args;
-      console.log('starting bitcore using this binary: ');
-      exec('which bitcored', function(err, stdout, stderr) {
+      console.log('starting vertcore using this binary: ');
+      exec('which vertcored', function(err, stdout, stderr) {
 
         if(err) {
           return callback(err);

@@ -28,8 +28,8 @@ var rpc1 = new RPC(rpcConfig);
 rpcConfig.port++;
 var rpc2 = new RPC(rpcConfig);
 var debug = true;
-var bitcoreDataDir = '/tmp/bitcore';
-var bitcoinDataDirs = ['/tmp/bitcoin1', '/tmp/bitcoin2'];
+var bitcoreDataDir = '/tmp/vertcore';
+var bitcoinDataDirs = ['/tmp/vertcoin1', '/tmp/vertcoin2'];
 
 var bitcoin = {
   args: {
@@ -43,13 +43,13 @@ var bitcoin = {
     rpcport: 58332,
   },
   datadir: null,
-  exec: 'bitcoind', //if this isn't on your PATH, then provide the absolute path, e.g. /usr/local/bin/bitcoind
+  exec: 'vertcoind', //if this isn't on your PATH, then provide the absolute path, e.g. /usr/local/bin/vertcoind
   processes: []
 };
 
 var bitcore = {
   configFile: {
-    file: bitcoreDataDir + '/bitcore-node.json',
+    file: bitcoreDataDir + '/vertcore-node.json',
     conf: {
       network: 'regtest',
       port: 53001,
@@ -95,7 +95,7 @@ var bitcore = {
   },
   opts: { cwd: bitcoreDataDir },
   datadir: bitcoreDataDir,
-  exec: 'bitcored',
+  exec: 'vertcored',
   args: ['start'],
   process: null
 };
@@ -167,7 +167,7 @@ var startBitcoind = function(count, callback) {
         return process.pid;
       });
 
-      console.log(count + ' bitcoind\'s started at pid(s): ' + pids);
+      console.log(count + ' vertcoind\'s started at pid(s): ' + pids);
       callback();
   });
 };
@@ -191,10 +191,10 @@ var shutdownBitcore = function(callback) {
 var buildInitialChain = function(callback) {
   async.waterfall([
     function(next) {
-      console.log('checking to see if bitcoind\'s are connected to each other.');
+      console.log('checking to see if vertcoind\'s are connected to each other.');
       rpc1.getinfo(function(err, res) {
         if (err || res.result.connections !== 1) {
-          next(err || new Error('bitcoind\'s not connected to each other.'));
+          next(err || new Error('vertcoind\'s not connected to each other.'));
         }
         next();
       });
@@ -350,7 +350,7 @@ describe('Status', function() {
           return;
         }
 
-        return done('Error from bitcore-node webserver: ' + res.statusCode);
+        return done('Error from vertcore-node webserver: ' + res.statusCode);
 
       }
 
@@ -390,7 +390,7 @@ describe('Status', function() {
           return;
         }
 
-        return done('Error from bitcore-node webserver: ' + res.statusCode);
+        return done('Error from vertcore-node webserver: ' + res.statusCode);
 
       }
 
@@ -431,7 +431,7 @@ describe('Status', function() {
           return;
         }
 
-        return done('Error from bitcore-node webserver: ' + res.statusCode);
+        return done('Error from vertcore-node webserver: ' + res.statusCode);
 
       }
 
@@ -472,7 +472,7 @@ describe('Status', function() {
           return;
         }
 
-        return done('Error from bitcore-node webserver: ' + res.statusCode);
+        return done('Error from vertcore-node webserver: ' + res.statusCode);
 
       }
 
@@ -515,7 +515,7 @@ describe('Status', function() {
           return;
         }
 
-        return done('Error from bitcore-node webserver: ' + res.statusCode);
+        return done('Error from vertcore-node webserver: ' + res.statusCode);
 
       }
 

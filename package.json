@@ -1,21 +1,21 @@
 {
-  "name": "insight-api",
-  "description": "A Bitcoin blockchain REST and web socket API service for Bitcore Node.",
+  "name": "insight-vtc-api",
+  "description": "A Vertcoin blockchain REST and web socket API service for Vertcore Node.",
   "version": "5.0.0-beta.28",
-  "repository": "git://github.com/bitpay/insight-api.git",
+  "repository": "git://github.com/Cubey2019/insight-vtc-api.git",
   "bugs": {
-    "url": "https://github.com/bitpay/insight-api/issues"
+    "url": "https://github.com/Cubey2019/insight-vtc-api/issues"
   },
-  "homepage": "https://github.com/bitpay/insight-api",
+  "homepage": "https://github.com/Cubey2019/insight-vtc-api",
   "license": "MIT",
   "keywords": [
     "insight",
     "insight api",
     "blockchain",
-    "bitcoin api",
+    "vertcoin api",
     "blockchain api",
     "json",
-    "bitcore"
+    "vertcore"
   ],
   "engines": {
     "node": ">=8.2.0"
@@ -31,8 +31,8 @@
     "JSONStream": "^1.3.1",
     "async": "*",
     "bcoin": "bcoin-org/bcoin#886008a1822ce1da7fa8395ee7db4bcc1750a28a",
-    "bitcore-lib": "5.0.0-beta.1",
-    "bitcore-message": "^1.0.1",
+    "vertcore-lib": "5.0.0-beta.1",
+    "vertcore-message": "^1.0.1",
     "body-parser": "^1.13.3",
     "compression": "^1.6.1",
     "lodash": "^2.4.1",
@@ -42,7 +42,7 @@
   },
   "devDependencies": {
     "bitcoind-rpc": "^0.7.0",
-    "bitcore-p2p": "5.0.0-beta.2",
+    "vertcore-p2p": "5.0.0-beta.2",
     "chai": "^3.5.0",
     "mkdirp": "^0.5.1",
     "mocha": "^2.4.5",

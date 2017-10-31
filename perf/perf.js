@@ -8,9 +8,9 @@ var fs = require('fs');
 var async = require('async');
 var RPC = require('bitcoind-rpc');
 var http = require('http');
-var bitcore = require('bitcore-lib');
-var PrivateKey = bitcore.PrivateKey;
-var Transaction = bitcore.Transaction;
+var vertcore = require('vertcore-lib');
+var PrivateKey = vertcore.PrivateKey;
+var Transaction = vertcore.Transaction;
 
 console.log('This test takes a really long time to run, be patient.');
 
@@ -31,10 +31,10 @@ var utxoCount = 3000;
 var outputKeys = [];
 var rpc1 = new RPC(rpcConfig);
 var debug = true;
-var bitcoreDataDir = '/tmp/bitcore';
-var bitcoinDataDirs = ['/tmp/bitcoin'];
+var vertcoreDataDir = '/tmp/vertcore';
+var vertcoinDataDirs = ['/tmp/vertcoin'];
 
-var bitcoin = {
+var vertcoin = {
   args: {
     datadir: null,
     listen: 1,
@@ -46,17 +46,17 @@ var bitcoin = {
     rpcport: 58332,
   },
   datadir: null,
-  exec: 'bitcoind', //if this isn't on your PATH, then provide the absolute path, e.g. /usr/local/bin/bitcoind
+  exec: 'vertcoind', //if this isn't on your PATH, then provide the absolute path, e.g. /usr/local/bin/vertcoind
   processes: []
 };
 
-var bitcore = {
+var vertcore = {
   configFile: {
-    file: bitcoreDataDir + '/bitcore-node.json',
+    file: vertcoreDataDir + '/vertcore-node.json',
     conf: {
       network: 'regtest',
       port: 53001,
-      datadir: bitcoreDataDir,
+      datadir: vertcoreDataDir,
       services: [
         'p2p',
         'db',
@@ -87,27 +87,27 @@ var bitcore = {
     hostname: 'localhost',
     port: 53001,
   },
-  opts: { cwd: bitcoreDataDir },
-  datadir: bitcoreDataDir,
-  exec: 'bitcored',  //if this isn't on your PATH, then provide the absolute path, e.g. /usr/local/bin/bitcored
+  opts: { cwd: vertcoreDataDir },
+  datadir: vertcoreDataDir,
+  exec: 'vertcored',  //if this isn't on your PATH, then provide the absolute path, e.g. /usr/local/bin/vertcored
   args: ['start'],
   process: null
 };
 
-var startBitcoind = function(count, callback) {
+var startVertcoind = function(count, callback) {
 
   var listenCount = 0;
   async.timesSeries(count, function(n, next) {
 
-    var datadir = bitcoinDataDirs.shift();
+    var datadir = vertcoinDataDirs.shift();
 
-    bitcoin.datadir = datadir;
-    bitcoin.args.datadir = datadir;
+    vertcoin.datadir = datadir;
+    vertcoin.args.datadir = datadir;
 
     if (listenCount++ > 0) {
-      bitcoin.args.listen = 0;
-      bitcoin.args.rpcport++;
-      bitcoin.args.connect = '127.0.0.1';
+      vertcoin.args.listen = 0;
+      vertcoin.args.rpcport++;
+      vertcoin.args.connect = '127.0.0.1';
     }
 
     rimraf(datadir, function(err) {
@@ -122,15 +122,15 @@ var startBitcoind = function(count, callback) {
           return next(err);
         }
 
-        var args = bitcoin.args;
+        var args = vertcoin.args;
         var argList = Object.keys(args).map(function(key) {
           return '-' + key + '=' + args[key];
         });
 
-        var bitcoinProcess = spawn(bitcoin.exec, argList, bitcoin.opts);
-        bitcoin.processes.push(bitcoinProcess);
+        var vertcoinProcess = spawn(vertcoin.exec, argList, vertcoin.opts);
+        vertcoin.processes.push(vertcoinProcess);
 
-        bitcoinProcess.stdout.on('data', function(data) {
+        vertcoinProcess.stdout.on('data', function(data) {
 
           if (debug) {
             process.stdout.write(data.toString());
@@ -138,7 +138,7 @@ var startBitcoind = function(count, callback) {
 
         });
 
-        bitcoinProcess.stderr.on('data', function(data) {
+        vertcoinProcess.stderr.on('data', function(data) {
 
           if (debug) {
             process.stderr.write(data.toString());
@@ -157,11 +157,11 @@ var startBitcoind = function(count, callback) {
         return callback(err);
       }
 
-      var pids = bitcoin.processes.map(function(process) {
+      var pids = vertcoin.processes.map(function(process) {
         return process.pid;
       });
 
-      console.log(count + ' bitcoind\'s started at pid(s): ' + pids);
+      console.log(count + ' vertcoind\'s started at pid(s): ' + pids);
       async.retry({ interval: 1000, times: 1000 }, function(next) {
         rpc1.getInfo(next);
       }, callback);
@@ -174,7 +174,7 @@ var request = function(httpOpts, callback) {
   var request = http.request(httpOpts, function(res) {
 
     if (res.statusCode !== 200 && res.statusCode !== 201) {
-      return callback('Error from bitcore-node webserver: ' + res.statusCode);
+      return callback('Error from vertcore-node webserver: ' + res.statusCode);
     }
 
     var resError;
@@ -207,16 +207,16 @@ var request = function(httpOpts, callback) {
   request.end();
 };
 
-var shutdownBitcoind = function(callback) {
-  bitcoin.processes.forEach(function(process) {
+var shutdownVertcoind = function(callback) {
+  vertcoin.processes.forEach(function(process) {
     process.kill();
   });
   setTimeout(callback, 3000);
 };
 
-var shutdownBitcore = function(callback) {
-  if (bitcore.process) {
-    bitcore.process.kill();
+var shutdownVertcore = function(callback) {
+  if (vertcore.process) {
+    vertcore.process.kill();
   }
   callback();
 };
@@ -324,26 +324,26 @@ var buildInitialChain = function(callback) {
   });
 };
 
-var startBitcore = function(callback) {
+var startVertcore = function(callback) {
 
-  rimraf(bitcoreDataDir, function(err) {
+  rimraf(vertcoreDataDir, function(err) {
 
     if(err) {
       return callback(err);
     }
 
-    mkdirp(bitcoreDataDir, function(err) {
+    mkdirp(vertcoreDataDir, function(err) {
 
       if(err) {
         return callback(err);
       }
 
-      fs.writeFileSync(bitcore.configFile.file, JSON.stringify(bitcore.configFile.conf));
+      fs.writeFileSync(vertcore.configFile.file, JSON.stringify(vertcore.configFile.conf));
 
-      var args = bitcore.args;
-      bitcore.process = spawn(bitcore.exec, args, bitcore.opts);
+      var args = vertcore.args;
+      vertcore.process = spawn(vertcore.exec, args, vertcore.opts);
 
-      bitcore.process.stdout.on('data', function(data) {
+      vertcore.process.stdout.on('data', function(data) {
 
         if (debug) {
           process.stdout.write(data.toString());
@@ -351,7 +351,7 @@ var startBitcore = function(callback) {
 
       });
 
-      bitcore.process.stderr.on('data', function(data) {
+      vertcore.process.stderr.on('data', function(data) {
 
         if (debug) {
           process.stderr.write(data.toString());
@@ -398,21 +398,21 @@ describe('Address Performance', function() {
 
     async.series([
       function(next) {
-        startBitcoind(bitcoinDataDirs.length, next);
+        startVertcoind(vertcoinDataDirs.length, next);
       },
       function(next) {
         buildInitialChain(next);
       },
       function(next) {
-        startBitcore(next);
+        startVertcore(next);
       }
     ], done);
 
   });
 
   after(function(done) {
-    shutdownBitcore(function() {
-      shutdownBitcoind(done);
+    shutdownVertcore(function() {
+      shutdownVertcoind(done);
     });
   });
 

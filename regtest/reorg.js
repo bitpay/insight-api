@@ -20,11 +20,11 @@ var fs = require('fs');
 var async = require('async');
 var RPC = require('bitcoind-rpc');
 var http = require('http');
-var bitcore = require('bitcore-lib');
+var bitcore = require('vertcore-lib');
 var exec = require('child_process').exec;
 var net = require('net');
-var p2p = require('bitcore-p2p');
-var bitcore = require('bitcore-lib');
+var p2p = require('vertcore-p2p');
+var bitcore = require('vertcore-lib');
 var Networks = bitcore.Networks;
 var BlockHeader = bitcore.BlockHeader;
 var Block = bitcore.Block;
@@ -223,9 +223,9 @@ var rpc1 = new RPC(rpcConfig);
 rpcConfig.port++;
 var rpc2 = new RPC(rpcConfig);
 var debug = true;
-var bitcoreDataDir = '/tmp/bitcore';
-var bitcoinDir1 = '/tmp/bitcoin1';
-var bitcoinDir2 = '/tmp/bitcoin2';
+var bitcoreDataDir = '/tmp/vertcore';
+var bitcoinDir1 = '/tmp/vertcoin1';
+var bitcoinDir2 = '/tmp/vertcoin2';
 var bitcoinDataDirs = [ bitcoinDir1, bitcoinDir2 ];
 
 var bitcoin = {
@@ -240,13 +240,13 @@ var bitcoin = {
     rpcport: 58332,
   },
   datadir: null,
-  exec: 'bitcoind', //if this isn't on your PATH, then provide the absolute path, e.g. /usr/local/bin/bitcoind
+  exec: 'vertcoind', //if this isn't on your PATH, then provide the absolute path, e.g. /usr/local/bin/vertcoind
   processes: []
 };
 
 var bitcore = {
   configFile: {
-    file: bitcoreDataDir + '/bitcore-node.json',
+    file: bitcoreDataDir + '/vertcore-node.json',
     conf: {
       network: 'regtest',
       port: 53001,
@@ -286,7 +286,7 @@ var bitcore = {
   },
   opts: { cwd: bitcoreDataDir },
   datadir: bitcoreDataDir,
-  exec: 'bitcored',  //if this isn't on your PATH, then provide the absolute path, e.g. /usr/local/bin/bitcored
+  exec: 'vertcored',  //if this isn't on your PATH, then provide the absolute path, e.g. /usr/local/bin/vertcored
   args: ['start'],
   process: null
 };
@@ -296,7 +296,7 @@ var request = function(httpOpts, callback) {
   var request = http.request(httpOpts, function(res) {
 
     if (res.statusCode !== 200 && res.statusCode !== 201) {
-      return callback('Error from bitcore-node webserver: ' + res.statusCode);
+      return callback('Error from vertcore-node webserver: ' + res.statusCode);
     }
 
     var resError;
@@ -414,7 +414,7 @@ var reportBitcoindsStarted = function() {
     return process.pid;
   });
 
-  console.log(pids.length + ' bitcoind\'s started at pid(s): ' + pids);
+  console.log(pids.length + ' vertcoind\'s started at pid(s): ' + pids);
 };
 
 var startBitcoinds = function(datadirs, callback) {
@@ -483,10 +483,10 @@ var writeBitcoreConf = function() {
 var startBitcore = function(callback) {
 
   var args = bitcore.args;
-  console.log('Using bitcored from: ');
+  console.log('Using vertcored from: ');
   async.series([
     function(next) {
-      exec('which bitcored', function(err, stdout, stderr) {
+      exec('which vertcored', function(err, stdout, stderr) {
         if(err) {
           return next(err);
         }
@@ -555,7 +555,7 @@ var performTest1 = function(callback) {
     },
     // 1. start 2 bitcoinds in regtest mode
     function(next) {
-      console.log('step 1: starting 2 bitcoinds.');
+      console.log('step 1: starting 2 vertcoinds.');
       startBitcoinds(bitcoinDataDirs, function(err) {
         if (err) {
           return callback(err);
@@ -565,12 +565,12 @@ var performTest1 = function(callback) {
     },
     // 2. ensure that both bitcoind's are connected
     function(next) {
-      console.log('step 2: checking to see if bitcoind\'s are connected to each other.');
+      console.log('step 2: checking to see if vertcoind\'s are connected to each other.');
       rpc1.getInfo(function(err, res) {
         if (err || res.result.connections !== 1) {
-          next(err || new Error('bitcoind\'s not connected to each other.'));
+          next(err || new Error('vertcoind\'s not connected to each other.'));
         }
-        console.log('bitcoind\'s are connected.');
+        console.log('vertcoind\'s are connected.');
         next();
       });
     },
@@ -588,25 +588,25 @@ var performTest1 = function(callback) {
           if (err || res.result.blocks < 10) {
             return next(1);
           }
-          console.log('bitcoin 2 has synced the blocks generated on bitcoin 1.');
+          console.log('vertcoin 2 has synced the blocks generated on vertcoin 1.');
           next();
         });
       }, next);
     },
     // 5. start up bitcore and let it sync the 10 blocks
     function(next) {
-      console.log('step 5: starting bitcore...');
+      console.log('step 5: starting vertcore...');
       startBitcore(next);
     },
     function(next) {
       // 6. shut down both bitcoind's
-      console.log('bitcore is running and sync\'ed.');
-      console.log('step 6: shutting down all bitcoind\'s.');
+      console.log('vertcore is running and sync\'ed.');
+      console.log('step 6: shutting down all vertcoind\'s.');
       shutdownBitcoind(next);
     },
     // 7. change the config for the second bitcoind to listen for p2p, start bitcoin 2
     function(next) {
-      console.log('step 7: changing config of bitcoin 2 and restarting it.');
+      console.log('step 7: changing config of vertcoin 2 and restarting it.');
       bitcoin.datadir = bitcoinDataDirs[1];
       bitcoin.args.datadir = bitcoinDataDirs[1];
       bitcoin.args.listen = 1;
@@ -620,26 +620,26 @@ var performTest1 = function(callback) {
     },
     // 8. generate 100 blocks on the second bitcoind
     function(next) {
-      console.log('step 8: generating 100 blocks on bitcoin 2.');
+      console.log('step 8: generating 100 blocks on vertcoin 2.');
       blocksGenerated += 100;
-      console.log('generating 100 blocks on bitcoin 2.');
+      console.log('generating 100 blocks on vertcoin 2.');
       sync100Blocks(next);
     },
     // 9. let bitcore connect and sync those 100 blocks
     function(next) {
-      console.log('step 9: syncing 100 blocks to bitcore.');
+      console.log('step 9: syncing 100 blocks to vertcore.');
       waitForBlocksGenerated(next);
     },
     // 10. shutdown the second bitcoind
     function(next) {
-      console.log('100 more blocks synced to bitcore.');
-      console.log('step 10: shutting down bitcoin 2.');
+      console.log('100 more blocks synced to vertcore.');
+      console.log('step 10: shutting down vertcoin 2.');
       shutdownBitcoind(next);
     },
     // 11. start up the first bitcoind
     function(next) {
       console.log('bitcoin 2 shut down.');
-      console.log('step 11: starting up bitcoin 1');
+      console.log('step 11: starting up vertcoin 1');
       bitcoin.args.rpcport = bitcoin.args.rpcport - 1;
       bitcoin.datadir = bitcoinDataDirs[0];
       bitcoin.args.datadir = bitcoinDataDirs[0];
@@ -666,7 +666,7 @@ var performTest1 = function(callback) {
     },
     // 13. let bitcore sync that block and reorg back to it
     function(next) {
-      console.log('step 13: Waiting for bitcore to reorg to block height 11.');
+      console.log('step 13: Waiting for vertcore to reorg to block height 11.');
       waitForBlocksGenerated(next);
     }
   ], function(err) {
@@ -704,13 +704,13 @@ var performTest2 = function(fakeServer, callback) {
     },
     // 2. init server with blocks (the initial set from which bitcore will sync)
     function(next) {
-      console.log('step 2: init server with blocks (the initial set from which bitcore will sync)');
+      console.log('step 2: init server with blocks (the initial set from which vertcore will sync)');
       next();
     },
     // 3. start bitcore in slow mode (slow the block service's sync speed down so we
     // can send a reorg block to the header service while the block service is still syncing.
     function(next) {
-      console.log('step 3: start bitcore in slow mode.');
+      console.log('step 3: start vertcore in slow mode.');
       blocksGenerated = 4;
       startBitcore(next);
     },
@@ -761,7 +761,7 @@ var performTest3 = function(fakeServer, callback) {
     // 3. start bitcore in slow mode (slow the block service's sync speed down so we
     // can send a reorg block to the header service while the block service is still syncing.
     function(next) {
-      console.log('step 3: start bitcore in slow mode.');
+      console.log('step 3: start vertcore in slow mode.');
       blocksGenerated = 6;
       startBitcore(next);
     },
@@ -813,13 +813,13 @@ var performTest4 = function(fakeServer, callback) {
     },
     // 2. start bitcore
     function(next) {
-      console.log('step 2: start bitcore and let sync.');
+      console.log('step 2: start vertcore and let sync.');
       blocksGenerated = 7;
       startBitcore(next);
     },
     // 3. shutdown bitcore
     function(next) {
-      console.log('step 3: shut down bitcore.');
+      console.log('step 3: shut down vertcore.');
       shutdownBitcore(next);
     },
     // 4. setup the fake server to send a reorg'ed set of headers
@@ -831,7 +831,7 @@ var performTest4 = function(fakeServer, callback) {
     },
     // 5. start up bitcore once again
     function(next) {
-      console.log('step 5: start up bitcore.');
+      console.log('step 5: start up vertcore.');
       blocksGenerated = 7;
       startBitcore(next);
     }
@@ -868,7 +868,7 @@ var performTest5 = function(fakeServer, callback) {
     },
     // 2. start bitcore
     function(next) {
-      console.log('step 2: start bitcore and let sync.');
+      console.log('step 2: start vertcore and let sync.');
       blocksGenerated = 7;
       startBitcore(next);
     },
@@ -901,7 +901,7 @@ describe('Reorg', function() {
     });
 
     // case 1.
-    it('should reorg correctly when bitcore reconnects to a peer that is not yet sync\'ed, but when a block does come in, it is a reorg block.', function(done) {
+    it('should reorg correctly when vertcore reconnects to a peer that is not yet sync\'ed, but when a block does come in, it is a reorg block.', function(done) {
       /*
          What this test does:
 
