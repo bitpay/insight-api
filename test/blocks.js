@@ -3,7 +3,7 @@
 var should = require('should');
 var sinon = require('sinon');
 var BlockController = require('../lib/blocks');
-var bcoin = require('bcoin');
+var vcoin = require('vcoin');
 
 var blocks = require('./data/blocks.json');
 
@@ -68,8 +68,8 @@ describe('Blocks', function() {
       'poolInfo': {}
     };
 
-    var bcoinBlock = bcoin.block.fromRaw(blocks['0000000000000afa0c3c0afd450c793a1e300ec84cbe9555166e06132f19a8f7'], 'hex');
-    bcoinBlock.isMainChain = true;
+    var vcoinBlock = vcoin.block.fromRaw(blocks['0000000000000afa0c3c0afd450c793a1e300ec84cbe9555166e06132f19a8f7'], 'hex');
+    vcoinBlock.isMainChain = true;
 
     var node = {
       log: sinon.stub(),
@@ -79,7 +79,7 @@ describe('Blocks', function() {
           getCurrentDifficulty: sinon.stub().returns(1295829.93087696)
         },
         block: {
-          getBlock: sinon.stub().callsArgWith(1, null, bcoinBlock),
+          getBlock: sinon.stub().callsArgWith(1, null, vcoinBlock),
           getTip: sinon.stub().returns({ height: 533974+118 })
         }
       }
@@ -104,7 +104,7 @@ describe('Blocks', function() {
     });
 
     it('block pool info should be correct', function(done) {
-      var block = bcoin.block.fromRaw(blocks['000000000000000004a118407a4e3556ae2d5e882017e7ce526659d8073f13a4'], 'hex');
+      var block = vcoin.block.fromRaw(blocks['000000000000000004a118407a4e3556ae2d5e882017e7ce526659d8073f13a4'], 'hex');
       var node = {
         log: sinon.stub(),
         services: {

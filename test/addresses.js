@@ -5,7 +5,7 @@ var sinon = require('sinon');
 var AddressController = require('../lib/addresses');
 var _ = require('lodash');
 var bitcore = require('bitcore-lib');
-var bcoin = require('bcoin');
+var vcoin = require('vcoin');
 
 var txinfos = {
   totalCount: 2,
@@ -148,16 +148,16 @@ var tx = {
 
 var rawHex = "01000000010000000000000000000000000000000000000000000000000000000000000000ffffffff0704ffff001d010bffffffff0100f2052a010000004341047211a824f55b505228e4c3d5194c1fcfaa15a456abdf37f9b9d97a4040afc073dee6c89064984f03385237d92167c13e236446b417ab79a0fcae412ae3316b77ac00000000";
 
-var bcoinTx = bcoin.tx.fromRaw(rawHex, 'hex');
-bcoinTx.__blockhash = '0000000000000041ddc94ecf4f86a456a83b2e320c36c6f0c13ff92c7e75f013';
-bcoinTx.blockhash = '0000000000000041ddc94ecf4f86a456a83b2e320c36c6f0c13ff92c7e75f013';
-bcoinTx.__height = 534181;
-bcoinTx.__timestamp = 1441116143;
-bcoinTx.outputSatoshis = 53829829;
+var vcoinTx = vcoin.tx.fromRaw(rawHex, 'hex');
+vcoinTx.__blockhash = '0000000000000041ddc94ecf4f86a456a83b2e320c36c6f0c13ff92c7e75f013';
+vcoinTx.blockhash = '0000000000000041ddc94ecf4f86a456a83b2e320c36c6f0c13ff92c7e75f013';
+vcoinTx.__height = 534181;
+vcoinTx.__timestamp = 1441116143;
+vcoinTx.outputSatoshis = 53829829;
 
 var txinfos2 = {
   totalCount: 1,
-  items: [ bcoinTx ]
+  items: [ vcoinTx ]
 };
 
 var utxos = [

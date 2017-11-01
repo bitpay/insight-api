@@ -28,14 +28,14 @@ var bitcore = require('vertcore-lib');
 var Networks = bitcore.Networks;
 var BlockHeader = bitcore.BlockHeader;
 var Block = bitcore.Block;
-var bcoin = require('bcoin');
-var BcoinBlock = bcoin.block;
-var BcoinTx = bcoin.tx;
+var vcoin = require('vcoin');
+var VcoinBlock = vcoin.block;
+var VcoinTx = vcoin.tx;
 
-var tx = BcoinTx.fromRaw('0200000001d7cf6999aa1eeee5bf954071d974bff51aa7126494a071ec0ba7820d98fc3106010000006a473044022072a784b07c68abde667a27587eb3979ee1f3ca5dc78e665801150492268c1307022054fdd4aafdcb15fc4cb7555c3a38a9ade8bb8af57c95be974b06ed16a713355d012103d3b1e94531d8b7ed3eb54751abe79786c1aa9adc1b5bc35cfced49693095b68dfeffffff0245519103000000001976a914beac8701ec4a6970ed239a47671c967b50da43d588ac80969800000000001976a914c98d54f2eb6c8970d50f7e90c9b3f4b71af9493088ac00000000', 'hex');
+var tx = VcoinTx.fromRaw('0200000001d7cf6999aa1eeee5bf954071d974bff51aa7126494a071ec0ba7820d98fc3106010000006a473044022072a784b07c68abde667a27587eb3979ee1f3ca5dc78e665801150492268c1307022054fdd4aafdcb15fc4cb7555c3a38a9ade8bb8af57c95be974b06ed16a713355d012103d3b1e94531d8b7ed3eb54751abe79786c1aa9adc1b5bc35cfced49693095b68dfeffffff0245519103000000001976a914beac8701ec4a6970ed239a47671c967b50da43d588ac80969800000000001976a914c98d54f2eb6c8970d50f7e90c9b3f4b71af9493088ac00000000', 'hex');
 
 Networks.enableRegtest();
-var messages = new p2p.Messages({ network: Networks.get('regtest'), Block: BcoinBlock, BlockHeader: BlockHeader, Transaction: BcoinTx });
+var messages = new p2p.Messages({ network: Networks.get('regtest'), Block: VcoinBlock, BlockHeader: BlockHeader, Transaction: VcoinTx });
 
 var SimpleMap = function SimpleMap() {
   var object = {};
@@ -83,11 +83,11 @@ var reorgBlock;
 var blocksGenerated = 0;
 
 var getReorgBlock = function() {
-  return BcoinBlock.fromRaw(require('./data/blocks_reorg.json')[0], 'hex');
+  return VcoinBlock.fromRaw(require('./data/blocks_reorg.json')[0], 'hex');
 };
 
 var getOrphanedBlock = function() {
-  return BcoinBlock.fromRaw(require('./data/blocks_orphaned.json')[0], 'hex');
+  return VcoinBlock.fromRaw(require('./data/blocks_orphaned.json')[0], 'hex');
 };
 
 var TestBitcoind = function TestBitcoind() {
@@ -114,7 +114,7 @@ var TestBitcoind = function TestBitcoind() {
     self.blocks = new SimpleMap();
     var blocks = require('./data/blocks.json');
     blocks.forEach(function(raw) {
-      var blk = BcoinBlock.fromRaw(raw, 'hex');
+      var blk = VcoinBlock.fromRaw(raw, 'hex');
       self.blocks.set(blk.rhash(), blk);
     });
   };
@@ -159,7 +159,7 @@ var TestBitcoind = function TestBitcoind() {
             console.log('did not find next block!!!!');
             return;
           }
-          blockHash = bcoin.util.revHex(nextBlock.prevBlock);
+          blockHash = vcoin.util.revHex(nextBlock.prevBlock);
         } else {
           blockHash = self.blocks.getLastIndex().rhash();
         }
@@ -170,13 +170,13 @@ var TestBitcoind = function TestBitcoind() {
       if (command === 'getdata') { //getdata
         var hash = data.slice(-32).reverse().toString('hex');
         if (hash === tx.txid()) {
-          return msg.push(messages.Transaction(tx, { Transaction: BcoinTx }));
+          return msg.push(messages.Transaction(tx, { Transaction: VcoinTx }));
         }
         var block = self.blocks.get(hash);
         if (!block) {
           block = self._orphans[hash];
         }
-        msg.push(messages.Block(block, { Block: BcoinBlock }));
+        msg.push(messages.Block(block, { Block: VcoinBlock }));
       }
 
       if (msg.length > 0) {

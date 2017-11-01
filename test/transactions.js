@@ -2,7 +2,7 @@
 var should = require('should');
 var sinon = require('sinon');
 var TxController = require('../lib/transactions');
-var bcoin = require('bcoin');
+var vcoin = require('vcoin');
 var _ = require('lodash');
 
 describe('Transactions', function() {
@@ -77,16 +77,16 @@ describe('Transactions', function() {
         'fees': 0.002
       };
 
-      var bcoinTx = bcoin.tx.fromRaw('010000000156643da30a6f8f3c927f9cc215ad09fae1c1bac29d59a958b4c99ebb688ae546010000006a47304402203ddb49db43074b421ec6d5604ae91aac37f4715139e0c83ea1145379e8cbf02702207fbc92c4038ad501989b097844ae4e337c9388f0713110620b40e582b85fdff3012102cd90aa18ec8e3b35c0447ffc713c945cb837429d33d075d1b0f050c72ea838d2ffffffff02e0193602000000001976a914bc345e0e0e5b0dbddb7b35ef3430fedd528dd1b788ac34e8ed59000000001976a914c2c74d7519d4425fc1a253f066d980164341554a88ac00000000', 'hex');
+      var vcoinTx = vcoin.tx.fromRaw('010000000156643da30a6f8f3c927f9cc215ad09fae1c1bac29d59a958b4c99ebb688ae546010000006a47304402203ddb49db43074b421ec6d5604ae91aac37f4715139e0c83ea1145379e8cbf02702207fbc92c4038ad501989b097844ae4e337c9388f0713110620b40e582b85fdff3012102cd90aa18ec8e3b35c0447ffc713c945cb837429d33d075d1b0f050c72ea838d2ffffffff02e0193602000000001976a914bc345e0e0e5b0dbddb7b35ef3430fedd528dd1b788ac34e8ed59000000001976a914c2c74d7519d4425fc1a253f066d980164341554a88ac00000000', 'hex');
 
-      bcoinTx.__blockhash = '0000000000000000009d2e9b7a984d55c6c99ba62f98e9bc7dad8b1e779045a3';
-      bcoinTx.blockhash = '0000000000000000009d2e9b7a984d55c6c99ba62f98e9bc7dad8b1e779045a3';
-      bcoinTx.__height = 481763;
-      bcoinTx.__inputValues = [ 1546063700 ];
-      bcoinTx.__timestamp = 1503507151;
-      bcoinTx.inputSatoshis = [ 1546063700 ];
-      bcoinTx.feeSatoshis = 200000;
-      bcoinTx.outputSatoshis = 1545863700;
+      vcoinTx.__blockhash = '0000000000000000009d2e9b7a984d55c6c99ba62f98e9bc7dad8b1e779045a3';
+      vcoinTx.blockhash = '0000000000000000009d2e9b7a984d55c6c99ba62f98e9bc7dad8b1e779045a3';
+      vcoinTx.__height = 481763;
+      vcoinTx.__inputValues = [ 1546063700 ];
+      vcoinTx.__timestamp = 1503507151;
+      vcoinTx.inputSatoshis = [ 1546063700 ];
+      vcoinTx.feeSatoshis = 200000;
+      vcoinTx.outputSatoshis = 1545863700;
 
       var node = {
         services: {
@@ -94,7 +94,7 @@ describe('Transactions', function() {
             getTip: sinon.stub().returns({ height: 481766 })
           },
           transaction: {
-            getDetailedTransaction: sinon.stub().callsArgWith(2, null, bcoinTx)
+            getDetailedTransaction: sinon.stub().callsArgWith(2, null, vcoinTx)
           }
         }
       };
@@ -137,16 +137,16 @@ describe('Transactions', function() {
         ]
       };
 
-      var bcoinTx = bcoin.tx.fromRaw('01000000010000000000000000000000000000000000000000000000000000000000000000ffffffff0704ffff001d010bffffffff0100f2052a010000004341047211a824f55b505228e4c3d5194c1fcfaa15a456abdf37f9b9d97a4040afc073dee6c89064984f03385237d92167c13e236446b417ab79a0fcae412ae3316b77ac00000000', 'hex');
+      var vcoinTx = vcoin.tx.fromRaw('01000000010000000000000000000000000000000000000000000000000000000000000000ffffffff0704ffff001d010bffffffff0100f2052a010000004341047211a824f55b505228e4c3d5194c1fcfaa15a456abdf37f9b9d97a4040afc073dee6c89064984f03385237d92167c13e236446b417ab79a0fcae412ae3316b77ac00000000', 'hex');
 
-      bcoinTx.__blockhash = '000000006a625f06636b8bb6ac7b960a8d03705d1ace08b1a19da3fdcc99ddbd';
-      bcoinTx.blockhash = '000000006a625f06636b8bb6ac7b960a8d03705d1ace08b1a19da3fdcc99ddbd';
-      bcoinTx.__height = 2;
-      bcoinTx.__inputValues = [ 1546063700 ];
-      bcoinTx.__timestamp = 1231469744;
-      bcoinTx.inputSatoshis = [ 1546063700 ];
-      bcoinTx.feeSatoshis = 0;
-      bcoinTx.outputSatoshis = 5000000000;
+      vcoinTx.__blockhash = '000000006a625f06636b8bb6ac7b960a8d03705d1ace08b1a19da3fdcc99ddbd';
+      vcoinTx.blockhash = '000000006a625f06636b8bb6ac7b960a8d03705d1ace08b1a19da3fdcc99ddbd';
+      vcoinTx.__height = 2;
+      vcoinTx.__inputValues = [ 1546063700 ];
+      vcoinTx.__timestamp = 1231469744;
+      vcoinTx.inputSatoshis = [ 1546063700 ];
+      vcoinTx.feeSatoshis = 0;
+      vcoinTx.outputSatoshis = 5000000000;
 
       var node = {
 
@@ -157,7 +157,7 @@ describe('Transactions', function() {
           },
 
           transaction: {
-            getDetailedTransaction: sinon.stub().callsArgWith(2, null, bcoinTx)
+            getDetailedTransaction: sinon.stub().callsArgWith(2, null, vcoinTx)
           }
         }
 
@@ -228,12 +228,12 @@ describe('Transactions', function() {
 
       var hex = '01000000010000000000000000000000000000000000000000000000000000000000000000ffffffff3103835807244d696e656420627920416e74506f6f6c6a2f4542312f4144362f4e59412f1d205999aaa02b1200001fff0200ffffffff026fb2a54c000000001976a914ad7309dfc032d7f6b652e0c29ee353e63fffec6688ac0000000000000000266a24aa21a9ed55882e9fed16c5d3b6d77e4160a56f58c70d354d02888a99486125b638231c8100000000';
 
-      var bcoinTx = bcoin.tx.fromRaw(hex, 'hex');
-      bcoinTx.__height = 481411;
-      bcoinTx.outputSatoshis = 1285927535;
-      bcoinTx.__timestamp = 1503242912;
-      bcoinTx.__blockhash = '000000000000000000926a0cd4a05ef116514cbf1852edc306d13eb951ec0b54';
-      bcoinTx.blockhash = '000000000000000000926a0cd4a05ef116514cbf1852edc306d13eb951ec0b54';
+      var vcoinTx = vcoin.tx.fromRaw(hex, 'hex');
+      vcoinTx.__height = 481411;
+      vcoinTx.outputSatoshis = 1285927535;
+      vcoinTx.__timestamp = 1503242912;
+      vcoinTx.__blockhash = '000000000000000000926a0cd4a05ef116514cbf1852edc306d13eb951ec0b54';
+      vcoinTx.blockhash = '000000000000000000926a0cd4a05ef116514cbf1852edc306d13eb951ec0b54';
 
       var node = {
         services: {
@@ -245,7 +245,7 @@ describe('Transactions', function() {
               totalCount: 1,
               from: 0,
               to: 0xffffffff,
-              items: [bcoinTx]
+              items: [vcoinTx]
             })
           }
         }
@@ -334,7 +334,7 @@ describe('Transactions', function() {
             getTip: sinon.stub().returns({ height: 534233 })
           },
           transaction: {
-            getTransaction: sinon.stub().callsArgWith(1, null, bcoin.tx.fromRaw(new Buffer(hex, 'hex')))
+            getTransaction: sinon.stub().callsArgWith(1, null, vcoin.tx.fromRaw(new Buffer(hex, 'hex')))
           }
         }
       };
@@ -374,7 +374,7 @@ describe('Transactions', function() {
       };
 
       var rawTx = '01000000011760bc271a397bfb65b7506d430d96ebb1faff467ed957516238a9670e806a86010000006b483045022100f0056ae68a34cdb4194d424bd727c18f82653bca2a198e0d55ab6b4ee88bbdb902202a5745af4f72a5dbdca1e3d683af4667728a8b20e8001e0f8308a4d329ce3f96012102f3af6e66b61c9d99c74d9a9c3c1bec014a8c05d28bf339c8f5f395b5ce319e7dffffffff02c8af00000000000017a9148083b541ea15f1d18c5ca5e1fd47f9035cce24ed87206b1e00000000001976a91410a0e70cd91a45e0e6e409e227ab285bd61592b188ac00000000';
-      var tx = bcoin.tx.fromRaw(rawTx, 'hex');
+      var tx = vcoin.tx.fromRaw(rawTx, 'hex');
 
       var node = {
         services: { block: { getTip: sinon.stub().returns({ height: 534233 }) } },
@@ -400,7 +400,7 @@ describe('Transactions', function() {
       };
 
       var rawTx = '01000000010000000000000000000000000000000000000000000000000000000000000000ffffffff0403ebc108ffffffff04a0ca814a000000001976a914fdb9fb622b0db8d9121475a983288a0876f4de4888ac0000000000000000226a200000000000000000000000000000000000000000000000000000ffff0000000000000000000000001b6a1976a914fdb9fb622b0db8d9121475a983288a0876f4de4888ac0000000000000000326a303a791c8e85200500d89769b4f958e4db6b3ec388ddaa30233c4517d942d440c24ae903bff40d97ca06465fcf2714000000000000';
-      var tx = bcoin.tx.fromRaw(rawTx, 'hex');
+      var tx = vcoin.tx.fromRaw(rawTx, 'hex');
 
       var node = {
         services: { block: { getTip: sinon.stub().returns({ height: 534233 }) } },
@@ -432,7 +432,7 @@ describe('Transactions', function() {
       var transactions = new TxController(node);
 
       _.each(testCases, function(tc) {
-        var tx = bcoin.tx.fromRaw(tc.rawTx, 'hex');
+        var tx = vcoin.tx.fromRaw(tc.rawTx, 'hex');
         var result = transactions.transformInvTransaction(tx);
         should.exist(result.isRBF);
         result.isRBF.should.equal(tc.expected);
