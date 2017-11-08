@@ -94,7 +94,7 @@ var bitcore = {
   },
   opts: { cwd: bitcoreDataDir },
   datadir: bitcoreDataDir,
-  exec: '/Users/chrisk/source/bitcore/bin/bitcored',  //if this isn't on your PATH, then provide the absolute path, e.g. /usr/local/bin/bitcored
+  exec: 'bitcored',  //if this isn't on your PATH, then provide the absolute path, e.g. /usr/local/bin/bitcored
   args: ['start'],
   process: null
 };
@@ -527,36 +527,14 @@ describe('Address', function() {
             return done(err);
           }
 
-          console.log(data);
+          // we should have 2 txs, one sending our first address coins, the other sending the next 4 of our
+          // addresses 1 BTC in the outputs
           var tx1 = data.items[0].txid;
-
-          async.each([tx1], function(tx, next) {
-
-            var txHttpOpts = {
-              hostname: 'localhost',
-              port: 53001,
-              path: 'http://localhost:53001/api/tx/' + tx,
-              method: 'GET',
-              headers: {
-                'Content-Type': 'application/json'
-              }
-            };
-
-            request(txHttpOpts, function(err, data) {
-              var inputAddresses = data.vin.map(function(input) {
-                return input.addr;
-              });
-              var outputAddresses = data.vout.map(function(output) {
-                return output.scriptPubKey.addresses;
-              });
-              console.log(inputAddresses);
-              console.log(outputAddresses);
-              next();
-            });
-          }, done);
-
+          var tx2 = data.items[1].txid;
+          expect(tx1).to.equal(txs[0].hash);
+          expect(tx2).to.equal(initialTx.hash);
+          done();
         });
-
       });
     });
   });
