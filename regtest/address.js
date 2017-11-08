@@ -9,12 +9,11 @@ var async = require('async');
 var RPC = require('bitcoind-rpc');
 var http = require('http');
 var bitcore = require('bitcore-lib');
+var exec = require('child_process').exec;
+var bitcore = require('bitcore-lib');
 var PrivateKey = bitcore.PrivateKey;
 var Transaction = bitcore.Transaction;
-var exec = require('child_process').exec;
 
-var rpc1Address;
-var rpc2Address;
 var blocksGenerated = 0;
 
 var rpcConfig = {
@@ -26,12 +25,16 @@ var rpcConfig = {
   rejectUnauthorized: false
 };
 
-var rpc1 = new RPC(rpcConfig);
-rpcConfig.port++;
-var rpc2 = new RPC(rpcConfig);
+var rpc = new RPC(rpcConfig);
 var debug = true;
 var bitcoreDataDir = '/tmp/bitcore';
-var bitcoinDataDirs = ['/tmp/bitcoin1', '/tmp/bitcoin2'];
+var bitcoinDir = '/tmp/bitcoin';
+var bitcoinDataDirs = [ bitcoinDir ];
+var pks = [];
+var txs = [];
+var txids = [];
+var initialTx;
+var startingPk;
 
 var bitcoin = {
   args: {
@@ -77,6 +80,9 @@ var bitcore = {
         },
         'insight-api': {
           'routePrefix': 'api'
+        },
+        'block': {
+          'readAheadBlockCount': 1
         }
       }
     }
@@ -88,9 +94,18 @@ var bitcore = {
   },
   opts: { cwd: bitcoreDataDir },
   datadir: bitcoreDataDir,
-  exec: 'bitcored',  //if this isn't on your PATH, then provide the absolute path, e.g. /usr/local/bin/bitcored
+  exec: '/Users/chrisk/source/bitcore/bin/bitcored',  //if this isn't on your PATH, then provide the absolute path, e.g. /usr/local/bin/bitcored
   args: ['start'],
   process: null
+};
+
+var makeLocalPrivateKeys = function(num) {
+  if (!num) {
+    num = 20;
+  }
+  for(var i = 0; i < num; i++) {
+    pks.push(new PrivateKey('testnet'));
+  }
 };
 
 var request = function(httpOpts, callback) {
@@ -154,7 +169,7 @@ var waitForBlocksGenerated = function(callback) {
       if (err) {
         return next(err);
       }
-      if (data.info.blocks < blocksGenerated) {
+      if (data.info.blocks !== blocksGenerated) {
         return next(data);
       }
       next();
@@ -163,94 +178,111 @@ var waitForBlocksGenerated = function(callback) {
   }, callback);
 };
 
-var startBitcoind = function(count, callback) {
+var resetDirs = function(dirs, callback) {
+
+  async.each(dirs, function(dir, next) {
+
+    rimraf(dir, function(err) {
+
+      if(err) {
+        return next(err);
+      }
+
+      mkdirp(dir, next);
+
+    });
+
+  }, callback);
+
+};
+
+var startBitcoind = function(callback) {
+
+  var args = bitcoin.args;
+  var argList = Object.keys(args).map(function(key) {
+    return '-' + key + '=' + args[key];
+  });
+
+  var bitcoinProcess = spawn(bitcoin.exec, argList, bitcoin.opts);
+  bitcoin.processes.push(bitcoinProcess);
+
+  bitcoinProcess.stdout.on('data', function(data) {
+
+    if (debug) {
+      process.stdout.write(data.toString());
+    }
+
+  });
+
+  bitcoinProcess.stderr.on('data', function(data) {
+
+    if (debug) {
+      process.stderr.write(data.toString());
+    }
+
+  });
+
+  callback();
+};
+
+
+var reportBitcoindsStarted = function() {
+  var pids = bitcoin.processes.map(function(process) {
+    return process.pid;
+  });
+
+  console.log(pids.length + ' bitcoind\'s started at pid(s): ' + pids);
+};
+
+var startBitcoinds = function(datadirs, callback) {
 
   var listenCount = 0;
-  async.timesSeries(count, function(n, next) {
-
-    var datadir = bitcoinDataDirs.shift();
+  async.eachSeries(datadirs, function(datadir, next) {
 
     bitcoin.datadir = datadir;
     bitcoin.args.datadir = datadir;
 
     if (listenCount++ > 0) {
       bitcoin.args.listen = 0;
-      bitcoin.args.rpcport++;
+      bitcoin.args.rpcport = bitcoin.args.rpcport + 1;
       bitcoin.args.connect = '127.0.0.1';
     }
 
-    rimraf(datadir, function(err) {
+    startBitcoind(next);
 
-      if(err) {
-        return next(err);
-      }
-
-      mkdirp(datadir, function(err) {
-
-        if(err) {
-          return next(err);
-        }
-
-        var args = bitcoin.args;
-        var argList = Object.keys(args).map(function(key) {
-          return '-' + key + '=' + args[key];
-        });
-
-        var bitcoinProcess = spawn(bitcoin.exec, argList, bitcoin.opts);
-        bitcoin.processes.push(bitcoinProcess);
-
-        bitcoinProcess.stdout.on('data', function(data) {
-
-          if (debug) {
-            process.stdout.write(data.toString());
-          }
-
-        });
-
-        bitcoinProcess.stderr.on('data', function(data) {
-
-          if (debug) {
-            process.stderr.write(data.toString());
-          }
-
-        });
-
-        next();
-
-      });
-
-    });
   }, function(err) {
-
-      if (err) {
-        return callback(err);
-      }
-
-      var pids = bitcoin.processes.map(function(process) {
-        return process.pid;
-      });
-
-      console.log(count + ' bitcoind\'s started at pid(s): ' + pids);
-
-      async.retry({ interval: 1000, times: 1000 }, function(next) {
-        rpc1.getInfo(function(err) {
-          if (err) {
-            return next(err);
-          }
-          // there is a bit of time even after the rpc server comes online that the rpc server is not truly ready
-          setTimeout(function() {
-            next();
-          }, 1000);
-        });
-      }, callback);
+    if (err) {
+      return callback(err);
+    }
+    reportBitcoindsStarted();
+    callback();
   });
 };
 
+var waitForBitcoinReady = function(rpc, callback) {
+  async.retry({ interval: 1000, times: 1000 }, function(next) {
+    rpc.getInfo(function(err) {
+      if (err) {
+        return next(err);
+      }
+      next();
+    });
+  }, function(err) {
+    if (err) {
+      return callback(err);
+    }
+    setTimeout(callback, 2000);
+  });
+};
 
 var shutdownBitcoind = function(callback) {
-  bitcoin.processes.forEach(function(process) {
-    process.kill();
-  });
+  var process;
+  do {
+    process = bitcoin.processes.shift();
+    if (process) {
+      process.kill();
+    }
+  } while(process);
   setTimeout(callback, 3000);
 };
 
@@ -261,495 +293,272 @@ var shutdownBitcore = function(callback) {
   callback();
 };
 
-var txid;
-var buildInitialChain = function(callback) {
-  async.waterfall([
-    function(next) {
-      console.log('checking to see if bitcoind\'s are connected to each other.');
-      rpc1.getInfo(function(err, res) {
-        if (err || res.result.connections !== 1) {
-          next(err || new Error('bitcoind\'s not connected to each other.'));
-        }
-        next();
-      });
-    },
-    function(next) {
-      console.log('generating 101 blocks');
-      blocksGenerated += 101;
-      rpc1.generate(101, next);
-    },
-    function(res, next) {
-      console.log('getting new address from rpc2');
-      rpc2.getNewAddress(function(err, res) {
-        if (err) {
-          return next(err);
-        }
-        rpc2Address = res.result;
-        console.log(rpc2Address);
-        next(null, rpc2Address);
-      });
-    },
-    function(addr, next) {
-      rpc1.sendToAddress(rpc2Address, 25, next);
-    },
-    function(res, next) {
-      //console.log('TXID: ' + res.result);
-      console.log('generating 7 blocks');
-      blocksGenerated += 7;
-      rpc1.generate(7, next);
-    },
-    function(res, next) {
-      rpc2.getBalance(function(err, res) {
-        //console.log(res);
-        next();
-      });
-    },
-    function(next) {
-      console.log('getting new address from rpc1');
-      rpc1.getNewAddress(function(err, res) {
-        if (err) {
-          return next(err);
-        }
-        rpc1Address = res.result;
-        next(null, rpc1Address);
-      });
-    },
-    function(addr, next) {
-      rpc2.sendToAddress(rpc1Address, 20, next);
-    },
-    function(res, next) {
-      txid = res.result;
-      //console.log('sending from rpc2Address TXID: ', res);
-      console.log('generating 6 blocks');
-      blocksGenerated += 6;
-      rpc2.generate(6, next);
-    }
-  ], function(err) {
-
-    if (err) {
-      return callback(err);
-    }
-    rpc1.getInfo(function(err, res) {
-      //console.log(res);
-      callback();
-    });
-  });
-
+var writeBitcoreConf = function() {
+  fs.writeFileSync(bitcore.configFile.file, JSON.stringify(bitcore.configFile.conf));
 };
 
 var startBitcore = function(callback) {
 
-  rimraf(bitcoreDataDir, function(err) {
+  var args = bitcore.args;
+  console.log('Using bitcored from: ');
+  async.series([
+    function(next) {
+      exec('which bitcored', function(err, stdout, stderr) {
+        if(err) {
+          return next(err);
+        }
+        console.log(stdout.toString('hex'), stderr.toString('hex'));
+        next();
+      });
+    },
+    function(next) {
+      bitcore.process = spawn(bitcore.exec, args, bitcore.opts);
 
-    if(err) {
+      bitcore.process.stdout.on('data', function(data) {
+
+        if (debug) {
+          process.stdout.write(data.toString());
+        }
+
+      });
+      bitcore.process.stderr.on('data', function(data) {
+
+        if (debug) {
+          process.stderr.write(data.toString());
+        }
+
+      });
+
+      waitForBlocksGenerated(next);
+    }
+  ], callback);
+
+};
+
+var getFirstIncomingFunds = function(callback) {
+  initialTx = new Transaction();
+  rpc.listUnspent(function(err, res) {
+    if (err) {
+      return callback(err);
+    }
+    var unspent = res.result[0];
+    rpc.dumpPrivKey(unspent.address, function(err, res) {
+      if (err) {
+        return callback(err);
+      }
+      startingPk = new PrivateKey(res.result);
+      var utxo = {
+        txId: unspent.txid,
+        outputIndex: unspent.vout,
+        script: unspent.scriptPubKey,
+        satoshis: unspent.amount * 1e8,
+        address: unspent.address
+      };
+      initialTx.from(utxo).to(pks[0].toAddress(), 20*1e8).change(startingPk.toAddress()).fee(50000).sign(startingPk);
+      rpc.sendRawTransaction(initialTx.serialize(), callback);
+    });
+  });
+};
+
+var sendCoins = function(callback) {
+  var index;
+  for(var i = 0; i < initialTx.outputs.length; i++) {
+    if (initialTx.outputs[i].script.toAddress().toString() === pks[0].toAddress().toString()) {
+      index = i;
+      break;
+    }
+  }
+  var utxo = {
+    address: pks[0].toAddress().toString(),
+    script: initialTx.outputs[index].script.toHex(),
+    satoshis: initialTx.outputs[index].satoshis,
+    outputIndex: index,
+    txid: initialTx.hash
+  };
+
+  txs.push(new Transaction()
+    .from(utxo)
+    .to(pks[1].toAddress(), 1e8)
+    .to(pks[2].toAddress(), 1e8)
+    .to(pks[3].toAddress(), 1e8)
+    .to(pks[4].toAddress(), 1e8)
+    .change(startingPk.toAddress()).fee(50000).sign(pks[0]));
+
+  console.log('Sending outputs to our adrresses: ' + pks[1].toAddress().toString() + ', ' + pks[2].toAddress().toString() + ', ' + pks[3].toAddress().toString() + ', ' + pks[4].toAddress().toString());
+
+  var body = '{"rawtx":"' + txs[0].serialize() + '"}';
+
+  var httpOpts = {
+    hostname: 'localhost',
+    port: 53001,
+    path: 'http://localhost:53001/api/tx/send',
+    method: 'POST',
+    body: body,
+    headers: {
+      'Content-Type': 'application/json',
+      'Content-Length': body.length
+    },
+  };
+
+  request(httpOpts, function(err, data) {
+    if (err) {
       return callback(err);
     }
 
-    mkdirp(bitcoreDataDir, function(err) {
-
-      if(err) {
-        return callback(err);
-      }
-
-      fs.writeFileSync(bitcore.configFile.file, JSON.stringify(bitcore.configFile.conf));
-
-      var args = bitcore.args;
-      console.log('starting bitcore using this binary: ');
-      exec('which bitcored', function(err, stdout, stderr) {
-
-        if(err) {
-          return callback(err);
-        }
-
-        console.log(stdout.toString('hex'), stderr.toString('hex'));
-
-        bitcore.process = spawn(bitcore.exec, args, bitcore.opts);
-
-        bitcore.process.stdout.on('data', function(data) {
-
-          if (debug) {
-            process.stdout.write(data.toString());
-          }
-
-        });
-        bitcore.process.stderr.on('data', function(data) {
-
-          if (debug) {
-            process.stderr.write(data.toString());
-          }
-
-        });
-
-        waitForBlocksGenerated(callback);
-      });
-    });
+    txids.push(data.txid);
+    callback();
 
   });
 
+};
+
+var addrtxs1 = function(callback) {
+
+  async.series([
+
+    // 0. reset the test directories
+    function(next) {
+      console.log('step 0: setting up directories.');
+      var dirs = bitcoinDataDirs.concat([bitcoreDataDir]);
+      resetDirs(dirs, function(err) {
+        if (err) {
+          return next(err);
+        }
+        writeBitcoreConf();
+        next();
+      });
+    },
+    // 1. start 1 bitcoind in regtest mode
+    function(next) {
+      console.log('step 1: starting bitcoind.');
+      startBitcoinds(bitcoinDataDirs, function(err) {
+        if (err) {
+          return callback(err);
+        }
+        waitForBitcoinReady(rpc, function(err) {
+          if (err) {
+            return next(err);
+          }
+          blocksGenerated += 101;
+          rpc.generate(101, next);
+        });
+      });
+    },
+    // 2. start up bitcore
+    function(next) {
+      console.log('step 2: starting bitcore...');
+      startBitcore(next);
+    },
+    // 3. wait for blocks to be fully synced in bitcore
+    function(next) {
+      waitForBlocksGenerated(next);
+    },
+    // 4. create some private keys
+    function(next) {
+      makeLocalPrivateKeys();
+      next();
+    },
+    // 5. spend some coins to the first of our private keys
+    function(next) {
+      getFirstIncomingFunds(next);
+    },
+    // 6. generate a block to get some confirmed txs
+    function(next) {
+      blocksGenerated += 1;
+      rpc.generate(1, function(err) {
+        if (err) {
+          return next(err);
+        }
+        waitForBlocksGenerated(next);
+      });
+    },
+    // 7. send some coins from our first private key to our second private key and use the third pk as the change address
+    function(next) {
+      sendCoins(next);
+    }
+  ], function(err) {
+    if (err) {
+      return callback(err);
+    }
+    setTimeout(callback, 1000);
+  });
 };
 
 describe('Address', function() {
 
   this.timeout(60000);
 
-  before(function(done) {
+  describe('addrs/txs', function() {
 
-    async.series([
-      function(next) {
-        startBitcoind(2, next);
-      },
-      function(next) {
-        buildInitialChain(next);
-      },
-      function(next) {
-        startBitcore(next);
-      }
-    ], done);
-
-  });
-
-  after(function(done) {
-    shutdownBitcore(function() {
-      shutdownBitcoind(done);
-    });
-  });
-
-  it('should get address info correctly: /addr/:addr', function(done) {
-
-    var httpOpts = {
-      hostname: 'localhost',
-      port: 53001,
-      path: 'http://localhost:53001/api/addr/' + rpc2Address,
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    };
-
-    request(httpOpts, function(err, data) {
-
-      if(err) {
-        return done(err);
-      }
-
-      console.log(data);
-      expect(data.balance).to.equal(0);
-      expect(data.totalSent).to.equal(25);
-      done();
-
+    after(function(done) {
+      shutdownBitcore(function() {
+        shutdownBitcoind(done);
+      });
     });
 
-  });
-
-  it('should get a utxo: /addr/:addr/utxo', function(done) {
-
-    var httpOpts = {
-      hostname: 'localhost',
-      port: 53001,
-      path: 'http://localhost:53001/api/addr/' + rpc1Address + '/utxo',
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    };
-
-    request(httpOpts, function(err, data) {
-
-      if(err) {
-        return done(err);
-      }
-
-      //console.log(data);
-      expect(data.length).equal(1);
-      expect(data[0].amount).equal(20);
-      expect(data[0].satoshis).equal(2000000000);
-      expect(data[0].confirmations).equal(6);
-      done();
-
-    });
-
-  });
-
-  it('should get multi-address utxos: /addrs/:addrs/utxo', function(done) {
-
-    var httpOpts = {
-      hostname: 'localhost',
-      port: 53001,
-      path: 'http://localhost:53001/api/addrs/' + rpc2Address + ',' + rpc1Address + '/utxo',
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    };
-
-    request(httpOpts, function(err, data) {
-
-      if(err) {
-        return done(err);
-      }
-
-      //console.log(data);
-      expect(data.length).to.equal(1);
-      expect(data[0].amount).to.equal(20);
-      expect(data[0].satoshis).to.equal(2000000000);
-      done();
-
-    });
-
-  });
-
-  it('should post a utxo: /addrs/:addrs/utxo', function(done) {
-
-    var body = JSON.stringify({
-      addrs: [ rpc1Address, rpc2Address ]
-    });
-
-    var httpOpts = {
-      hostname: 'localhost',
-      port: 53001,
-      path: '/api/addrs/utxo',
-      method: 'POST',
-      body: body,
-      headers: {
-        'Content-Type': 'application/json',
-        'Content-Length': body.length
-      },
-    };
-
-    request(httpOpts, function(err, data) {
-
-      if(err) {
-        return done(err);
-      }
-
-      //console.log(data);
-      expect(data.length).to.equal(1);
-      expect(data[0].amount).to.equal(20);
-      expect(data[0].satoshis).to.equal(2000000000);
-      done();
-
-    });
-
-  });
-
-  it('should get txs for a set of addresses: /addrs/:addrs/txs', function(done) {
-
-    var httpOpts = {
-      hostname: 'localhost',
-      port: 53001,
-      path: '/api/addrs/' + rpc1Address + ',' + rpc2Address + '/txs',
-      method: 'GET'
-    };
-
-    request(httpOpts, function(err, data) {
-
-      if(err) {
-        return done(err);
-      }
-
-      //console.log(data);
-      expect(data.items.length).to.equal(2);
-      expect(data.from).to.equal(0);
-      expect(data.to).to.equal(3);
-      done();
-
-    });
-
-  });
-
-  it('should post txs for a set of addresses: /addrs/txs', function(done) {
-
-    var body = JSON.stringify({
-      addrs: [ rpc1Address, rpc2Address ]
-    });
-
-    var httpOpts = {
-      hostname: 'localhost',
-      port: 53001,
-      path: '/api/addrs/txs',
-      method: 'POST',
-      body: body,
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    };
-
-    request(httpOpts, function(err, data) {
-
-      if(err) {
-        return done(err);
-      }
-
-      //console.log(data);
-      expect(data.items.length).to.equal(2);
-      expect(data.from).to.equal(0);
-      expect(data.to).to.equal(3);
-      done();
-
-    });
-
-  });
-
-  it('should get totalReceived for an address: /addr/:addr/totalReceived', function(done) {
-
-    var httpOpts = {
-      hostname: 'localhost',
-      port: 53001,
-      path: '/api/addr/' + rpc1Address + '/totalReceived',
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    };
-
-    request(httpOpts, function(err, data) {
-
-      if(err) {
-        return done(err);
-      }
-
-      data = JSON.parse(data);
-      expect(data).to.equal(2000000000);
-      done();
-
-    });
-
-  });
-
-
-  it('should get totalSent for an address: /addr/:addr/totalSent', function(done) {
-
-    var httpOpts = {
-      hostname: 'localhost',
-      port: 53001,
-      path: '/api/addr/' + rpc1Address + '/totalSent',
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    };
-
-    request(httpOpts, function(err, data) {
-
-      if(err) {
-        return done(err);
-      }
-
-      data = JSON.parse(data);
-      expect(data).to.equal(0);
-      done();
-    });
-
-  });
-
-  it('should get unconfirmedBalance for an address: /addr/:addr/unconfirmedBalance', function(done) {
-
-    var httpOpts = {
-      hostname: 'localhost',
-      port: 53001,
-      path: '/api/addr/' + rpc1Address + '/unconfirmedBalance',
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    };
-
-    request(httpOpts, function(err, data) {
-
-      if(err) {
-        return done(err);
-      }
-      data = JSON.parse(data);
-      expect(data).to.equal(0);
-      done();
-    });
-
-  });
-
-  it('should index addresses correctly', function(done) {
-    // if we send a tx that has an address in both the input and the output, does it index correctly?
-    var txid;
-    var pk1;
-    var tx;
-    var utxo;
-    var amt = 0;
-
-    async.waterfall([
-      function(next) {
-        rpc1.listUnspent(next);
-      },
-      function(res, next) {
-        utxo = res.result[0];
-        rpc1.dumpPrivKey(utxo.address, next);
-      },
-      function(res, next) {
-        var pk = new PrivateKey(res.result);
-        pk1 = new PrivateKey('testnet');
-        var change = new PrivateKey('testnet');
-        var changeAddress = change.toAddress();
-        amt = utxo.amount * 1e8;
-        var from = {
-          txId: utxo.txid,
-          address: utxo.address,
-          script: utxo.scriptPubKey,
-          satoshis: amt,
-          outputIndex: utxo.vout
-        };
-        tx = new Transaction().from(from).to(pk1.toAddress(), amt - 1000).change(changeAddress).sign(pk);
-        rpc2.sendRawTransaction(tx.serialize(), next);
-      },
-      function(res, next) {
-        txid = res.result;
-        blocksGenerated += 1;
-        rpc2.generate(1, next);
-      },
-      function(res, next) {
-        var tx2 = new Transaction().from({
-          txId: txid,
-          satoshis: amt - 1000,
-          outputIndex: 0,
-          script: tx.outputs[0].script.toHex(),
-          address: pk1.toAddress()
-        }).to(pk1.toAddress(), amt - 2000).sign(pk1);
-        rpc2.sendRawTransaction(tx2.serialize(), next);
-      },
-      function(res, next) {
-        txid = res.result;
-        blocksGenerated += 1;
-        rpc2.generate(1, next);
-      },
-      function(res, next) {
-        waitForBlocksGenerated(next);
-      },
-
-    ], function(err) {
-
-      if (err) {
-        return done(err);
-      }
-
-      var httpOpts = {
-        hostname: 'localhost',
-        port: 53001,
-        path: 'http://localhost:53001/api/addr/' + pk1.toAddress(),
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      };
-
-      request(httpOpts, function(err, data) {
+    it('should be able to get addrs/txs with one tx in the mempool and one tx in the index', function(done) {
+      addrtxs1(function(err) {
 
         if(err) {
           return done(err);
         }
 
-        //console.log(data);
-        expect(data.transactions.length).to.equal(2);
-        done();
+        var addresses = pks.map(function(pk) {
+          return pk.toAddress().toString();
+        });
+
+        var body = JSON.stringify({ addrs: addresses.join(',') });
+
+        var httpOpts = {
+          hostname: 'localhost',
+          port: 53001,
+          path: 'http://localhost:53001/api/addrs/txs',
+          method: 'POST',
+          body: body,
+          headers: {
+            'Content-Type': 'application/json',
+            'Content-Length': body.length
+          }
+        };
+
+        request(httpOpts, function(err, data) {
+
+          if(err) {
+            return done(err);
+          }
+
+          console.log(data);
+          var tx1 = data.items[0].txid;
+
+          async.each([tx1], function(tx, next) {
+
+            var txHttpOpts = {
+              hostname: 'localhost',
+              port: 53001,
+              path: 'http://localhost:53001/api/tx/' + tx,
+              method: 'GET',
+              headers: {
+                'Content-Type': 'application/json'
+              }
+            };
+
+            request(txHttpOpts, function(err, data) {
+              var inputAddresses = data.vin.map(function(input) {
+                return input.addr;
+              });
+              var outputAddresses = data.vout.map(function(output) {
+                return output.scriptPubKey.addresses;
+              });
+              console.log(inputAddresses);
+              console.log(outputAddresses);
+              next();
+            });
+          }, done);
+
+        });
 
       });
     });
-
   });
+
 });
