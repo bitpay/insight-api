@@ -46,6 +46,8 @@ var blocks= [];
 var pks = [];
 var initialTx;
 var startingPk;
+var txs = [];
+var txids = [];
 
 var bitcoin = {
   args: {
@@ -365,13 +367,40 @@ var getFirstIncomingFunds = function(callback) {
         satoshis: unspent.amount * 1e8,
         address: unspent.address
       };
+
       initialTx.from(utxo).to(pks[0].toAddress(), 20*1e8).change(startingPk.toAddress()).fee(50000).sign(startingPk);
-      rpc.sendRawTransaction(initialTx.serialize(), callback);
+
+      var body = '{"rawtx":"' + initialTx.serialize() + '"}';
+
+      var httpOpts = {
+        hostname: 'localhost',
+        port: 53001,
+        path: 'http://localhost:53001/api/tx/send',
+        method: 'POST',
+        body: body,
+        headers: {
+          'Content-Type': 'application/json',
+          'Content-Length': body.length
+        },
+      };
+
+      request(httpOpts, function(err, data) {
+
+        if (err) {
+          return callback(err);
+        }
+
+        console.log('Sent initial tx: ', initialTx.hash);
+        txids.push(data.txid);
+        callback();
+
+      });
     });
   });
 };
 
 var sendTx = function(callback) {
+
   var index;
   for(var i = 0; i < initialTx.outputs.length; i++) {
     if (initialTx.outputs[i].script.toAddress().toString() === pks[0].toAddress().toString()) {
@@ -379,6 +408,7 @@ var sendTx = function(callback) {
       break;
     }
   }
+
   var utxo = {
     address: pks[0].toAddress().toString(),
     script: initialTx.outputs[index].script.toHex(),
@@ -415,8 +445,8 @@ var sendTx = function(callback) {
     callback();
 
   });
-
 };
+
 describe('Subscriptions', function() {
 
   this.timeout(60000);
@@ -445,14 +475,8 @@ describe('Subscriptions', function() {
             if (err) {
               return next(err);
             }
-            blocksGenerated += 10;
-            rpc.generate(10, function(err, res) {
-              if (err) {
-                return next(err);
-              }
-              blocks = res.result;
-              next();
-            });
+            blocksGenerated += 101;
+            rpc.generate(101, next);
           });
         });
       },
@@ -463,6 +487,7 @@ describe('Subscriptions', function() {
       function(next) {
         console.log('step 3: make local private keys.');
         makeLocalPrivateKeys();
+        next();
       },
       function(next) {
         console.log('step 4: setup initial tx.');
@@ -478,21 +503,101 @@ describe('Subscriptions', function() {
     });
   });
 
-  it('should get transaction after websocket reception of transaction', function(done) {
+  it('should be able to be able to GET a transaction after receiving a websocket notification that a tx has arrived in the mempool.', function(done) {
+
     var socket = io('ws://localhost:53001', {
       transports: [ 'websocket' ]
     });
+
     socket.emit('subscribe', 'mempool/transaction');
+
     // send a transaction
-    socket.on('message', function(msg) {
-      console.log(msg);
-      done();
+    socket.on('mempool/transaction', function(msg) {
+
+      console.log('got mempool tx event from webscoket.');
+
+      var httpOpts = {
+        hostname: 'localhost',
+        port: 53001,
+        path: '/api/tx/' + txs[0].hash,
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      };
+
+      expect(msg.hash).to.equal(txs[0].hash);
+
+      request(httpOpts, function(err, data) {
+
+        if (err) {
+          return done(err);
+        }
+
+        expect(data.txid).to.equal(msg.hash);
+        done();
+
+      });
+
     });
-    sendTx();
+
+    socket.on('connect', function() {
+      sendTx(function(err) {
+        console.log(txs[0].hash + ' sent.');
+      });
+    });
+
   });
 
-  it('should get block after websocket reception of block', function(done) {
-    done();
+  it('should be able to GET a block after receiving a websocket notification that a tx has arrived in the mempool.', function(done) {
+
+    var blockHash;
+
+    var socket = io('ws://localhost:53001', {
+      transports: [ 'websocket' ]
+    });
+
+    socket.emit('subscribe', 'block/block');
+
+    // send a transaction
+    socket.on('block/block', function(msg) {
+
+      console.log('got block event from webscoket.');
+
+      var httpOpts = {
+        hostname: 'localhost',
+        port: 53001,
+        path: '/api/block/' + msg.hash,
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      };
+
+      expect(msg.hash).to.equal(blockHash);
+
+      request(httpOpts, function(err, data) {
+
+        if (err) {
+          return done(err);
+        }
+
+        expect(data.hash).to.equal(msg.hash);
+        done();
+
+      });
+
+    });
+
+    socket.on('connect', function() {
+      rpc.generate(1, function(err, res) {
+        if (err) {
+          return done(err);
+        }
+        blockHash = res.result[0];
+      });
+    });
+
   });
 
 });
