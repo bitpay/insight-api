@@ -15,6 +15,7 @@ var bitcore     = require('bitcore');
 var RpcClient   = bitcore.RpcClient;
 var config      = require('../../config/config');
 var bitcoreRpc  = imports.bitcoreRpc || new RpcClient(config.bitcoind);
+var AddressTranslator = require('../../lib/AddressTranslator');
 
 var tDb = require('../../lib/TransactionDb').default();
 var bdb = require('../../lib/BlockDb').default();
@@ -156,8 +157,18 @@ exports.list = function(req, res, next) {
     });
   }
   else if (addrStr) {
-    var a = new Address(addrStr);
 
+    try {
+      addrStr = AddressTranslator.translate(addrStr, 'btc', 'bch');
+    } catch (e) { 
+      common.handleErrors({
+        message: 'Invalid address:' + e.message,
+        code: 1
+      }, res, next);
+      return null;
+    };
+
+    var a = new Address(addrStr);
     a.update(function(err) {
       if (err && !a.totalReceivedSat) {
         console.log(err);

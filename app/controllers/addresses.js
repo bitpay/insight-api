@@ -6,6 +6,7 @@
 
 var _ = require('lodash');
 var Address = require('../models/Address');
+var AddressTranslator = require('../../lib/AddressTranslator');
 var common = require('./common');
 var async = require('async');
 
@@ -30,6 +31,7 @@ var getAddr = function(req, res, next) {
   var a;
   try {
     var addr = req.param('addr');
+    addr = AddressTranslator.translate(addr, 'btc', 'bch');
     a = new Address(addr);
   } catch (e) {
     common.handleErrors({
@@ -47,10 +49,9 @@ var getAddrs = function(req, res, next) {
     var addrStrs = req.param('addrs');
     var s = addrStrs.split(',');
     if (s.length === 0) return as;
-    for (var i = 0; i < s.length; i++) {
-      var a = new Address(s[i]);
-      as.push(a);
-    }
+    as = _.map(s,function(x) {
+      return new Address(AddressTranslator.translate(s[i], 'btc', 'bch'));
+    });
   } catch (e) {
     common.handleErrors({
       message: 'Invalid addrs param:' + e.message,
