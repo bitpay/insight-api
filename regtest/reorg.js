@@ -638,7 +638,7 @@ var performTest1 = function(callback) {
     },
     // 11. start up the first bitcoind
     function(next) {
-      console.log('bitcoin 2 shut down.');
+      console.log('vertcoin 2 shut down.');
       console.log('step 11: starting up vertcoin 1');
       bitcoin.args.rpcport = bitcoin.args.rpcport - 1;
       bitcoin.datadir = bitcoinDataDirs[0];

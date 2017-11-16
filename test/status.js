@@ -130,7 +130,7 @@ describe('Status', function() {
         syncPercentage: 100,
         height: 500000,
         error: null,
-        type: 'bitcore node'
+        type: 'vertcore node'
       };
 
       var status = new StatusController(node);

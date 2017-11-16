@@ -3,7 +3,7 @@
 var should = require('should');
 var sinon = require('sinon');
 var MessagesController = require('../lib/messages');
-var bitcore = require('bitcore-lib');
+var bitcore = require('vertcore-lib');
 var _ = require('lodash');
 
 describe('Messages', function() {

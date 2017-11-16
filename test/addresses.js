@@ -4,7 +4,7 @@ var should = require('should');
 var sinon = require('sinon');
 var AddressController = require('../lib/addresses');
 var _ = require('lodash');
-var bitcore = require('bitcore-lib');
+var bitcore = require('vertcore-lib');
 var vcoin = require('vcoin');
 
 var txinfos = {
