@@ -1,7 +1,7 @@
 {
   "name": "insight-vtc-api",
   "description": "A Vertcoin blockchain REST and web socket API service for Vertcore Node.",
-  "version": "5.0.0-beta.39",
+  "version": "5.0.0-beta.43",
   "repository": "git://github.com/Cubey2019/insight-vtc-api.git",
   "bugs": {
     "url": "https://github.com/Cubey2019/insight-vtc-api/issues"

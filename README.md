@@ -8,17 +8,17 @@ This is a backend-only service. If you're looking for the web frontend applicati
 
 ```bashl
 npm install -g vertcore-node@latest
-vertcore-node create mynode
+vertcore create mynode
 cd mynode
-vertcore-node install insight-vtc-api
-vertcore-node start
+vertcore install insight-vtc-api
+vertcore start
 ```
 
 The API endpoints will be available by default at: `http://localhost:3001/insight-api/`
 
 ## Prerequisites
 
-- [Vertcore Node 3.x](https://github.com/Cubey2019/vertcore-node)
+- [Vertcore 5.x](https://github.com/Cubey2019/vertcore)
 
 **Note:** You can use an existing Vertcoin data directory, however `txindex`, `addressindex`, `timestampindex` and `spentindex` needs to be set to true in `vertcoin.conf`, as well as a few other additional fields.
 
@@ -99,10 +99,10 @@ Caching support has not yet been added in the v0.3 upgrade.
 
 ## Query Rate Limit
 
-To protect the server, insight-api has a built it query rate limiter. It can be configurable in `vertcore-node.json` with:
+To protect the server, insight-vtc-api has a built in query rate limiter. It can be configurable in `vertcore-node.json` with:
 ``` json
   "servicesConfig": {
-    "insight-api": {
+    "insight-vtc-api": {
       "rateLimiterOptions": {
         "whitelist": ["::ffff:127.0.0.1"]
       }

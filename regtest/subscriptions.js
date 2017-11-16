@@ -11,7 +11,20 @@ var http = require('http');
 var bitcore = require('vertcore-lib');
 var exec = require('child_process').exec;
 var Block = bitcore.Block;
+var PrivateKey = bitcore.PrivateKey;
+var Transaction = bitcore.Transaction;
+var io = require('socket.io-client');
 
+/*
+
+  Theory behind this test.
+
+  We want to connect a web socket and subscribe to both new txs and blocks.
+
+  When a new tx or block comes in, we want to immediately call the api for that resource.
+
+
+*/
 var blocksGenerated = 0;
 
 var rpcConfig = {
@@ -29,6 +42,11 @@ var bitcoreDataDir = '/tmp/vertcore';
 var bitcoinDir = '/tmp/vertcoin';
 var bitcoinDataDirs = [ bitcoinDir ];
 var blocks= [];
+var pks = [];
+var initialTx;
+var startingPk;
+var txs = [];
+var txids = [];
 
 var bitcoin = {
   args: {
@@ -42,7 +60,7 @@ var bitcoin = {
     rpcport: 58332,
   },
   datadir: null,
-  exec: 'vertcoind', //if this isn't on your PATH, then provide the absolute path, e.g. /usr/local/bin/vertcoind
+  exec: 'bitcoind', //if this isn't on your PATH, then provide the absolute path, e.g. /usr/local/bin/bitcoind
   processes: []
 };
 
@@ -62,7 +80,7 @@ var bitcore = {
         'transaction',
         'mempool',
         'web',
-        'insight-api',
+        'insight-vtc-api',
         'fee',
         'timestamp'
       ],
@@ -72,7 +90,7 @@ var bitcore = {
             { 'ip': { 'v4': '127.0.0.1' }, port: 18444 }
           ]
         },
-        'insight-api': {
+        'insight-vtc-api': {
           'routePrefix': 'api'
         },
         'block': {
@@ -320,7 +338,115 @@ var startBitcore = function(callback) {
 
 };
 
-describe('Block', function() {
+var makeLocalPrivateKeys = function(num) {
+  if (!num) {
+    num = 20;
+  }
+  for(var i = 0; i < num; i++) {
+    pks.push(new PrivateKey('testnet'));
+  }
+};
+
+var getFirstIncomingFunds = function(callback) {
+  initialTx = new Transaction();
+  rpc.listUnspent(function(err, res) {
+    if (err) {
+      return callback(err);
+    }
+    var unspent = res.result[0];
+    rpc.dumpPrivKey(unspent.address, function(err, res) {
+      if (err) {
+        return callback(err);
+      }
+      startingPk = new PrivateKey(res.result);
+      var utxo = {
+        txId: unspent.txid,
+        outputIndex: unspent.vout,
+        script: unspent.scriptPubKey,
+        satoshis: unspent.amount * 1e8,
+        address: unspent.address
+      };
+
+      initialTx.from(utxo).to(pks[0].toAddress(), 20*1e8).change(startingPk.toAddress()).fee(50000).sign(startingPk);
+
+      var body = '{"rawtx":"' + initialTx.serialize() + '"}';
+
+      var httpOpts = {
+        hostname: 'localhost',
+        port: 53001,
+        path: 'http://localhost:53001/api/tx/send',
+        method: 'POST',
+        body: body,
+        headers: {
+          'Content-Type': 'application/json',
+          'Content-Length': body.length
+        },
+      };
+
+      request(httpOpts, function(err, data) {
+
+        if (err) {
+          return callback(err);
+        }
+
+        console.log('Sent initial tx: ', initialTx.hash);
+        txids.push(data.txid);
+        callback();
+
+      });
+    });
+  });
+};
+
+var sendTx = function(callback) {
+
+  var index;
+  for(var i = 0; i < initialTx.outputs.length; i++) {
+    if (initialTx.outputs[i].script.toAddress().toString() === pks[0].toAddress().toString()) {
+      index = i;
+      break;
+    }
+  }
+
+  var utxo = {
+    address: pks[0].toAddress().toString(),
+    script: initialTx.outputs[index].script.toHex(),
+    satoshis: initialTx.outputs[index].satoshis,
+    outputIndex: index,
+    txid: initialTx.hash
+  };
+
+  txs.push(new Transaction()
+    .from(utxo)
+    .to(pks[1].toAddress(), 1e8)
+    .change(startingPk.toAddress()).fee(50000).sign(pks[0]));
+
+  var body = '{"rawtx":"' + txs[0].serialize() + '"}';
+
+  var httpOpts = {
+    hostname: 'localhost',
+    port: 53001,
+    path: 'http://localhost:53001/api/tx/send',
+    method: 'POST',
+    body: body,
+    headers: {
+      'Content-Type': 'application/json',
+      'Content-Length': body.length
+    },
+  };
+
+  request(httpOpts, function(err, data) {
+    if (err) {
+      return callback(err);
+    }
+
+    txids.push(data.txid);
+    callback();
+
+  });
+};
+
+describe('Subscriptions', function() {
 
   this.timeout(60000);
 
@@ -339,6 +465,7 @@ describe('Block', function() {
         });
       },
       function(next) {
+        console.log('step 1: start vertcoind');
         startBitcoinds(bitcoinDataDirs, function(err) {
           if (err) {
             return next(err);
@@ -347,19 +474,23 @@ describe('Block', function() {
             if (err) {
               return next(err);
             }
-            blocksGenerated += 10;
-            rpc.generate(10, function(err, res) {
-              if (err) {
-                return next(err);
-              }
-              blocks = res.result;
-              next();
-            });
+            blocksGenerated += 101;
+            rpc.generate(101, next);
           });
         });
       },
       function(next) {
+        console.log('step 2: start vertcore');
         startBitcore(next);
+      },
+      function(next) {
+        console.log('step 3: make local private keys.');
+        makeLocalPrivateKeys();
+        next();
+      },
+      function(next) {
+        console.log('step 4: setup initial tx.');
+        getFirstIncomingFunds(next);
       }
     ], done);
 
@@ -371,101 +502,101 @@ describe('Block', function() {
     });
   });
 
-  it('should get blocks: /blocks', function(done) {
+  it('should be able to be able to GET a transaction after receiving a websocket notification that a tx has arrived in the mempool.', function(done) {
 
-    var httpOpts = {
-      hostname: 'localhost',
-      port: 53001,
-      path: 'http://localhost:53001/api/blocks',
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    };
+    var socket = io('ws://localhost:53001', {
+      transports: [ 'websocket' ]
+    });
 
-    request(httpOpts, function(err, data) {
+    socket.emit('subscribe', 'mempool/transaction');
 
-      if(err) {
-        return done(err);
-      }
+    // send a transaction
+    socket.on('mempool/transaction', function(msg) {
 
-      expect(data.length).to.equal(10);
-      expect(data.blocks.length).to.equal(10);
-      done();
+      console.log('got mempool tx event from webscoket.');
+
+      var httpOpts = {
+        hostname: 'localhost',
+        port: 53001,
+        path: '/api/tx/' + txs[0].hash,
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      };
+
+      expect(msg.hash).to.equal(txs[0].hash);
+
+      request(httpOpts, function(err, data) {
+
+        if (err) {
+          return done(err);
+        }
+
+        expect(data.txid).to.equal(msg.hash);
+        done();
+
+      });
+
+    });
+
+    socket.on('connect', function() {
+      sendTx(function(err) {
+        console.log(txs[0].hash + ' sent.');
+      });
     });
 
   });
 
-  it('should get a block: /block/:hash', function(done) {
+  it('should be able to GET a block after receiving a websocket notification that a tx has arrived in the mempool.', function(done) {
 
-    var httpOpts = {
-      hostname: 'localhost',
-      port: 53001,
-      path: 'http://localhost:53001/api/block/' + blocks[0],
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    };
+    var blockHash;
 
-    request(httpOpts, function(err, data) {
-
-      if(err) {
-        return done(err);
-      }
-
-      expect(data.hash).to.equal(blocks[0]);
-      expect(data.height).to.equal(1);
-      done();
-    });
-  });
-
-  it('should get a block-index: /block-index/:height', function(done) {
-
-    var httpOpts = {
-      hostname: 'localhost',
-      port: 53001,
-      path: 'http://localhost:53001/api/block-index/7',
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    };
-
-    request(httpOpts, function(err, data) {
-
-      if(err) {
-        return done(err);
-      }
-
-      expect(data.blockHash).to.equal(blocks[6]);
-      done();
+    var socket = io('ws://localhost:53001', {
+      transports: [ 'websocket' ]
     });
 
-  });
+    socket.emit('subscribe', 'block/block');
 
-  it('should get a raw block: /rawblock/:hash', function(done) {
+    // send a transaction
+    socket.on('block/block', function(msg) {
 
-    var httpOpts = {
-      hostname: 'localhost',
-      port: 53001,
-      path: 'http://localhost:53001/api/rawblock/' + blocks[4],
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    };
+      console.log('got block event from webscoket.');
 
-    request(httpOpts, function(err, data) {
+      var httpOpts = {
+        hostname: 'localhost',
+        port: 53001,
+        path: '/api/block/' + msg.hash,
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      };
 
-      if(err) {
-        return done(err);
-      }
+      expect(msg.hash).to.equal(blockHash);
 
-      var block = new Block(new Buffer(data.rawblock, 'hex'));
-      expect(block.hash).to.equal(blocks[4]);
-      done();
+      request(httpOpts, function(err, data) {
+
+        if (err) {
+          return done(err);
+        }
+
+        expect(data.hash).to.equal(msg.hash);
+        done();
+
+      });
+
     });
+
+    socket.on('connect', function() {
+      rpc.generate(1, function(err, res) {
+        if (err) {
+          return done(err);
+        }
+        blockHash = res.result[0];
+      });
+    });
+
   });
 
 });
