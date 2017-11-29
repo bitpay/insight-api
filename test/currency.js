@@ -28,6 +28,7 @@ describe('Currency', function() {
         response.status.should.equal(200);
         should.exist(response.data.bitstamp);
         (typeof response.data.bitstamp).should.equal('number');
+        response.data.bitstamp.should.not.equal(0);
         done();
       }
     };
