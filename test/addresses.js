@@ -445,7 +445,7 @@ describe('Addresses', function() {
                   'hex': '41047211a824f55b505228e4c3d5194c1fcfaa15a456abdf37f9b9d97a4040afc073dee6c89064984f03385237d92167c13e236446b417ab79a0fcae412ae3316b77ac',
                   'type': 'pubkeyhash',
                   'addresses': [
-                    '1HLoD9E4SDFFPDiYfNYnkBLQ85Y51J3Zb1'
+                    'VrLd7rPWr29TSzchQACRB5fFotq3RjMoxc'
                   ]
                 },
                 spentHeight: null,
@@ -519,7 +519,7 @@ describe('Addresses', function() {
                   'hex': '41047211a824f55b505228e4c3d5194c1fcfaa15a456abdf37f9b9d97a4040afc073dee6c89064984f03385237d92167c13e236446b417ab79a0fcae412ae3316b77ac',
                   'type': 'pubkeyhash',
                   'addresses': [
-                    '1HLoD9E4SDFFPDiYfNYnkBLQ85Y51J3Zb1'
+                    'VrLd7rPWr29TSzchQACRB5fFotq3RjMoxc'
                   ]
                 }
               }

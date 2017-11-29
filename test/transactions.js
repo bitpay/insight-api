@@ -25,7 +25,7 @@ describe('Transactions', function() {
               'hex': '47304402203ddb49db43074b421ec6d5604ae91aac37f4715139e0c83ea1145379e8cbf02702207fbc92c4038ad501989b097844ae4e337c9388f0713110620b40e582b85fdff3012102cd90aa18ec8e3b35c0447ffc713c945cb837429d33d075d1b0f050c72ea838d2',
               'asm': '304402203ddb49db43074b421ec6d5604ae91aac37f4715139e0c83ea1145379e8cbf02702207fbc92c4038ad501989b097844ae4e337c9388f0713110620b40e582b85fdff301 02cd90aa18ec8e3b35c0447ffc713c945cb837429d33d075d1b0f050c72ea838d2'
             },
-            'addr': '1NqgMfGUeELP2BfxD4hQuJSRq2d3DVJcCi',
+            'addr': 'VwqWGNRw43Eb5xa6wrM3LCmHWqv1mYoCeA',
             'valueSat': 1546063700,
             'value': 15.460637,
             'doubleSpentTxID': null,
@@ -42,7 +42,7 @@ describe('Transactions', function() {
               'hex': '76a914bc345e0e0e5b0dbddb7b35ef3430fedd528dd1b788ac',
               'asm': 'OP_DUP OP_HASH160 bc345e0e0e5b0dbddb7b35ef3430fedd528dd1b7 OP_EQUALVERIFY OP_CHECKSIG',
               'addresses': [
-                '1JA8mcfrBv1YYsASAp9jtohm8x2q7LnUhs'
+                'Vs9xgKqJbiukce4auboNKi2cpmKoY2bJ61'
               ],
               'type': 'pubkeyhash'
             },
@@ -57,7 +57,7 @@ describe('Transactions', function() {
               'hex': '76a914c2c74d7519d4425fc1a253f066d980164341554a88ac',
               'asm': 'OP_DUP OP_HASH160 c2c74d7519d4425fc1a253f066d980164341554a OP_EQUALVERIFY OP_CHECKSIG',
               'addresses': [
-                '1Jktr121Hm63qtWBMV8dCNJNW2KtWXy4fp'
+                'VskikiBThZzFufQL6GnFdGdEBqcrv7QrEw'
               ],
               'type': 'pubkeyhash'
             },
@@ -187,7 +187,7 @@ describe('Transactions', function() {
                   'hex': '41047211a824f55b505228e4c3d5194c1fcfaa15a456abdf37f9b9d97a4040afc073dee6c89064984f03385237d92167c13e236446b417ab79a0fcae412ae3316b77ac',
                   'asm': '047211a824f55b505228e4c3d5194c1fcfaa15a456abdf37f9b9d97a4040afc073dee6c89064984f03385237d92167c13e236446b417ab79a0fcae412ae3316b77 OP_CHECKSIG',
                   'addresses': [
-                    '1HLoD9E4SDFFPDiYfNYnkBLQ85Y51J3Zb1'
+                    'VrLd7rPWr29TSzchQACRB5fFotq3RjMoxc'
                   ],
                   'type': 'pubkeyhash'
                 },
@@ -273,7 +273,7 @@ describe('Transactions', function() {
                   'hex': '76a914ad7309dfc032d7f6b652e0c29ee353e63fffec6688ac',
                   'asm': 'OP_DUP OP_HASH160 ad7309dfc032d7f6b652e0c29ee353e63fffec66 OP_EQUALVERIFY OP_CHECKSIG',
                   'addresses': [
-                    '1Gp7iCzDGMZiV55Kt8uKsux6VyoHe1aJaN'
+                    'Vqowcv9fgATvYqyUcvYxJpGxBo6GAeBebW'
                   ],
                   'type': 'pubkeyhash'
                 },
@@ -307,7 +307,7 @@ describe('Transactions', function() {
 
       var req = {
         query: {
-          address: 'mkPvAKZ2rar6qeG3KjBtJHHMSP1wFZH7Er'
+          address: 'Vqowcv9fgATvYqyUcvYxJpGxBo6GAeBebW'
         }
       };
 
@@ -367,7 +367,7 @@ describe('Transactions', function() {
             '3DQYCLG6rZdtV2Xw8y4YtozZjNHYoKsLuo': 45000
           },
           {
-            '12WvZmssxT85f81dD6wcmWznxbnFkEpNMS': 1993504
+            'VbWkUV3LNG2HitumwtbFCRKeeR5EGFMJgo': 1993504
           }
         ],
         'isRBF': false
@@ -393,12 +393,13 @@ describe('Transactions', function() {
         'valueOut': 12.5002,
         'vout': [
           {
-            'n4eY3qiP9pi32MWC6FcJFHciSsfNiYFYgR': 12.5002 * 1e8
+            'XB9Dcpgit9ZcmKLzBjHWJeYcAD8USMkyqf': 12.5002 * 1e8
           }
         ],
         'isRBF': false
       };
 
+      
       var rawTx = '01000000010000000000000000000000000000000000000000000000000000000000000000ffffffff0403ebc108ffffffff04a0ca814a000000001976a914fdb9fb622b0db8d9121475a983288a0876f4de4888ac0000000000000000226a200000000000000000000000000000000000000000000000000000ffff0000000000000000000000001b6a1976a914fdb9fb622b0db8d9121475a983288a0876f4de4888ac0000000000000000326a303a791c8e85200500d89769b4f958e4db6b3ec388ddaa30233c4517d942d440c24ae903bff40d97ca06465fcf2714000000000000';
       var tx = vcoin.tx.fromRaw(rawTx, 'hex');
 

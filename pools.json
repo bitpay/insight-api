@@ -1,2 +1,17 @@
 [
+    {
+        "poolName": "Vertcoin Mining Pool Hub",
+        "url": "https://vertcoin.miningpoolhub.com",
+        "searchStrings": [
+            "/mph/"
+        ]
+    },
+    {
+        "poolName": "stratum",
+        "url": "",
+        "searchStrings": [
+            "/stratum/",
+            "/nodeStratum/"
+        ]
+    }
 ]
