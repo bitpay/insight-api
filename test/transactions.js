@@ -11,7 +11,7 @@ describe('Transactions', function() {
 
     it('should have correct data', function(done) {
 
-      var insight = {
+      var flosight = {
         'txid': 'eac9723230b8b632117ac3d75288d6f8eb81cf1ea553eb9fd42562d5f767d54a',
         'version': 1,
         'locktime': 0,
@@ -109,7 +109,7 @@ describe('Transactions', function() {
 
       var res = {};
       var next = function() {
-        should(req.transaction).eql(insight);
+        should(req.transaction).eql(flosight);
         done();
       };
 
@@ -165,7 +165,7 @@ describe('Transactions', function() {
 
       var transactions = new TxController(node);
 
-      var insight = {
+      var flosight = {
         'pagesTotal': 1,
         'txs': [
           {
@@ -216,7 +216,7 @@ describe('Transactions', function() {
 
       var res = {
         jsonp: function(data) {
-          should(data).eql(insight);
+          should(data).eql(flosight);
           done();
         }
       };
@@ -251,7 +251,7 @@ describe('Transactions', function() {
         }
       };
 
-      var insight = {
+      var flosight = {
         'pagesTotal': 1,
         'txs': [
           {
@@ -313,7 +313,7 @@ describe('Transactions', function() {
 
       var res = {
         jsonp: function(data) {
-          should(data).eql(insight);
+          should(data).eql(flosight);
           done();
         }
       };
@@ -359,7 +359,7 @@ describe('Transactions', function() {
   describe('#transformInvTransaction', function() {
 
     it('should give the correct data', function() {
-      var insight = {
+      var flosight = {
         'txid': 'a15a7c257af596704390d345ff3ea2eed4cd02ce8bfb8afb700bff82257e49fb',
         'valueOut': 0.02038504,
         'vout': [
@@ -384,11 +384,11 @@ describe('Transactions', function() {
       var transactions = new TxController(node);
 
       var result = transactions.transformInvTransaction(tx);
-      should(result).eql(insight);
+      should(result).eql(flosight);
     });
 
     it('will not include null values in vout array', function() {
-      var insight = {
+      var flosight = {
         'txid': '716d54157c31e52c820494c6c2b8af1b64352049f4dcc80632aa15742a7f82c4',
         'valueOut': 12.5002,
         'vout': [
@@ -410,7 +410,7 @@ describe('Transactions', function() {
       var transactions = new TxController(node);
 
       var result = transactions.transformInvTransaction(tx);
-      should(result).eql(insight);
+      should(result).eql(flosight);
     });
 
     it('should detect RBF txs', function() {

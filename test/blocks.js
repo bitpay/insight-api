@@ -44,7 +44,7 @@ var blockIndexes = {
 
 describe('Blocks', function() {
   describe('/blocks/:blockHash route', function() {
-    var insight = {
+    var flosight = {
       'hash': '0000000000000afa0c3c0afd450c793a1e300ec84cbe9555166e06132f19a8f7',
       'confirmations': 119,
       'size': 1011,
@@ -97,7 +97,7 @@ describe('Blocks', function() {
       var next = function() {
         should.exist(req.block);
         var block = req.block;
-        should(block).eql(insight);
+        should(block).eql(flosight);
         done();
       };
       controller.block(req, res, next);
@@ -149,7 +149,7 @@ describe('Blocks', function() {
     it('should have correct data', function(done) {
       var blocks = new BlockController({node: node});
 
-      var insight = {
+      var flosight = {
         'blockHash': '0000000000000afa0c3c0afd450c793a1e300ec84cbe9555166e06132f19a8f7'
       };
 
@@ -162,7 +162,7 @@ describe('Blocks', function() {
       };
       var res = {
         jsonp: function(data) {
-          should(data).eql(insight);
+          should(data).eql(flosight);
           done();
         }
       };

@@ -6,12 +6,12 @@ var rimraf = require('rimraf');
 var mkdirp = require('mkdirp');
 var fs = require('fs');
 var async = require('async');
-var RPC = require('bitcoind-rpc');
+var RPC = require('florincoind-rpc');
 var http = require('http');
-var bitcore = require('bitcore-lib');
+var flocore = require('flocore-lib');
 var exec = require('child_process').exec;
-var bitcore = require('bitcore-lib');
-var Block = bitcore.Block;
+var flocore = require('flocore-lib');
+var Block = flocore.Block;
 
 var blocksGenerated = 0;
 
@@ -26,12 +26,12 @@ var rpcConfig = {
 
 var rpc = new RPC(rpcConfig);
 var debug = true;
-var bitcoreDataDir = '/tmp/bitcore';
-var bitcoinDir = '/tmp/bitcoin';
-var bitcoinDataDirs = [ bitcoinDir ];
+var flocoreDataDir = '/tmp/flocore';
+var florincoinDir = '/tmp/florincoin';
+var florincoinDataDirs = [ florincoinDir ];
 var blocks= [];
 
-var bitcoin = {
+var florincoin = {
   args: {
     datadir: null,
     listen: 1,
@@ -43,17 +43,17 @@ var bitcoin = {
     rpcport: 58332,
   },
   datadir: null,
-  exec: 'bitcoind', //if this isn't on your PATH, then provide the absolute path, e.g. /usr/local/bin/bitcoind
+  exec: 'florincoind', //if this isn't on your PATH, then provide the absolute path, e.g. /usr/local/bin/florincoind
   processes: []
 };
 
-var bitcore = {
+var flocore = {
   configFile: {
-    file: bitcoreDataDir + '/bitcore-node.json',
+    file: flocoreDataDir + '/flocore-node.json',
     conf: {
       network: 'regtest',
       port: 53001,
-      datadir: bitcoreDataDir,
+      datadir: flocoreDataDir,
       services: [
         'p2p',
         'db',
@@ -63,7 +63,7 @@ var bitcore = {
         'transaction',
         'mempool',
         'web',
-        'insight-api',
+        'flosight-api',
         'fee',
         'timestamp'
       ],
@@ -73,7 +73,7 @@ var bitcore = {
             { 'ip': { 'v4': '127.0.0.1' }, port: 18444 }
           ]
         },
-        'insight-api': {
+        'flosight-api': {
           'routePrefix': 'api'
         },
         'block': {
@@ -87,9 +87,9 @@ var bitcore = {
     hostname: 'localhost',
     port: 53001,
   },
-  opts: { cwd: bitcoreDataDir },
-  datadir: bitcoreDataDir,
-  exec: 'bitcored',  //if this isn't on your PATH, then provide the absolute path, e.g. /usr/local/bin/bitcored
+  opts: { cwd: flocoreDataDir },
+  datadir: flocoreDataDir,
+  exec: 'flocored',  //if this isn't on your PATH, then provide the absolute path, e.g. /usr/local/bin/flocored
   args: ['start'],
   process: null
 };
@@ -99,7 +99,7 @@ var request = function(httpOpts, callback) {
   var request = http.request(httpOpts, function(res) {
 
     if (res.statusCode !== 200 && res.statusCode !== 201) {
-      return callback('Error from bitcore-node webserver: ' + res.statusCode);
+      return callback('Error from flocore-node webserver: ' + res.statusCode);
     }
 
     var resError;
@@ -182,17 +182,17 @@ var resetDirs = function(dirs, callback) {
 
 };
 
-var startBitcoind = function(callback) {
+var startFlorincoind = function(callback) {
 
-  var args = bitcoin.args;
+  var args = florincoin.args;
   var argList = Object.keys(args).map(function(key) {
     return '-' + key + '=' + args[key];
   });
 
-  var bitcoinProcess = spawn(bitcoin.exec, argList, bitcoin.opts);
-  bitcoin.processes.push(bitcoinProcess);
+  var florincoinProcess = spawn(florincoin.exec, argList, florincoin.opts);
+  florincoin.processes.push(florincoinProcess);
 
-  bitcoinProcess.stdout.on('data', function(data) {
+  florincoinProcess.stdout.on('data', function(data) {
 
     if (debug) {
       process.stdout.write(data.toString());
@@ -200,7 +200,7 @@ var startBitcoind = function(callback) {
 
   });
 
-  bitcoinProcess.stderr.on('data', function(data) {
+  florincoinProcess.stderr.on('data', function(data) {
 
     if (debug) {
       process.stderr.write(data.toString());
@@ -212,40 +212,40 @@ var startBitcoind = function(callback) {
 };
 
 
-var reportBitcoindsStarted = function() {
-  var pids = bitcoin.processes.map(function(process) {
+var reportFlorincoindsStarted = function() {
+  var pids = florincoin.processes.map(function(process) {
     return process.pid;
   });
 
-  console.log(pids.length + ' bitcoind\'s started at pid(s): ' + pids);
+  console.log(pids.length + ' florincoind\'s started at pid(s): ' + pids);
 };
 
-var startBitcoinds = function(datadirs, callback) {
+var startFlorincoinds = function(datadirs, callback) {
 
   var listenCount = 0;
   async.eachSeries(datadirs, function(datadir, next) {
 
-    bitcoin.datadir = datadir;
-    bitcoin.args.datadir = datadir;
+    florincoin.datadir = datadir;
+    florincoin.args.datadir = datadir;
 
     if (listenCount++ > 0) {
-      bitcoin.args.listen = 0;
-      bitcoin.args.rpcport = bitcoin.args.rpcport + 1;
-      bitcoin.args.connect = '127.0.0.1';
+      florincoin.args.listen = 0;
+      florincoin.args.rpcport = florincoin.args.rpcport + 1;
+      florincoin.args.connect = '127.0.0.1';
     }
 
-    startBitcoind(next);
+    startFlorincoind(next);
 
   }, function(err) {
     if (err) {
       return callback(err);
     }
-    reportBitcoindsStarted();
+    reportFlorincoindsStarted();
     callback();
   });
 };
 
-var waitForBitcoinReady = function(rpc, callback) {
+var waitForFlorincoinReady = function(rpc, callback) {
   async.retry({ interval: 1000, times: 1000 }, function(next) {
     rpc.getInfo(function(err) {
       if (err) {
@@ -261,10 +261,10 @@ var waitForBitcoinReady = function(rpc, callback) {
   });
 };
 
-var shutdownBitcoind = function(callback) {
+var shutdownFlorincoind = function(callback) {
   var process;
   do {
-    process = bitcoin.processes.shift();
+    process = florincoin.processes.shift();
     if (process) {
       process.kill();
     }
@@ -272,24 +272,24 @@ var shutdownBitcoind = function(callback) {
   setTimeout(callback, 3000);
 };
 
-var shutdownBitcore = function(callback) {
-  if (bitcore.process) {
-    bitcore.process.kill();
+var shutdownFlocore = function(callback) {
+  if (flocore.process) {
+    flocore.process.kill();
   }
   callback();
 };
 
-var writeBitcoreConf = function() {
-  fs.writeFileSync(bitcore.configFile.file, JSON.stringify(bitcore.configFile.conf));
+var writeFlocoreConf = function() {
+  fs.writeFileSync(flocore.configFile.file, JSON.stringify(flocore.configFile.conf));
 };
 
-var startBitcore = function(callback) {
+var startFlocore = function(callback) {
 
-  var args = bitcore.args;
-  console.log('Using bitcored from: ');
+  var args = flocore.args;
+  console.log('Using flocored from: ');
   async.series([
     function(next) {
-      exec('which bitcored', function(err, stdout, stderr) {
+      exec('which flocored', function(err, stdout, stderr) {
         if(err) {
           return next(err);
         }
@@ -298,16 +298,16 @@ var startBitcore = function(callback) {
       });
     },
     function(next) {
-      bitcore.process = spawn(bitcore.exec, args, bitcore.opts);
+      flocore.process = spawn(flocore.exec, args, flocore.opts);
 
-      bitcore.process.stdout.on('data', function(data) {
+      flocore.process.stdout.on('data', function(data) {
 
         if (debug) {
           process.stdout.write(data.toString());
         }
 
       });
-      bitcore.process.stderr.on('data', function(data) {
+      flocore.process.stderr.on('data', function(data) {
 
         if (debug) {
           process.stderr.write(data.toString());
@@ -330,21 +330,21 @@ describe('Block', function() {
     async.series([
       function(next) {
         console.log('step 0: setting up directories.');
-        var dirs = bitcoinDataDirs.concat([bitcoreDataDir]);
+        var dirs = florincoinDataDirs.concat([flocoreDataDir]);
         resetDirs(dirs, function(err) {
           if (err) {
             return next(err);
           }
-          writeBitcoreConf();
+          writeFlocoreConf();
           next();
         });
       },
       function(next) {
-        startBitcoinds(bitcoinDataDirs, function(err) {
+        startFlorincoinds(florincoinDataDirs, function(err) {
           if (err) {
             return next(err);
           }
-          waitForBitcoinReady(rpc, function(err) {
+          waitForFlorincoinReady(rpc, function(err) {
             if (err) {
               return next(err);
             }
@@ -360,15 +360,15 @@ describe('Block', function() {
         });
       },
       function(next) {
-        startBitcore(next);
+        startFlocore(next);
       }
     ], done);
 
   });
 
   after(function(done) {
-    shutdownBitcore(function() {
-      shutdownBitcoind(done);
+    shutdownFlocore(function() {
+      shutdownFlorincoind(done);
     });
   });
 

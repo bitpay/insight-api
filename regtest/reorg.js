@@ -18,16 +18,16 @@ var rimraf = require('rimraf');
 var mkdirp = require('mkdirp');
 var fs = require('fs');
 var async = require('async');
-var RPC = require('bitcoind-rpc');
+var RPC = require('florincoind-rpc');
 var http = require('http');
-var bitcore = require('bitcore-lib');
+var flocore = require('flocore-lib');
 var exec = require('child_process').exec;
 var net = require('net');
-var p2p = require('bitcore-p2p');
-var bitcore = require('bitcore-lib');
-var Networks = bitcore.Networks;
-var BlockHeader = bitcore.BlockHeader;
-var Block = bitcore.Block;
+var p2p = require('flocore-p2p');
+var flocore = require('flocore-lib');
+var Networks = flocore.Networks;
+var BlockHeader = flocore.BlockHeader;
+var Block = flocore.Block;
 var bcoin = require('bcoin');
 var BcoinBlock = bcoin.block;
 var BcoinTx = bcoin.tx;
@@ -90,7 +90,7 @@ var getOrphanedBlock = function() {
   return BcoinBlock.fromRaw(require('./data/blocks_orphaned.json')[0], 'hex');
 };
 
-var TestBitcoind = function TestBitcoind() {
+var TestFlorincoind = function TestFlorincoind() {
 
   var self = this;
   self._orphans = {};
@@ -147,7 +147,7 @@ var TestBitcoind = function TestBitcoind() {
       }
 
       if (command === 'getheaders') {
-        msg.push(messages.Headers(self._getHeaders())); // these are bitcore block headers
+        msg.push(messages.Headers(self._getHeaders())); // these are flocore block headers
       }
 
       if (command === 'getblocks') {
@@ -223,12 +223,12 @@ var rpc1 = new RPC(rpcConfig);
 rpcConfig.port++;
 var rpc2 = new RPC(rpcConfig);
 var debug = true;
-var bitcoreDataDir = '/tmp/bitcore';
-var bitcoinDir1 = '/tmp/bitcoin1';
-var bitcoinDir2 = '/tmp/bitcoin2';
-var bitcoinDataDirs = [ bitcoinDir1, bitcoinDir2 ];
+var flocoreDataDir = '/tmp/flocore';
+var florincoinDir1 = '/tmp/florincoin1';
+var florincoinDir2 = '/tmp/florincoin2';
+var florincoinDataDirs = [ florincoinDir1, florincoinDir2 ];
 
-var bitcoin = {
+var florincoin = {
   args: {
     datadir: null,
     listen: 1,
@@ -240,17 +240,17 @@ var bitcoin = {
     rpcport: 58332,
   },
   datadir: null,
-  exec: 'bitcoind', //if this isn't on your PATH, then provide the absolute path, e.g. /usr/local/bin/bitcoind
+  exec: 'florincoind', //if this isn't on your PATH, then provide the absolute path, e.g. /usr/local/bin/florincoind
   processes: []
 };
 
-var bitcore = {
+var flocore = {
   configFile: {
-    file: bitcoreDataDir + '/bitcore-node.json',
+    file: flocoreDataDir + '/flocore-node.json',
     conf: {
       network: 'regtest',
       port: 53001,
-      datadir: bitcoreDataDir,
+      datadir: flocoreDataDir,
       services: [
         'p2p',
         'db',
@@ -260,7 +260,7 @@ var bitcore = {
         'transaction',
         'mempool',
         'web',
-        'insight-api',
+        'flosight-api',
         'fee',
         'timestamp'
       ],
@@ -270,7 +270,7 @@ var bitcore = {
             { 'ip': { 'v4': '127.0.0.1' }, port: 18444 }
           ]
         },
-        'insight-api': {
+        'flosight-api': {
           'routePrefix': 'api'
         },
         'block': {
@@ -284,9 +284,9 @@ var bitcore = {
     hostname: 'localhost',
     port: 53001,
   },
-  opts: { cwd: bitcoreDataDir },
-  datadir: bitcoreDataDir,
-  exec: 'bitcored',  //if this isn't on your PATH, then provide the absolute path, e.g. /usr/local/bin/bitcored
+  opts: { cwd: flocoreDataDir },
+  datadir: flocoreDataDir,
+  exec: 'flocored',  //if this isn't on your PATH, then provide the absolute path, e.g. /usr/local/bin/flocored
   args: ['start'],
   process: null
 };
@@ -296,7 +296,7 @@ var request = function(httpOpts, callback) {
   var request = http.request(httpOpts, function(res) {
 
     if (res.statusCode !== 200 && res.statusCode !== 201) {
-      return callback('Error from bitcore-node webserver: ' + res.statusCode);
+      return callback('Error from flocore-node webserver: ' + res.statusCode);
     }
 
     var resError;
@@ -379,17 +379,17 @@ var resetDirs = function(dirs, callback) {
 
 };
 
-var startBitcoind = function(callback) {
+var startFlorincoind = function(callback) {
 
-  var args = bitcoin.args;
+  var args = florincoin.args;
   var argList = Object.keys(args).map(function(key) {
     return '-' + key + '=' + args[key];
   });
 
-  var bitcoinProcess = spawn(bitcoin.exec, argList, bitcoin.opts);
-  bitcoin.processes.push(bitcoinProcess);
+  var florincoinProcess = spawn(florincoin.exec, argList, florincoin.opts);
+  florincoin.processes.push(florincoinProcess);
 
-  bitcoinProcess.stdout.on('data', function(data) {
+  florincoinProcess.stdout.on('data', function(data) {
 
     if (debug) {
       process.stdout.write(data.toString());
@@ -397,7 +397,7 @@ var startBitcoind = function(callback) {
 
   });
 
-  bitcoinProcess.stderr.on('data', function(data) {
+  florincoinProcess.stderr.on('data', function(data) {
 
     if (debug) {
       process.stderr.write(data.toString());
@@ -409,40 +409,40 @@ var startBitcoind = function(callback) {
 };
 
 
-var reportBitcoindsStarted = function() {
-  var pids = bitcoin.processes.map(function(process) {
+var reportFlorincoindsStarted = function() {
+  var pids = florincoin.processes.map(function(process) {
     return process.pid;
   });
 
-  console.log(pids.length + ' bitcoind\'s started at pid(s): ' + pids);
+  console.log(pids.length + ' florincoind\'s started at pid(s): ' + pids);
 };
 
-var startBitcoinds = function(datadirs, callback) {
+var startFlorincoinds = function(datadirs, callback) {
 
   var listenCount = 0;
   async.eachSeries(datadirs, function(datadir, next) {
 
-    bitcoin.datadir = datadir;
-    bitcoin.args.datadir = datadir;
+    florincoin.datadir = datadir;
+    florincoin.args.datadir = datadir;
 
     if (listenCount++ > 0) {
-      bitcoin.args.listen = 0;
-      bitcoin.args.rpcport = bitcoin.args.rpcport + 1;
-      bitcoin.args.connect = '127.0.0.1';
+      florincoin.args.listen = 0;
+      florincoin.args.rpcport = florincoin.args.rpcport + 1;
+      florincoin.args.connect = '127.0.0.1';
     }
 
-    startBitcoind(next);
+    startFlorincoind(next);
 
   }, function(err) {
     if (err) {
       return callback(err);
     }
-    reportBitcoindsStarted();
+    reportFlorincoindsStarted();
     callback();
   });
 };
 
-var waitForBitcoinReady = function(rpc, callback) {
+var waitForFlorincoinReady = function(rpc, callback) {
   async.retry({ interval: 1000, times: 1000 }, function(next) {
     rpc.getInfo(function(err) {
       if (err) {
@@ -458,10 +458,10 @@ var waitForBitcoinReady = function(rpc, callback) {
   });
 };
 
-var shutdownBitcoind = function(callback) {
+var shutdownFlorincoind = function(callback) {
   var process;
   do {
-    process = bitcoin.processes.shift();
+    process = florincoin.processes.shift();
     if (process) {
       process.kill();
     }
@@ -469,24 +469,24 @@ var shutdownBitcoind = function(callback) {
   setTimeout(callback, 3000);
 };
 
-var shutdownBitcore = function(callback) {
-  if (bitcore.process) {
-    bitcore.process.kill();
+var shutdownFlocore = function(callback) {
+  if (flocore.process) {
+    flocore.process.kill();
   }
   callback();
 };
 
-var writeBitcoreConf = function() {
-  fs.writeFileSync(bitcore.configFile.file, JSON.stringify(bitcore.configFile.conf));
+var writeFlocoreConf = function() {
+  fs.writeFileSync(flocore.configFile.file, JSON.stringify(flocore.configFile.conf));
 };
 
-var startBitcore = function(callback) {
+var startFlocore = function(callback) {
 
-  var args = bitcore.args;
-  console.log('Using bitcored from: ');
+  var args = flocore.args;
+  console.log('Using flocored from: ');
   async.series([
     function(next) {
-      exec('which bitcored', function(err, stdout, stderr) {
+      exec('which flocored', function(err, stdout, stderr) {
         if(err) {
           return next(err);
         }
@@ -495,16 +495,16 @@ var startBitcore = function(callback) {
       });
     },
     function(next) {
-      bitcore.process = spawn(bitcore.exec, args, bitcore.opts);
+      flocore.process = spawn(flocore.exec, args, flocore.opts);
 
-      bitcore.process.stdout.on('data', function(data) {
+      flocore.process.stdout.on('data', function(data) {
 
         if (debug) {
           process.stdout.write(data.toString());
         }
 
       });
-      bitcore.process.stderr.on('data', function(data) {
+      flocore.process.stderr.on('data', function(data) {
 
         if (debug) {
           process.stderr.write(data.toString());
@@ -521,7 +521,7 @@ var startBitcore = function(callback) {
 var sync100Blocks = function(callback) {
   // regtests can generate high numbers of blocks all at one time, but
   // the full node may not relay those blocks faithfully. This is a problem
-  // with the full node and not bitcore. So, generate blocks at a slow rate
+  // with the full node and not flocore. So, generate blocks at a slow rate
   async.timesSeries(100, function(n, next) {
     rpc2.generate(1, function(err) {
       if (err) {
@@ -544,43 +544,43 @@ var performTest1 = function(callback) {
     // 0. reset the test directories
     function(next) {
       console.log('step 0: setting up directories.');
-      var dirs = bitcoinDataDirs.concat([bitcoreDataDir]);
+      var dirs = florincoinDataDirs.concat([flocoreDataDir]);
       resetDirs(dirs, function(err) {
         if (err) {
           return next(err);
         }
-        writeBitcoreConf();
+        writeFlocoreConf();
         next();
       });
     },
-    // 1. start 2 bitcoinds in regtest mode
+    // 1. start 2 florincoinds in regtest mode
     function(next) {
-      console.log('step 1: starting 2 bitcoinds.');
-      startBitcoinds(bitcoinDataDirs, function(err) {
+      console.log('step 1: starting 2 florincoinds.');
+      startFlorincoinds(florincoinDataDirs, function(err) {
         if (err) {
           return callback(err);
         }
-        waitForBitcoinReady(rpc1, next);
+        waitForFlorincoinReady(rpc1, next);
       });
     },
-    // 2. ensure that both bitcoind's are connected
+    // 2. ensure that both florincoind's are connected
     function(next) {
-      console.log('step 2: checking to see if bitcoind\'s are connected to each other.');
+      console.log('step 2: checking to see if florincoind\'s are connected to each other.');
       rpc1.getInfo(function(err, res) {
         if (err || res.result.connections !== 1) {
-          next(err || new Error('bitcoind\'s not connected to each other.'));
+          next(err || new Error('florincoind\'s not connected to each other.'));
         }
-        console.log('bitcoind\'s are connected.');
+        console.log('florincoind\'s are connected.');
         next();
       });
     },
-    // 3. generate 10 blocks on the 1st bitcoind
+    // 3. generate 10 blocks on the 1st florincoind
     function(next) {
       blocksGenerated += 10;
-      console.log('step 3: generating 10 blocks on bitcoin 1.');
+      console.log('step 3: generating 10 blocks on florincoin 1.');
       rpc1.generate(10, next);
     },
-    // 4. ensure that the 2nd bitcoind syncs those blocks
+    // 4. ensure that the 2nd florincoind syncs those blocks
     function(next) {
       console.log('step 4: checking for synced blocks.');
       async.retry(function(next) {
@@ -588,67 +588,67 @@ var performTest1 = function(callback) {
           if (err || res.result.blocks < 10) {
             return next(1);
           }
-          console.log('bitcoin 2 has synced the blocks generated on bitcoin 1.');
+          console.log('florincoin 2 has synced the blocks generated on florincoin 1.');
           next();
         });
       }, next);
     },
-    // 5. start up bitcore and let it sync the 10 blocks
+    // 5. start up flocore and let it sync the 10 blocks
     function(next) {
-      console.log('step 5: starting bitcore...');
-      startBitcore(next);
+      console.log('step 5: starting flocore...');
+      startFlocore(next);
     },
     function(next) {
-      // 6. shut down both bitcoind's
-      console.log('bitcore is running and sync\'ed.');
-      console.log('step 6: shutting down all bitcoind\'s.');
-      shutdownBitcoind(next);
+      // 6. shut down both florincoind's
+      console.log('flocore is running and sync\'ed.');
+      console.log('step 6: shutting down all florincoind\'s.');
+      shutdownFlorincoind(next);
     },
-    // 7. change the config for the second bitcoind to listen for p2p, start bitcoin 2
+    // 7. change the config for the second florincoind to listen for p2p, start florincoin 2
     function(next) {
-      console.log('step 7: changing config of bitcoin 2 and restarting it.');
-      bitcoin.datadir = bitcoinDataDirs[1];
-      bitcoin.args.datadir = bitcoinDataDirs[1];
-      bitcoin.args.listen = 1;
-      startBitcoind(function(err) {
+      console.log('step 7: changing config of florincoin 2 and restarting it.');
+      florincoin.datadir = florincoinDataDirs[1];
+      florincoin.args.datadir = florincoinDataDirs[1];
+      florincoin.args.listen = 1;
+      startFlorincoind(function(err) {
         if (err) {
           return next(err);
         }
-        reportBitcoindsStarted();
-        waitForBitcoinReady(rpc2, next);
+        reportFlorincoindsStarted();
+        waitForFlorincoinReady(rpc2, next);
       });
     },
-    // 8. generate 100 blocks on the second bitcoind
+    // 8. generate 100 blocks on the second florincoind
     function(next) {
-      console.log('step 8: generating 100 blocks on bitcoin 2.');
+      console.log('step 8: generating 100 blocks on florincoin 2.');
       blocksGenerated += 100;
-      console.log('generating 100 blocks on bitcoin 2.');
+      console.log('generating 100 blocks on florincoin 2.');
       sync100Blocks(next);
     },
-    // 9. let bitcore connect and sync those 100 blocks
+    // 9. let flocore connect and sync those 100 blocks
     function(next) {
-      console.log('step 9: syncing 100 blocks to bitcore.');
+      console.log('step 9: syncing 100 blocks to flocore.');
       waitForBlocksGenerated(next);
     },
-    // 10. shutdown the second bitcoind
+    // 10. shutdown the second florincoind
     function(next) {
-      console.log('100 more blocks synced to bitcore.');
-      console.log('step 10: shutting down bitcoin 2.');
-      shutdownBitcoind(next);
+      console.log('100 more blocks synced to flocore.');
+      console.log('step 10: shutting down florincoin 2.');
+      shutdownFlorincoind(next);
     },
-    // 11. start up the first bitcoind
+    // 11. start up the first florincoind
     function(next) {
-      console.log('bitcoin 2 shut down.');
-      console.log('step 11: starting up bitcoin 1');
-      bitcoin.args.rpcport = bitcoin.args.rpcport - 1;
-      bitcoin.datadir = bitcoinDataDirs[0];
-      bitcoin.args.datadir = bitcoinDataDirs[0];
-      startBitcoind(function(err) {
+      console.log('florincoin 2 shut down.');
+      console.log('step 11: starting up florincoin 1');
+      florincoin.args.rpcport = florincoin.args.rpcport - 1;
+      florincoin.datadir = florincoinDataDirs[0];
+      florincoin.args.datadir = florincoinDataDirs[0];
+      startFlorincoind(function(err) {
         if (err) {
           return next(err);
         }
-        reportBitcoindsStarted();
-        waitForBitcoinReady(rpc1, next);
+        reportFlorincoindsStarted();
+        waitForFlorincoinReady(rpc1, next);
       });
     },
     // 12. generate one block
@@ -664,9 +664,9 @@ var performTest1 = function(callback) {
         next();
       });
     },
-    // 13. let bitcore sync that block and reorg back to it
+    // 13. let flocore sync that block and reorg back to it
     function(next) {
-      console.log('step 13: Waiting for bitcore to reorg to block height 11.');
+      console.log('step 13: Waiting for flocore to reorg to block height 11.');
       waitForBlocksGenerated(next);
     }
   ], function(err) {
@@ -686,13 +686,13 @@ var performTest2 = function(fakeServer, callback) {
     // 0. reset the test directories
     function(next) {
       console.log('step 0: setting up directories.');
-      bitcore.configFile.conf.servicesConfig.header = { slowMode: 1000 };
-      var dirs = bitcoinDataDirs.concat([bitcoreDataDir]);
+      flocore.configFile.conf.servicesConfig.header = { slowMode: 1000 };
+      var dirs = florincoinDataDirs.concat([flocoreDataDir]);
       resetDirs(dirs, function(err) {
         if (err) {
           return next(err);
         }
-        writeBitcoreConf();
+        writeFlocoreConf();
         next();
       });
     },
@@ -702,17 +702,17 @@ var performTest2 = function(fakeServer, callback) {
       fakeServer.start();
       next();
     },
-    // 2. init server with blocks (the initial set from which bitcore will sync)
+    // 2. init server with blocks (the initial set from which flocore will sync)
     function(next) {
-      console.log('step 2: init server with blocks (the initial set from which bitcore will sync)');
+      console.log('step 2: init server with blocks (the initial set from which flocore will sync)');
       next();
     },
-    // 3. start bitcore in slow mode (slow the block service's sync speed down so we
+    // 3. start flocore in slow mode (slow the block service's sync speed down so we
     // can send a reorg block to the header service while the block service is still syncing.
     function(next) {
-      console.log('step 3: start bitcore in slow mode.');
+      console.log('step 3: start flocore in slow mode.');
       blocksGenerated = 4;
-      startBitcore(next);
+      startFlocore(next);
     },
     function(next) {
       console.log('step 4: send a block in to reorg the header service without reorging the block service.');
@@ -737,13 +737,13 @@ var performTest3 = function(fakeServer, callback) {
     // 0. reset the test directories
     function(next) {
       console.log('step 0: setting up directories.');
-      bitcore.configFile.conf.servicesConfig.header = { slowMode: 1000 };
-      var dirs = bitcoinDataDirs.concat([bitcoreDataDir]);
+      flocore.configFile.conf.servicesConfig.header = { slowMode: 1000 };
+      var dirs = florincoinDataDirs.concat([flocoreDataDir]);
       resetDirs(dirs, function(err) {
         if (err) {
           return next(err);
         }
-        writeBitcoreConf();
+        writeFlocoreConf();
         next();
       });
     },
@@ -753,17 +753,17 @@ var performTest3 = function(fakeServer, callback) {
       fakeServer.start();
       next();
     },
-    // 2. init server with blocks (the initial set from which bitcore will sync)
+    // 2. init server with blocks (the initial set from which flocore will sync)
     function(next) {
-      console.log('step 2: init server with blocks (the initial set from which bitcore will sync)');
+      console.log('step 2: init server with blocks (the initial set from which flocore will sync)');
       next();
     },
-    // 3. start bitcore in slow mode (slow the block service's sync speed down so we
+    // 3. start flocore in slow mode (slow the block service's sync speed down so we
     // can send a reorg block to the header service while the block service is still syncing.
     function(next) {
-      console.log('step 3: start bitcore in slow mode.');
+      console.log('step 3: start flocore in slow mode.');
       blocksGenerated = 6;
-      startBitcore(next);
+      startFlocore(next);
     },
     function(next) {
       console.log('step 4: send a block in to reorg the header service without reorging the block service.');
@@ -796,12 +796,12 @@ var performTest4 = function(fakeServer, callback) {
     // 0. reset the test directories
     function(next) {
       console.log('step 0: setting up directories.');
-      var dirs = bitcoinDataDirs.concat([bitcoreDataDir]);
+      var dirs = florincoinDataDirs.concat([flocoreDataDir]);
       resetDirs(dirs, function(err) {
         if (err) {
           return next(err);
         }
-        writeBitcoreConf();
+        writeFlocoreConf();
         next();
       });
     },
@@ -811,16 +811,16 @@ var performTest4 = function(fakeServer, callback) {
       fakeServer.start();
       next();
     },
-    // 2. start bitcore
+    // 2. start flocore
     function(next) {
-      console.log('step 2: start bitcore and let sync.');
+      console.log('step 2: start flocore and let sync.');
       blocksGenerated = 7;
-      startBitcore(next);
+      startFlocore(next);
     },
-    // 3. shutdown bitcore
+    // 3. shutdown flocore
     function(next) {
-      console.log('step 3: shut down bitcore.');
-      shutdownBitcore(next);
+      console.log('step 3: shut down flocore.');
+      shutdownFlocore(next);
     },
     // 4. setup the fake server to send a reorg'ed set of headers
     function(next) {
@@ -829,11 +829,11 @@ var performTest4 = function(fakeServer, callback) {
       fakeServer.reorientData(reorgBlock);
       next();
     },
-    // 5. start up bitcore once again
+    // 5. start up flocore once again
     function(next) {
-      console.log('step 5: start up bitcore.');
+      console.log('step 5: start up flocore.');
       blocksGenerated = 7;
-      startBitcore(next);
+      startFlocore(next);
     }
   ], function(err) {
     if (err) {
@@ -851,12 +851,12 @@ var performTest5 = function(fakeServer, callback) {
     // 0. reset the test directories
     function(next) {
       console.log('step 0: setting up directories.');
-      var dirs = bitcoinDataDirs.concat([bitcoreDataDir]);
+      var dirs = florincoinDataDirs.concat([flocoreDataDir]);
       resetDirs(dirs, function(err) {
         if (err) {
           return next(err);
         }
-        writeBitcoreConf();
+        writeFlocoreConf();
         next();
       });
     },
@@ -866,11 +866,11 @@ var performTest5 = function(fakeServer, callback) {
       fakeServer.start();
       next();
     },
-    // 2. start bitcore
+    // 2. start flocore
     function(next) {
-      console.log('step 2: start bitcore and let sync.');
+      console.log('step 2: start flocore and let sync.');
       blocksGenerated = 7;
-      startBitcore(next);
+      startFlocore(next);
     },
     // 3. send in a block that has nothing to do with anything in my chain.
     function(next) {
@@ -895,30 +895,30 @@ describe('Reorg', function() {
   describe('Reorg case 1: block service fully sync\'ed, p2p block subscription active  (normal operating mode)', function() {
 
     after(function(done) {
-      shutdownBitcore(function() {
-        shutdownBitcoind(done);
+      shutdownFlocore(function() {
+        shutdownFlorincoind(done);
       });
     });
 
     // case 1.
-    it('should reorg correctly when bitcore reconnects to a peer that is not yet sync\'ed, but when a block does come in, it is a reorg block.', function(done) {
+    it('should reorg correctly when flocore reconnects to a peer that is not yet sync\'ed, but when a block does come in, it is a reorg block.', function(done) {
       /*
          What this test does:
 
          step 0: set up directories
-         step 1: start 2 bitcoinds.
-         step 2: check to see if bitcoind's are connected to each other.
-         step 3: generate 10 blocks on bitcoin 1.
-         step 4: check for synced blocks between bitcoinds.
-         step 5: start bitcore
-         step 6: shut down all bitcoind's.
-         step 7: change config of bitcoin 2 and restart it.
-         step 8: generate 100 blocks on bitcoin 2.
-         step 9: sync 100 blocks to bitcore.
-         step 10: shut down bitcoin 2.
-         step 11: start up bitcoin 1
+         step 1: start 2 florincoinds.
+         step 2: check to see if florincoind's are connected to each other.
+         step 3: generate 10 blocks on florincoin 1.
+         step 4: check for synced blocks between florincoinds.
+         step 5: start flocore
+         step 6: shut down all florincoind's.
+         step 7: change config of florincoin 2 and restart it.
+         step 8: generate 100 blocks on florincoin 2.
+         step 9: sync 100 blocks to flocore.
+         step 10: shut down florincoin 2.
+         step 11: start up florincoin 1
          step 12: generate 1 block
-         step 13: Wait for bitcore to reorg to block height 11.
+         step 13: Wait for flocore to reorg to block height 11.
        */
 
 
@@ -959,12 +959,12 @@ describe('Reorg', function() {
 
       var fakeServer;
       before(function(done) {
-        fakeServer = new TestBitcoind();
+        fakeServer = new TestFlorincoind();
         done();
       });
 
       after(function(done) {
-        shutdownBitcore(function() {
+        shutdownFlocore(function() {
           fakeServer.stop();
           done();
         });
@@ -976,14 +976,14 @@ describe('Reorg', function() {
            What this test does:
 
            step 0: setup directories
-           step 1: start fake server (fake bitcoin)
-           step 2: init server with blocks (the initial set from which bitcore will sync)
-           step 3: start bitcore in slow mode (slow the block service's sync speed down so we
+           step 1: start fake server (fake florincoin)
+           step 2: init server with blocks (the initial set from which flocore will sync)
+           step 3: start flocore in slow mode (slow the block service's sync speed down so we
            can send a reorg block to the header service while the block service is still syncing.
            step 4: send an inventory message with a reorg block hash
 
            the header service will get this message, discover the reorg, handle the reorg
-           and call onHeaders on the block service, query bitcore for the results
+           and call onHeaders on the block service, query flocore for the results
          */
         performTest2(fakeServer, function(err) {
 
@@ -1022,12 +1022,12 @@ describe('Reorg', function() {
 
         var fakeServer;
         before(function(done) {
-          fakeServer = new TestBitcoind();
+          fakeServer = new TestFlorincoind();
           done();
         });
 
         after(function(done) {
-          shutdownBitcore(function() {
+          shutdownFlocore(function() {
             fakeServer.stop();
             done();
           });
@@ -1039,9 +1039,9 @@ describe('Reorg', function() {
              What this test does:
 
              step 0: setup directories
-             step 1: start fake server (fake bitcoin)
-             step 2: init server with blocks (the initial set from which bitcore will sync)
-             step 3: start bitcore in slow mode
+             step 1: start fake server (fake florincoin)
+             step 2: init server with blocks (the initial set from which flocore will sync)
+             step 3: start flocore in slow mode
              step 4: send an inventory message with a reorg block hash
 
          */
@@ -1081,12 +1081,12 @@ describe('Reorg', function() {
 
       var fakeServer;
       before(function(done) {
-        fakeServer = new TestBitcoind();
+        fakeServer = new TestFlorincoind();
         done();
       });
 
       after(function(done) {
-        shutdownBitcore(function() {
+        shutdownFlocore(function() {
           fakeServer.stop();
           done();
         });
@@ -1124,12 +1124,12 @@ describe('Reorg', function() {
 
       var fakeServer;
       before(function(done) {
-        fakeServer = new TestBitcoind();
+        fakeServer = new TestFlorincoind();
         done();
       });
 
       after(function(done) {
-        shutdownBitcore(function() {
+        shutdownFlocore(function() {
           fakeServer.stop();
           done();
         });

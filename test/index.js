@@ -2,7 +2,7 @@
 
 var should = require('should');
 var sinon = require('sinon');
-var InsightAPI = require('../lib/index');
+var FlosightAPI = require('../lib/index');
 
 describe('Index', function() {
   describe('@constructor', function() {
@@ -11,7 +11,7 @@ describe('Index', function() {
       var node = { services: { block: {} },
         log: sinon.stub()
       };
-      var index = new InsightAPI({
+      var index = new FlosightAPI({
         rateLimiterOptions: options,
         node: node
       });
@@ -21,7 +21,7 @@ describe('Index', function() {
       var node = { services: { block: {} },
         log: sinon.stub()
       };
-      var index = new InsightAPI({
+      var index = new FlosightAPI({
         disableRateLimiter: true,
         node: node
       });
@@ -36,7 +36,7 @@ describe('Index', function() {
       var node = { services: { block: {} },
         log: sinon.stub()
       };
-      var index = new InsightAPI({
+      var index = new FlosightAPI({
         rateLimiterOptions: options,
         node: node
       });
@@ -49,7 +49,7 @@ describe('Index', function() {
       var node = { services: { block: {} },
         log: sinon.stub()
       };
-      var index = new InsightAPI({
+      var index = new FlosightAPI({
         enableCache: true,
         node: node
       });
@@ -71,7 +71,7 @@ describe('Index', function() {
         log: sinon.stub()
       };
 
-      var index = new InsightAPI({
+      var index = new FlosightAPI({
         enableCache: false,
         node: node
       });
@@ -91,7 +91,7 @@ describe('Index', function() {
       var node = { services: { block: {} },
         log: sinon.stub()
       };
-      var index = new InsightAPI({
+      var index = new FlosightAPI({
         enableCache: true,
         cacheShortSeconds: 35,
         node: node
@@ -112,7 +112,7 @@ describe('Index', function() {
       var node = { services: { block: {} },
         log: sinon.stub()
       };
-      var index = new InsightAPI({
+      var index = new FlosightAPI({
         enableCache: true,
         node: node
       });
@@ -134,7 +134,7 @@ describe('Index', function() {
       var node = { services: { block: {} },
         log: sinon.stub()
       };
-      var index = new InsightAPI({
+      var index = new FlosightAPI({
         enableCache: true,
         cacheLongSeconds: 86400000,
         node: node
@@ -156,7 +156,7 @@ describe('Index', function() {
       var node = { services: { block: {} },
         log: sinon.stub()
       };
-      var index = new InsightAPI({
+      var index = new FlosightAPI({
         enableCache: true,
         node: node
       });
@@ -176,7 +176,7 @@ describe('Index', function() {
   describe('#setupRoutes', function() {
     it('will use rate limiter by default', function() {
       var node = { services: { block: {} } };
-      var index = new InsightAPI({
+      var index = new FlosightAPI({
         node: node
       });
       var middlewareFunc = sinon.stub();
@@ -199,7 +199,7 @@ describe('Index', function() {
     });
     it('will NOT use rate limiter if disabled', function() {
       var node = { services: { block: {} } };
-      var index = new InsightAPI({
+      var index = new FlosightAPI({
         node: node,
         disableRateLimiter: true
       });

@@ -1,21 +1,21 @@
 {
-  "name": "insight-api",
-  "description": "A Bitcoin blockchain REST and web socket API service for Bitcore Node.",
+  "name": "flosight-api",
+  "description": "A Florincoin blockchain REST and web socket API service for Flocore Node.",
   "version": "5.0.0-beta.44",
-  "repository": "git://github.com/bitpay/insight-api.git",
+  "repository": "git://github.com/bitpay/flosight-api.git",
   "bugs": {
-    "url": "https://github.com/bitpay/insight-api/issues"
+    "url": "https://github.com/bitpay/flosight-api/issues"
   },
-  "homepage": "https://github.com/bitpay/insight-api",
+  "homepage": "https://github.com/bitpay/flosight-api",
   "license": "MIT",
   "keywords": [
-    "insight",
-    "insight api",
+    "flosight",
+    "flosight api",
     "blockchain",
-    "bitcoin api",
+    "florincoin api",
     "blockchain api",
     "json",
-    "bitcore"
+    "flocore"
   ],
   "engines": {
     "node": ">=8.2.0"
@@ -26,14 +26,14 @@
     "perf": "mocha -R spec perf"
   },
   "main": "lib",
-  "bitcoreNode": "lib",
+  "flocoreNode": "lib",
   "dependencies": {
     "JSONStream": "^1.3.1",
     "async": "*",
     "bcoin": "bcoin-org/bcoin#886008a1822ce1da7fa8395ee7db4bcc1750a28a",
-    "bitcore-lib": "5.0.0-beta.1",
-    "bitcore-lib-cash": "0.15.1",
-    "bitcore-message": "^1.0.1",
+    "flocore-lib": "5.0.0-beta.1",
+    "flocore-lib-cash": "0.15.1",
+    "flocore-message": "^1.0.1",
     "body-parser": "^1.13.3",
     "compression": "^1.6.1",
     "lodash": "^2.4.1",
@@ -42,8 +42,8 @@
     "request": "^2.64.0"
   },
   "devDependencies": {
-    "bitcoind-rpc": "^0.7.0",
-    "bitcore-p2p": "5.0.0-beta.2",
+    "florincoind-rpc": "^0.7.0",
+    "flocore-p2p": "5.0.0-beta.2",
     "chai": "^3.5.0",
     "mkdirp": "^0.5.1",
     "mocha": "^2.4.5",

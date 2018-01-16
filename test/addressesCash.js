@@ -4,7 +4,7 @@ var should = require('should');
 var sinon = require('sinon');
 var AddressController = require('../lib/addresses');
 var _ = require('lodash');
-var bitcore = require('bitcore-lib');
+var flocore = require('flocore-lib');
 var bcoin = require('bcoin');
 
 
@@ -46,7 +46,7 @@ var utxos = [
   }
 ];
 
-describe('Addresses / Bitcoin Cash', function() {
+describe('Addresses / Florincoin Cash', function() {
   var summary = {
     addrStr: 'CcJ4qUfyQ8x5NwhAeCQkrBSWVeXxXghcNz',
     balance: 0,
@@ -77,7 +77,7 @@ describe('Addresses / Bitcoin Cash', function() {
       query: {}
     };
     it('checkAddrs', function(done) {
-      var insight = 0;
+      var flosight = 0;
 
       var req = {
         query: {
@@ -106,7 +106,7 @@ describe('Addresses / Bitcoin Cash', function() {
 
   describe('/addr/:addr/utxo', function() {
     it('should have correct data', function(done) {
-      var insight = [
+      var flosight = [
         {
           'address': 'CcJ4qUfyQ8x5NwhAeCQkrBSWVeXxXghcNz',
           'txid': '63b68becb0e514b32317f4b29a5cf0627d4087e54ac17f686fcb1d9a27680f73',
@@ -148,7 +148,7 @@ describe('Addresses / Bitcoin Cash', function() {
       var res = {
         jsonp: function(data) {
           var merged = _.merge(data, todos);
-          should(merged).eql(insight);
+          should(merged).eql(flosight);
           done();
         }
       };
@@ -161,7 +161,7 @@ describe('Addresses / Bitcoin Cash', function() {
 
     it('should have the correct data', function(done) {
 
-      var insight = [
+      var flosight = [
         {
           'address': 'CcJ4qUfyQ8x5NwhAeCQkrBSWVeXxXghcNz',
           'txid': '63b68becb0e514b32317f4b29a5cf0627d4087e54ac17f686fcb1d9a27680f73',
@@ -216,7 +216,7 @@ describe('Addresses / Bitcoin Cash', function() {
         },
         end: function() {
           var finalObject = JSON.parse(finalData);
-          finalObject.should.eql(insight);
+          finalObject.should.eql(flosight);
           done();
         }
       };
@@ -229,7 +229,7 @@ describe('Addresses / Bitcoin Cash', function() {
 
     it('should have correct data', function(done) {
 
-      var insight = {
+      var flosight = {
         'totalItems': 1,
         'from': 0,
         'to': 1,
@@ -295,7 +295,7 @@ describe('Addresses / Bitcoin Cash', function() {
 
       var res = {
         jsonp: function(data) {
-          should(data).eql(insight);
+          should(data).eql(flosight);
           done();
         }
       };

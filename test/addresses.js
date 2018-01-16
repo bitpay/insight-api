@@ -4,7 +4,7 @@ var should = require('should');
 var sinon = require('sinon');
 var AddressController = require('../lib/addresses');
 var _ = require('lodash');
-var bitcore = require('bitcore-lib');
+var flocore = require('flocore-lib');
 var bcoin = require('bcoin');
 
 var txinfos = {
@@ -243,11 +243,11 @@ describe('Addresses', function() {
     });
 
     it('/balance', function(done) {
-      var insight = 0;
+      var flosight = 0;
 
       var res = {
         jsonp: function(data) {
-          should(data).eql(insight);
+          should(data).eql(flosight);
           done();
         }
       };
@@ -255,11 +255,11 @@ describe('Addresses', function() {
     });
 
     it('/totalReceived', function(done) {
-      var insight = 2782729129;
+      var flosight = 2782729129;
 
       var res = {
         jsonp: function(data) {
-          should(data).eql(insight);
+          should(data).eql(flosight);
           done();
         }
       };
@@ -268,11 +268,11 @@ describe('Addresses', function() {
     });
 
     it('/totalSent', function(done) {
-      var insight = 2782729129;
+      var flosight = 2782729129;
 
       var res = {
         jsonp: function(data) {
-          should(data).eql(insight);
+          should(data).eql(flosight);
           done();
         }
       };
@@ -281,11 +281,11 @@ describe('Addresses', function() {
     });
 
     it('/unconfirmedBalance', function(done) {
-      var insight = 0;
+      var flosight = 0;
 
       var res = {
         jsonp: function(data) {
-          should(data).eql(insight);
+          should(data).eql(flosight);
           done();
         }
       };
@@ -296,7 +296,7 @@ describe('Addresses', function() {
 
   describe('/addr/:addr/utxo', function() {
     it('should have correct data', function(done) {
-      var insight = [
+      var flosight = [
         {
           'address': 'mzkD4nmQ8ixqxySdBgsXTpgvAMK5iRZpNK',
           'txid': '63b68becb0e514b32317f4b29a5cf0627d4087e54ac17f686fcb1d9a27680f73',
@@ -338,7 +338,7 @@ describe('Addresses', function() {
       var res = {
         jsonp: function(data) {
           var merged = _.merge(data, todos);
-          should(merged).eql(insight);
+          should(merged).eql(flosight);
           done();
         }
       };
@@ -351,7 +351,7 @@ describe('Addresses', function() {
 
     it('should have the correct data', function(done) {
 
-      var insight = [
+      var flosight = [
         {
           'address': 'mzkD4nmQ8ixqxySdBgsXTpgvAMK5iRZpNK',
           'txid': '63b68becb0e514b32317f4b29a5cf0627d4087e54ac17f686fcb1d9a27680f73',
@@ -406,7 +406,7 @@ describe('Addresses', function() {
         },
         end: function() {
           var finalObject = JSON.parse(finalData);
-          finalObject.should.eql(insight);
+          finalObject.should.eql(flosight);
           done();
         }
       };
@@ -419,7 +419,7 @@ describe('Addresses', function() {
 
     it('should have correct data', function(done) {
 
-      var insight = {
+      var flosight = {
         'totalItems': 1,
         'from': 0,
         'to': 1,
@@ -485,7 +485,7 @@ describe('Addresses', function() {
 
       var res = {
         jsonp: function(data) {
-          should(data).eql(insight);
+          should(data).eql(flosight);
           done();
         }
       };
@@ -494,7 +494,7 @@ describe('Addresses', function() {
     });
 
     it('should have trimmed data', function(done) {
-      var insight = {
+      var flosight = {
         'totalItems': 1,
         'from': 0,
         'to': 1,
@@ -556,7 +556,7 @@ describe('Addresses', function() {
 
       var res = {
         jsonp: function(data) {
-          should(data).eql(insight);
+          should(data).eql(flosight);
           done();
         }
       };

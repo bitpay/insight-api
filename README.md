@@ -1,26 +1,26 @@
-# Insight API
+# Flosight API
 
-A Bitcoin blockchain REST and web socket API service for [Bitcore Node](https://github.com/bitpay/bitcore-node).
+A Florincoin blockchain REST and web socket API service for [Flocore Node](https://github.com/bitpay/flocore-node).
 
-This is a backend-only service. If you're looking for the web frontend application, take a look at https://github.com/bitpay/insight-ui.
+This is a backend-only service. If you're looking for the web frontend application, take a look at https://github.com/bitpay/flosight-ui.
 
 ## Getting Started
 
 ```bashl
-npm install -g bitcore@latest
-bitcore create mynode
+npm install -g flocore@latest
+flocore create mynode
 cd mynode
-bitcore install insight-api
-bitcore start
+flocore install flosight-api
+flocore start
 ```
 
-The API endpoints will be available by default at: `http://localhost:3001/insight-api/`
+The API endpoints will be available by default at: `http://localhost:3001/flosight-api/`
 
 ## Prerequisites
 
-- [Bitcore 5.x](https://github.com/bitpay/bitcore)
+- [Flocore 5.x](https://github.com/bitpay/flocore)
 
-**Note:** You can use an existing Bitcoin data directory, however `txindex`, `addressindex`, `timestampindex` and `spentindex` needs to be set to true in `bitcoin.conf`, as well as a few other additional fields.
+**Note:** You can use an existing Florincoin data directory, however `txindex`, `addressindex`, `timestampindex` and `spentindex` needs to be set to true in `florincoin.conf`, as well as a few other additional fields.
 
 ## Notes on Upgrading from v0.3
 
@@ -69,8 +69,8 @@ There are a few changes to the `GET` endpoint for `/addr/[:address]`:
 
 Some additional general notes:
 - The transaction history for an address will be sorted in block order
-- The response for the `/sync` endpoint does not include `startTs` and `endTs` as the sync is no longer relevant as indexes are built in bitcoind.
-- The endpoint for `/peer` is no longer relevant connection to bitcoind is via ZMQ.
+- The response for the `/sync` endpoint does not include `startTs` and `endTs` as the sync is no longer relevant as indexes are built in florincoind.
+- The endpoint for `/peer` is no longer relevant connection to florincoind is via ZMQ.
 - `/tx` endpoint results will now include block height, and spentTx related fields will be set to `null` if unspent.
 - `/block` endpoint results does not include `confirmations` and will include `poolInfo`.
 
@@ -89,9 +89,9 @@ The `/tx/<txid>` endpoint JSON response will not include the following fields on
 object.
 - `spentTs`
 
-The `/status?q=getTxOutSetInfo` method has also been removed due to the query being very slow and locking bitcoind.
+The `/status?q=getTxOutSetInfo` method has also been removed due to the query being very slow and locking florincoind.
 
-Plug-in support for Insight API is also no longer available, as well as the endpoints:
+Plug-in support for Flosight API is also no longer available, as well as the endpoints:
 - `/email/retrieve`
 - `/rates/:code`
 
@@ -99,22 +99,22 @@ Caching support has not yet been added in the v0.3 upgrade.
 
 ## Query Rate Limit
 
-To protect the server, insight-api has a built it query rate limiter. It can be configurable in `bitcore-node.json` with:
+To protect the server, flosight-api has a built it query rate limiter. It can be configurable in `flocore-node.json` with:
 ``` json
   "servicesConfig": {
-    "insight-api": {
+    "flosight-api": {
       "rateLimiterOptions": {
         "whitelist": ["::ffff:127.0.0.1"]
       }
     }
   }
 ```
-With all the configuration options available: https://github.com/bitpay/insight-api/blob/master/lib/ratelimiter.js#L10-17
+With all the configuration options available: https://github.com/bitpay/flosight-api/blob/master/lib/ratelimiter.js#L10-17
 
 Or disabled entirely with:
 ``` json
   "servicesConfig": {
-    "insight-api": {
+    "flosight-api": {
       "disableRateLimiter": true
     }
   }
@@ -125,15 +125,15 @@ Or disabled entirely with:
 
 ### Block
 ```
-  /insight-api/block/[:hash]
-  /insight-api/block/00000000a967199a2fad0877433c93df785a8d8ce062e5f9b451cd1397bdbf62
+  /flosight-api/block/[:hash]
+  /flosight-api/block/00000000a967199a2fad0877433c93df785a8d8ce062e5f9b451cd1397bdbf62
 ```
 
 ### Block Index
 Get block hash by height
 ```
-  /insight-api/block-index/[:height]
-  /insight-api/block-index/0
+  /flosight-api/block-index/[:height]
+  /flosight-api/block-index/0
 ```
 This would return:
 ```
@@ -146,8 +146,8 @@ which is the hash of the Genesis block (0 height)
 
 ### Raw Block
 ```
-  /insight-api/rawblock/[:blockHash]
-  /insight-api/rawblock/[:blockHeight]
+  /flosight-api/rawblock/[:blockHash]
+  /flosight-api/rawblock/[:blockHeight]
 ```
 
 This would return:
@@ -161,7 +161,7 @@ This would return:
 
 Get block summaries by date:
 ```
-  /insight-api/blocks?limit=3&blockDate=2016-04-22
+  /flosight-api/blocks?limit=3&blockDate=2016-04-22
 ```
 
 Example response:
@@ -195,31 +195,31 @@ Example response:
 
 ### Transaction
 ```
-  /insight-api/tx/[:txid]
-  /insight-api/tx/525de308971eabd941b139f46c7198b5af9479325c2395db7f2fb5ae8562556c
-  /insight-api/rawtx/[:rawid]
-  /insight-api/rawtx/525de308971eabd941b139f46c7198b5af9479325c2395db7f2fb5ae8562556c
+  /flosight-api/tx/[:txid]
+  /flosight-api/tx/525de308971eabd941b139f46c7198b5af9479325c2395db7f2fb5ae8562556c
+  /flosight-api/rawtx/[:rawid]
+  /flosight-api/rawtx/525de308971eabd941b139f46c7198b5af9479325c2395db7f2fb5ae8562556c
 ```
 
 ### Address
 ```
-  /insight-api/addr/[:addr][?noTxList=1][&from=&to=]
-  /insight-api/addr/mmvP3mTe53qxHdPqXEvdu8WdC7GfQ2vmx5?noTxList=1
-  /insight-api/addr/mmvP3mTe53qxHdPqXEvdu8WdC7GfQ2vmx5?from=1000&to=2000
+  /flosight-api/addr/[:addr][?noTxList=1][&from=&to=]
+  /flosight-api/addr/mmvP3mTe53qxHdPqXEvdu8WdC7GfQ2vmx5?noTxList=1
+  /flosight-api/addr/mmvP3mTe53qxHdPqXEvdu8WdC7GfQ2vmx5?from=1000&to=2000
 ```
 
 ### Address Properties
 ```
-  /insight-api/addr/[:addr]/balance
-  /insight-api/addr/[:addr]/totalReceived
-  /insight-api/addr/[:addr]/totalSent
-  /insight-api/addr/[:addr]/unconfirmedBalance
+  /flosight-api/addr/[:addr]/balance
+  /flosight-api/addr/[:addr]/totalReceived
+  /flosight-api/addr/[:addr]/totalSent
+  /flosight-api/addr/[:addr]/unconfirmedBalance
 ```
 The response contains the value in Satoshis.
 
 ### Unspent Outputs
 ```
-  /insight-api/addr/[:addr]/utxo
+  /flosight-api/addr/[:addr]/utxo
 ```
 Sample return:
 ```
@@ -250,13 +250,13 @@ Sample return:
 ### Unspent Outputs for Multiple Addresses
 GET method:
 ```
-  /insight-api/addrs/[:addrs]/utxo
-  /insight-api/addrs/2NF2baYuJAkCKo5onjUKEPdARQkZ6SYyKd5,2NAre8sX2povnjy4aeiHKeEh97Qhn97tB1f/utxo
+  /flosight-api/addrs/[:addrs]/utxo
+  /flosight-api/addrs/2NF2baYuJAkCKo5onjUKEPdARQkZ6SYyKd5,2NAre8sX2povnjy4aeiHKeEh97Qhn97tB1f/utxo
 ```
 
 POST method:
 ```
-  /insight-api/addrs/utxo
+  /flosight-api/addrs/utxo
 ```
 
 POST params:
@@ -266,25 +266,25 @@ addrs: 2NF2baYuJAkCKo5onjUKEPdARQkZ6SYyKd5,2NAre8sX2povnjy4aeiHKeEh97Qhn97tB1f
 
 ### Transactions by Block
 ```
-  /insight-api/txs/?block=HASH
-  /insight-api/txs/?block=00000000fa6cf7367e50ad14eb0ca4737131f256fc4c5841fd3c3f140140e6b6
+  /flosight-api/txs/?block=HASH
+  /flosight-api/txs/?block=00000000fa6cf7367e50ad14eb0ca4737131f256fc4c5841fd3c3f140140e6b6
 ```
 ### Transactions by Address
 ```
-  /insight-api/txs/?address=ADDR
-  /insight-api/txs/?address=mmhmMNfBiZZ37g1tgg2t8DDbNoEdqKVxAL
+  /flosight-api/txs/?address=ADDR
+  /flosight-api/txs/?address=mmhmMNfBiZZ37g1tgg2t8DDbNoEdqKVxAL
 ```
 
 ### Transactions for Multiple Addresses
 GET method:
 ```
-  /insight-api/addrs/[:addrs]/txs[?from=&to=]
-  /insight-api/addrs/2NF2baYuJAkCKo5onjUKEPdARQkZ6SYyKd5,2NAre8sX2povnjy4aeiHKeEh97Qhn97tB1f/txs?from=0&to=20
+  /flosight-api/addrs/[:addrs]/txs[?from=&to=]
+  /flosight-api/addrs/2NF2baYuJAkCKo5onjUKEPdARQkZ6SYyKd5,2NAre8sX2povnjy4aeiHKeEh97Qhn97tB1f/txs?from=0&to=20
 ```
 
 POST method:
 ```
-  /insight-api/addrs/txs
+  /flosight-api/addrs/txs
 ```
 
 POST params:
@@ -330,7 +330,7 @@ Note: if pagination params are not specified, the result is an array of transact
 ### Transaction Broadcasting
 POST method:
 ```
-  /insight-api/tx/send
+  /flosight-api/tx/send
 ```
 POST params:
 ```
@@ -356,17 +356,17 @@ POST response:
 
 ### Historic Blockchain Data Sync Status
 ```
-  /insight-api/sync
+  /flosight-api/sync
 ```
 
 ### Live Network P2P Data Sync Status
 ```
-  /insight-api/peer
+  /flosight-api/peer
 ```
 
-### Status of the Bitcoin Network
+### Status of the Florincoin Network
 ```
-  /insight-api/status?q=xxx
+  /flosight-api/status?q=xxx
 ```
 
 Where "xxx" can be:
@@ -379,14 +379,14 @@ Where "xxx" can be:
 
 ### Utility Methods
 ```
-  /insight-api/utils/estimatefee[?nbBlocks=2]
+  /flosight-api/utils/estimatefee[?nbBlocks=2]
 ```
 
 
 ## Web Socket API
 The web socket API is served using [socket.io](http://socket.io).
 
-The following are the events published by insight:
+The following are the events published by flosight:
 
 `tx`: new transaction received from network. This event is published in the 'inv' room. Data will be a app/models/Transaction object.
 Sample output:
@@ -409,7 +409,7 @@ Sample output:
 }
 ```
 
-`<bitcoinAddress>`: new transaction concerning <bitcoinAddress> received from network. This event is published in the `<bitcoinAddress>` room.
+`<florincoinAddress>`: new transaction concerning <florincoinAddress> received from network. This event is published in the `<florincoinAddress>` room.
 
 `status`: every 1% increment on the sync task, this event will be triggered. This event is published in the `sync` room.
 
@@ -429,18 +429,18 @@ Sample output:
 
 ### Example Usage
 
-The following html page connects to the socket.io insight API and listens for new transactions.
+The following html page connects to the socket.io flosight API and listens for new transactions.
 
 html
 ```
 <html>
 <body>
-  <script src="http://<insight-server>:<port>/socket.io/socket.io.js"></script>
+  <script src="http://<flosight-server>:<port>/socket.io/socket.io.js"></script>
   <script>
     eventToListenTo = 'tx'
     room = 'inv'
 
-    var socket = io("http://<insight-server>:<port>/");
+    var socket = io("http://<flosight-server>:<port>/");
     socket.on('connect', function() {
       // Join the room.
       socket.emit('subscribe', room);
