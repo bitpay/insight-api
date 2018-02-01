@@ -84,6 +84,30 @@ describe('Currency', function() {
     currency.index(req, res);
   });
 
+  it('will ignore invalid JSON in response', function(done) {
+    var TestCurrencyController = proxyquire('../lib/currency', {
+      request: sinon.stub().callsArgWith(1, null, {statusCode: 200}, '<html><head><title>HTML</title></head><body></body></html>')
+    });
+    var node = {
+      log: {
+        error: sinon.stub()
+      }
+    };
+    var currency = new TestCurrencyController({node: node});
+    currency.bitstampRate = 220.20;
+    currency.timestamp = Date.now() - 61000 * CurrencyController.DEFAULT_CURRENCY_DELAY;
+    var req = {};
+    var res = {
+      jsonp: function(response) {
+        response.status.should.equal(200);
+        should.exist(response.data.bitstamp);
+        response.data.bitstamp.should.equal(220.20);
+        done();
+      }
+    };
+    currency.index(req, res);
+  });
+
   it('will retrieve a cached value', function(done) {
     var request = sinon.stub();
     var TestCurrencyController = proxyquire('../lib/currency', {
