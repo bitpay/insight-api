@@ -31,7 +31,7 @@
     "JSONStream": "^1.3.1",
     "async": "*",
     "vcoin": "git://github.com/Cubey2019/vcoin.git",
-    "vertcore-lib": "git://github.com/Cubey2019/vertcore-lib.git#vcoin",
+    "vertcore-lib": "git://github.com/Cubey2019/vertcore-lib.git",
     "vertcore-message": "git://github.com/Cubey2019/vertcore-message.git",
     "body-parser": "^1.13.3",
     "compression": "^1.6.1",
@@ -42,7 +42,7 @@
   },
   "devDependencies": {
     "bitcoind-rpc": "^0.7.0",
-    "vertcore-p2p": "git://github.com/Cubey2019/vertcore-p2p.git#vcoin",
+    "vertcore-p2p": "git://github.com/Cubey2019/vertcore-p2p.git",
     "chai": "^3.5.0",
     "mkdirp": "^0.5.1",
     "mocha": "^2.4.5",
