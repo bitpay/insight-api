@@ -1,8 +1,8 @@
 # Insight API
 
-A Vertcoin blockchain REST and web socket API service for [Vertcore Node](https://github.com/Cubey2019/vertcore-node).
+A Vertcoin blockchain REST and web socket API service for [Vertcore Node](https://github.com/vertcoin-project/vertcore-node).
 
-This is a backend-only service. If you're looking for the web frontend application, take a look at https://github.com/Cubey2019/insight-vtc-ui.
+This is a backend-only service. If you're looking for the web frontend application, take a look at https://github.com/vertcoin-project/insight-vtc-ui.
 
 ## Getting Started
 
@@ -18,7 +18,7 @@ The API endpoints will be available by default at: `http://localhost:3001/insigh
 
 ## Prerequisites
 
-- [Vertcore 5.x](https://github.com/Cubey2019/vertcore)
+- [Vertcore 5.x](https://github.com/vertcoin-project/vertcore)
 
 **Note:** You can use an existing Vertcoin data directory, however `txindex`, `addressindex`, `timestampindex` and `spentindex` needs to be set to true in `vertcoin.conf`, as well as a few other additional fields.
 
@@ -109,7 +109,7 @@ To protect the server, insight-vtc-api has a built in query rate limiter. It can
     }
   }
 ```
-With all the configuration options available: https://github.com/Cubey2019/insight-vtc-api/blob/master/lib/ratelimiter.js#L10-17
+With all the configuration options available: https://github.com/vertcoin-project/insight-vtc-api/blob/master/lib/ratelimiter.js#L10-17
 
 Or disabled entirely with:
 ``` json

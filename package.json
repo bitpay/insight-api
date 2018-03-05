@@ -2,11 +2,11 @@
   "name": "insight-vtc-api",
   "description": "A Vertcoin blockchain REST and web socket API service for Vertcore Node.",
   "version": "5.0.0-beta.44",
-  "repository": "git://github.com/Cubey2019/insight-vtc-api.git",
+  "repository": "git://github.com/vertcoin-project/insight-vtc-api.git",
   "bugs": {
-    "url": "https://github.com/Cubey2019/insight-vtc-api/issues"
+    "url": "https://github.com/vertcoin-project/insight-vtc-api/issues"
   },
-  "homepage": "https://github.com/Cubey2019/insight-vtc-api",
+  "homepage": "https://github.com/vertcoin-project/insight-vtc-api",
   "license": "MIT",
   "keywords": [
     "insight",
@@ -30,9 +30,9 @@
   "dependencies": {
     "JSONStream": "^1.3.1",
     "async": "*",
-    "vcoin": "git://github.com/Cubey2019/vcoin.git",
-    "vertcore-lib": "git://github.com/Cubey2019/vertcore-lib.git",
-    "vertcore-message": "git://github.com/Cubey2019/vertcore-message.git",
+    "vcoin": "git://github.com/vertcoin-project/vcoin.git",
+    "vertcore-lib": "git://github.com/vertcoin-project/vertcore-lib.git",
+    "vertcore-message": "git://github.com/vertcoin-project/vertcore-message.git",
     "body-parser": "^1.13.3",
     "compression": "^1.6.1",
     "lodash": "^2.4.1",
@@ -42,7 +42,7 @@
   },
   "devDependencies": {
     "bitcoind-rpc": "^0.7.0",
-    "vertcore-p2p": "git://github.com/Cubey2019/vertcore-p2p.git",
+    "vertcore-p2p": "git://github.com/vertcoin-project/vertcore-p2p.git",
     "chai": "^3.5.0",
     "mkdirp": "^0.5.1",
     "mocha": "^2.4.5",
