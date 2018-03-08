@@ -11,6 +11,7 @@ npm install -g bitcore@latest
 bitcore create mynode
 cd mynode
 bitcore install insight-api
+bitcore install insight-ui
 bitcore start
 ```
 
