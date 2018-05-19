@@ -19,5 +19,12 @@
     "searchStrings": [
       "http://thecoin.pw"
     ]
+  },
+  {
+    "poolName": "tPool.io",
+    "url": "http://tpool.io/pool/flo/stats",
+    "searchStrings": [
+      "tPool.io"
+    ]
   }
 ]
