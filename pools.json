@@ -8,7 +8,7 @@
   },
   {
     "poolName": "SuprNova",
-    "url": "https://flo.suprnova.cc",
+    "url": "https://flo.suprnova.cc/index.php?page=statistics&action=pool",
     "searchStrings": [
       "https://flo.suprnova.cc"
     ]
