@@ -1,7 +1,7 @@
 [
   {
     "poolName": "Mining Dutch",
-    "url": "https://www.mining-dutch.nl",
+    "url": "https://www.mining-dutch.nl/pools/florin.php?page=statistics&action=pool",
     "searchStrings": [
       "https://www.mining-dutch.nl"
     ]
@@ -14,8 +14,8 @@
     ]
   },
   {
-    "poolName": "TheCoin",
-    "url": "http://thecoin.pw",
+    "poolName": "TheCoin.pw",
+    "url": "https://flo.thecoin.pw/",
     "searchStrings": [
       "http://thecoin.pw"
     ]
