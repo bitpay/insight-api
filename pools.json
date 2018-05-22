@@ -7,7 +7,7 @@
     ]
   },
   {
-    "poolName": "SuprNova",
+    "poolName": "Suprnova",
     "url": "https://flo.suprnova.cc/index.php?page=statistics&action=pool",
     "searchStrings": [
       "https://flo.suprnova.cc"
@@ -25,6 +25,13 @@
     "url": "http://tpool.io/pool/flo/stats",
     "searchStrings": [
       "tPool.io"
+    ]
+  },
+  {
+    "poolName": "Alexandria",
+    "url": "#",
+    "searchStrings": [
+      "alexandria autominer pool (testnet)"
     ]
   }
 ]
