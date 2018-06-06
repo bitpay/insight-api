@@ -153,7 +153,7 @@ describe('Blocks', function() {
         'blockHash': '0000000000000afa0c3c0afd450c793a1e300ec84cbe9555166e06132f19a8f7'
       };
 
-      var height = 533974;
+      var height = '533974';
 
       var req = {
         params: {
