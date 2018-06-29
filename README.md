@@ -215,6 +215,8 @@ Example response:
   /insight-api/addr/[:addr]/totalReceived
   /insight-api/addr/[:addr]/totalSent
   /insight-api/addr/[:addr]/unconfirmedBalance
+  
+  /insight-api/addrs/[:addrs]/summary
 ```
 The response contains the value in Satoshis.
 
