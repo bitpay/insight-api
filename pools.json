@@ -33,5 +33,12 @@
     "searchStrings": [
       "alexandria autominer pool (testnet)"
     ]
+  },
+  {
+    "poolName": "Node Merged Pool",
+    "url": "https://github.com/UNOMP/node-merged-pool",
+    "searchStrings": [
+      "https://github.com/UNOMP/node-merged-pool"
+    ]
   }
 ]
