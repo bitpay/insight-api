@@ -125,15 +125,15 @@ Or disabled entirely with:
 
 ### Block
 ```
-  /flosight-api/block/[:hash]
-  /flosight-api/block/00000000a967199a2fad0877433c93df785a8d8ce062e5f9b451cd1397bdbf62
+  /api/block/[:hash]
+  /api/block/00000000a967199a2fad0877433c93df785a8d8ce062e5f9b451cd1397bdbf62
 ```
 
 ### Block Index
 Get block hash by height
 ```
-  /flosight-api/block-index/[:height]
-  /flosight-api/block-index/0
+  /api/block-index/[:height]
+  /api/block-index/0
 ```
 This would return:
 ```
@@ -146,8 +146,8 @@ which is the hash of the Genesis block (0 height)
 
 ### Raw Block
 ```
-  /flosight-api/rawblock/[:blockHash]
-  /flosight-api/rawblock/[:blockHeight]
+  /api/rawblock/[:blockHash]
+  /api/rawblock/[:blockHeight]
 ```
 
 This would return:
@@ -161,7 +161,7 @@ This would return:
 
 Get block summaries by date:
 ```
-  /flosight-api/blocks?limit=3&blockDate=2016-04-22
+  /api/blocks?limit=3&blockDate=2016-04-22
 ```
 
 Example response:
@@ -195,31 +195,31 @@ Example response:
 
 ### Transaction
 ```
-  /flosight-api/tx/[:txid]
-  /flosight-api/tx/525de308971eabd941b139f46c7198b5af9479325c2395db7f2fb5ae8562556c
-  /flosight-api/rawtx/[:rawid]
-  /flosight-api/rawtx/525de308971eabd941b139f46c7198b5af9479325c2395db7f2fb5ae8562556c
+  /api/tx/[:txid]
+  /api/tx/525de308971eabd941b139f46c7198b5af9479325c2395db7f2fb5ae8562556c
+  /api/rawtx/[:rawid]
+  /api/rawtx/525de308971eabd941b139f46c7198b5af9479325c2395db7f2fb5ae8562556c
 ```
 
 ### Address
 ```
-  /flosight-api/addr/[:addr][?noTxList=1][&from=&to=]
-  /flosight-api/addr/mmvP3mTe53qxHdPqXEvdu8WdC7GfQ2vmx5?noTxList=1
-  /flosight-api/addr/mmvP3mTe53qxHdPqXEvdu8WdC7GfQ2vmx5?from=1000&to=2000
+  /api/addr/[:addr][?noTxList=1][&from=&to=]
+  /api/addr/mmvP3mTe53qxHdPqXEvdu8WdC7GfQ2vmx5?noTxList=1
+  /api/addr/mmvP3mTe53qxHdPqXEvdu8WdC7GfQ2vmx5?from=1000&to=2000
 ```
 
 ### Address Properties
 ```
-  /flosight-api/addr/[:addr]/balance
-  /flosight-api/addr/[:addr]/totalReceived
-  /flosight-api/addr/[:addr]/totalSent
-  /flosight-api/addr/[:addr]/unconfirmedBalance
+  /api/addr/[:addr]/balance
+  /api/addr/[:addr]/totalReceived
+  /api/addr/[:addr]/totalSent
+  /api/addr/[:addr]/unconfirmedBalance
 ```
 The response contains the value in Satoshis.
 
 ### Unspent Outputs
 ```
-  /flosight-api/addr/[:addr]/utxo
+  /api/addr/[:addr]/utxo
 ```
 Sample return:
 ```
@@ -250,13 +250,13 @@ Sample return:
 ### Unspent Outputs for Multiple Addresses
 GET method:
 ```
-  /flosight-api/addrs/[:addrs]/utxo
-  /flosight-api/addrs/2NF2baYuJAkCKo5onjUKEPdARQkZ6SYyKd5,2NAre8sX2povnjy4aeiHKeEh97Qhn97tB1f/utxo
+  /api/addrs/[:addrs]/utxo
+  /api/addrs/2NF2baYuJAkCKo5onjUKEPdARQkZ6SYyKd5,2NAre8sX2povnjy4aeiHKeEh97Qhn97tB1f/utxo
 ```
 
 POST method:
 ```
-  /flosight-api/addrs/utxo
+  /api/addrs/utxo
 ```
 
 POST params:
@@ -266,25 +266,25 @@ addrs: 2NF2baYuJAkCKo5onjUKEPdARQkZ6SYyKd5,2NAre8sX2povnjy4aeiHKeEh97Qhn97tB1f
 
 ### Transactions by Block
 ```
-  /flosight-api/txs/?block=HASH
-  /flosight-api/txs/?block=00000000fa6cf7367e50ad14eb0ca4737131f256fc4c5841fd3c3f140140e6b6
+  /api/txs/?block=HASH
+  /api/txs/?block=00000000fa6cf7367e50ad14eb0ca4737131f256fc4c5841fd3c3f140140e6b6
 ```
 ### Transactions by Address
 ```
-  /flosight-api/txs/?address=ADDR
-  /flosight-api/txs/?address=mmhmMNfBiZZ37g1tgg2t8DDbNoEdqKVxAL
+  /api/txs/?address=ADDR
+  /api/txs/?address=mmhmMNfBiZZ37g1tgg2t8DDbNoEdqKVxAL
 ```
 
 ### Transactions for Multiple Addresses
 GET method:
 ```
-  /flosight-api/addrs/[:addrs]/txs[?from=&to=]
-  /flosight-api/addrs/2NF2baYuJAkCKo5onjUKEPdARQkZ6SYyKd5,2NAre8sX2povnjy4aeiHKeEh97Qhn97tB1f/txs?from=0&to=20
+  /api/addrs/[:addrs]/txs[?from=&to=]
+  /api/addrs/2NF2baYuJAkCKo5onjUKEPdARQkZ6SYyKd5,2NAre8sX2povnjy4aeiHKeEh97Qhn97tB1f/txs?from=0&to=20
 ```
 
 POST method:
 ```
-  /flosight-api/addrs/txs
+  /api/addrs/txs
 ```
 
 POST params:
@@ -330,7 +330,7 @@ Note: if pagination params are not specified, the result is an array of transact
 ### Transaction Broadcasting
 POST method:
 ```
-  /flosight-api/tx/send
+  /api/tx/send
 ```
 POST params:
 ```
@@ -356,17 +356,17 @@ POST response:
 
 ### Historic Blockchain Data Sync Status
 ```
-  /flosight-api/sync
+  /api/sync
 ```
 
 ### Live Network P2P Data Sync Status
 ```
-  /flosight-api/peer
+  /api/peer
 ```
 
 ### Status of the Florincoin Network
 ```
-  /flosight-api/status?q=xxx
+  /api/status?q=xxx
 ```
 
 Where "xxx" can be:
@@ -379,7 +379,7 @@ Where "xxx" can be:
 
 ### Utility Methods
 ```
-  /flosight-api/utils/estimatefee[?nbBlocks=2]
+  /api/utils/estimatefee[?nbBlocks=2]
 ```
 
 
