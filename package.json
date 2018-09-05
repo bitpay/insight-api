@@ -59,7 +59,7 @@
     "base58-native": "0.1.2",
     "bignum": "*",
     "bitauth": "^0.1.1",
-    "bitcore": "git://github.com/digicontributer/bitcore.git#6574c533d65b0e2a5859d5d4edb8e03b51de82b2",
+    "bitcore": "git://github.com/digicontributer/bitcore.git#c42102e8f38dbff5fb51481eca8f786d10ec60f2",
     "bufferput": "git://github.com/bitpay/node-bufferput.git",
     "buffertools": "*",
     "commander": "^2.3.0",
