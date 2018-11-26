@@ -40,5 +40,12 @@
     "searchStrings": [
       "https://github.com/UNOMP/node-merged-pool"
     ]
+  },
+  {
+    "poolName": "Coinfoundry",
+    "url": "https://coinfoundry.org/pool/flo",
+    "searchStrings": [
+      "coinfoundry.org"
+    ]
   }
 ]
