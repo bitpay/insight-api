@@ -1,5 +1,12 @@
 [
   {
+    "poolName": "OIP Historian",
+    "url": "https://oip.wiki",
+    "searchStrings": [
+      "Historian"
+    ]
+  },
+  {
     "poolName": "Mining Dutch",
     "url": "https://www.mining-dutch.nl/pools/florin.php?page=statistics&action=pool",
     "searchStrings": [
@@ -46,6 +53,15 @@
     "url": "https://coinfoundry.org/pool/flo",
     "searchStrings": [
       "coinfoundry.org"
+    ]
+  },
+  {
+    "poolName": "Medici Land",
+    "url": "https://mediciland.com",
+    "searchStrings": [
+      "MLG",
+      "medici",
+      "Medici"
     ]
   }
 ]
