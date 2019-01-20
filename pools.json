@@ -238,5 +238,12 @@
     "searchStrings":[
       "/BTCC/"
     ]
+  },
+  {
+    "poolName":"Cryptogrinder",
+    "url":"https://cryptogrinder.com/",
+    "searchStrings":[
+      "/cryptogrinder/"
+    ]
   }
 ]
