@@ -1,4 +1,103 @@
 [
+   {
+      "poolName":"Mining-Dutch",
+      "url":"https://www.mining-dutch.nl/",
+      "searchStrings":[
+         "Mining-Dutch"
+      ]
+   },
+   {
+      "poolName":"Mining Pool Hub",
+      "url":"https://miningpoolhub.com/",
+      "searchStrings":[
+         "mph"
+      ]
+   },
+   {
+      "poolName":"yiimp",
+      "url":"http://yiimp.eu/",
+      "searchStrings":[
+         "yiimp"
+      ]
+   },
+      {
+      "poolName":"skpool",
+      "url":"#",
+      "searchStrings":[
+         "skpool"
+      ]
+   },
+   {
+      "poolName":"who",
+      "url":"#",
+      "searchStrings":[
+         "who"
+      ]
+   },
+   {
+      "poolName":"sapool",
+      "url":"#",
+      "searchStrings":[
+         "sapool"
+      ]
+   },
+   {
+      "poolName":"ckpool",
+      "url":"http://solo.ckpool.org/",
+      "searchStrings":[
+         "ckpool"
+      ]
+   },
+   {
+      "poolName":"ProHashing",
+      "url":"https://prohashing.com/",
+      "searchStrings":[
+         "prohashing.com"
+      ]
+   },
+   {
+      "poolName":"Multipool.us",
+      "url":"https://www.multipool.us/",
+      "searchStrings":[
+         "Multipool.us"
+      ]
+   },
+
+   {
+      "poolName":"Unknown p2pool-DGB",
+      "url":"https://github.com/mcpool/p2pool-dgb",
+      "searchStrings":[
+         "p2pool-DGB"
+      ]
+   },
+   {
+      "poolName":"dgb256.online",
+      "url":"https://dgb256.online/",
+      "searchStrings":[
+         "dgb256.online"
+      ]
+   },
+   {
+      "poolName":"Zerg Pool",
+      "url":"https://zergpool.com/",
+      "searchStrings":[
+         "zerg"
+      ]
+   },
+   {
+      "poolName":"Coin Foundry",
+      "url":"https://coinfoundry.org/",
+      "searchStrings":[
+         "MiningCore"
+      ]
+   },
+   {
+      "poolName":"gos.cx",
+      "url":"https://gos.cx/",
+      "searchStrings":[
+         "gos.cx"
+      ]
+   },
    {   
       "poolName":"MinersPoolEU",
       "url":"https://www.miners-pool.eu/",
@@ -18,7 +117,7 @@
       "poolName":"ZPOOL",
       "url":"https://www.zpool.ca",
       "searchStrings":[
-         "www.zpool.ca"
+         "zpool.ca"
       ]
    },
    {
@@ -28,11 +127,11 @@
          "theblocksfactory.com"
       ]
    },
-   {
-      "poolName":"Omarg's Pools",
-      "url":"http://www.omargpools.ca/",
+      {
+      "poolName":"Unknown NOMP Pool",
+      "url":"https://github.com/zone117x/node-stratum-pool/blob/4f298c3ead7651646c27a30601fcdbf6512b367a/lib/transactions.js#L78",
       "searchStrings":[
-         "Omarg's Pools"
+         "nodeStratum"
       ]
    }
 ]
