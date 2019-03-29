@@ -1,12 +1,12 @@
 {
   "name": "insight-bitcore-api",
-  "description": "An open-source bitcoin blockchain API. The Insight API provides you with a convenient, powerful and simple way to query and broadcast data on the bitcoin network and build your own services with it.",
+  "description": "An open-source DigiByte blockchain API. The Insight API provides you with a convenient, powerful and simple way to query and broadcast data on the bitcoin network and build your own services with it.",
   "version": "0.2.12",
   "author": {
-    "name": "Ryan X Charles",
-    "email": "ryan@bitpay.com"
+    "name": "DigiByte Team",
+    "email": "info@digibyte.io"
   },
-  "repository": "git://github.com/bitpay/insight-api.git",
+  "repository": "git@github.com:DigiByte-Core/insight-api.git",
   "contributors": [
     {
       "name": "Matias Alejo Garcia",
@@ -34,9 +34,9 @@
     }
   ],
   "bugs": {
-    "url": "https://github.com/bitpay/insight-api/issues"
+    "url": "https://github.com/DigiByte-Core/insight-api/issues"
   },
-  "homepage": "https://github.com/bitpay/insight-api",
+  "homepage": "https://github.com/DigiByte-Core/insight-api.git",
   "license": "MIT",
   "keywords": [
     "insight",
