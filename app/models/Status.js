@@ -7,20 +7,28 @@ var RpcClient = bitcore.RpcClient;
 var config    = require('../../config/config');
 var rpc       = new RpcClient(config.bitcoind);
 var bDb       = require('../../lib/BlockDb').default();
+var _         = require('lodash');
 
 function Status() {}
+
 
 Status.prototype.getInfo = function(next) {
   var that = this;
   async.series([
     function (cb) {
-      rpc.getInfo(function(err, info){
+      rpc.getBlockchainInfo(function(err, info){
         if (err) return cb(err);
 
         that.info = info.result;
         return cb();
       });
     },
+    function (cb) {
+      rpc.getNetworkInfo(function(err, info) {
+        _.extend(that.info, _.extend(info.result));
+        return cb();
+      })
+    }
   ], function (err) {
     return next(err);
   });
