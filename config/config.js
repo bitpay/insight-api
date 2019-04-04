@@ -31,8 +31,8 @@ if (process.env.INSIGHT_NETWORK === 'livenet') {
   env = 'testnet';
   db = home + '/testnet';
   port = '3001';
-  b_port = '18332';
-  p2p_port = '12025';
+  b_port = '14023';
+  p2p_port = '12026';
 }
 port = parseInt(process.env.INSIGHT_PORT) || port;
 
