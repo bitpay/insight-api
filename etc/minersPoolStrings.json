@@ -15,7 +15,7 @@
    },
    {
       "poolName":"Unknown yiimp",
-      "url":"https://github.com/tpruvot/yiimp",
+      "url":"https://github.com/tpruvot/yiimp/blob/next/stratum/coinbase.cpp#L100",
       "searchStrings":[
          "yiimp"
       ]
@@ -134,72 +134,84 @@
          "nodeStratum"
       ]
    },
+      {
       "poolName":"blazepool",
       "url":"http://blazepool.com/",
       "searchStrings":[
          "blazepool"
       ]
    },
+      {
       "poolName":"Brutangs Solo",
       "url":"http://dgbsolo.brutang.work:5025/static/",
       "searchStrings":[
          "Brutangs-Solo-Node"
       ]
    },
+      {
       "poolName":"Brutangs Group",
       "url":"http://dgb.brutang.work:5025/static/",
       "searchStrings":[
          "Brutangs-Group-Node"
       ]
    },
+      {
       "poolName":"BSOD",
       "url":"http://bsod.pw/",
       "searchStrings":[
          "bsod"
       ]
    },
+      {
       "poolName":"Coinminerz",
       "url":"http://coinminerz.com",
       "searchStrings":[
          "Coinminerz"
       ]
    },
+      {
       "poolName":"CybtcPool",
       "url":"https://cybtc.info/",
       "searchStrings":[
          "CybtcPool"
       ]
    },
+      {
       "poolName":"dgb256.online",
       "url":"https://dgb256.online/",
       "searchStrings":[
          "dgb256.online"
       ]
    },
+      {
       "poolName":"HashWiz",
       "url":"https://hashwiz.io/",
       "searchStrings":[
          "hashwiz.io"
       ]
    },
+      {
       "poolName":"PersianMine",
       "url":"https://persianmine.com/pool/en",
       "searchStrings":[
          "PersianMine.com"
       ]
    },
+      {
       "poolName":"SwineMine",
       "url":"https://www.swinemine.com/",
       "searchStrings":[
          "SwineMine.com"
       ]
    },
+      {
       "poolName":"The Crypto Pools",
       "url":"https://cryptopools.aod-tech.com/",
       "searchStrings":[
          "Crypto Pools by AoD Technologies"
       ]
    },
+      {
       "poolName":"IceMining.ca",
       "url":"https://icemining.ca/",
       "searchStrings":[
