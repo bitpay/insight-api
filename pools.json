@@ -57,11 +57,12 @@
   },
   {
     "poolName": "Medici Land",
-    "url": "https://mediciland.com",
+    "url": "https://pool.mediciland.com",
     "searchStrings": [
       "MLG",
       "medici",
-      "Medici"
+      "Medici",
+      "https://pool.mediciland.com"
     ]
   }
 ]
