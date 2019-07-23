@@ -14,8 +14,8 @@
       ]
    },
    {
-      "poolName":"yiimp",
-      "url":"http://yiimp.eu/",
+      "poolName":"Unknown yiimp",
+      "url":"https://github.com/tpruvot/yiimp/blob/next/stratum/coinbase.cpp#L100",
       "searchStrings":[
          "yiimp"
       ]
@@ -35,7 +35,7 @@
       ]
    },
    {
-      "poolName":"sapool",
+      "poolName":"Unknown sapool",
       "url":"#",
       "searchStrings":[
          "sapool"
@@ -122,9 +122,9 @@
    },
    {
       "poolName":"The Blocks Factory",
-      "url":"https://dgb-sha.theblocksfactory.com",
+      "url":"https://theblocksfactory.com",
       "searchStrings":[
-         "theblocksfactory.com"
+         "theblocksfactory"
       ]
    },
       {
@@ -132,6 +132,90 @@
       "url":"https://github.com/zone117x/node-stratum-pool/blob/4f298c3ead7651646c27a30601fcdbf6512b367a/lib/transactions.js#L78",
       "searchStrings":[
          "nodeStratum"
+      ]
+   },
+      {
+      "poolName":"blazepool",
+      "url":"http://blazepool.com/",
+      "searchStrings":[
+         "blazepool"
+      ]
+   },
+      {
+      "poolName":"Brutangs Solo",
+      "url":"http://dgbsolo.brutang.work:5025/static/",
+      "searchStrings":[
+         "Brutangs-Solo-Node"
+      ]
+   },
+      {
+      "poolName":"Brutangs Group",
+      "url":"http://dgb.brutang.work:5025/static/",
+      "searchStrings":[
+         "Brutangs-Group-Node"
+      ]
+   },
+      {
+      "poolName":"BSOD",
+      "url":"http://bsod.pw/",
+      "searchStrings":[
+         "bsod"
+      ]
+   },
+      {
+      "poolName":"Coinminerz",
+      "url":"http://coinminerz.com",
+      "searchStrings":[
+         "Coinminerz"
+      ]
+   },
+      {
+      "poolName":"CybtcPool",
+      "url":"https://cybtc.info/",
+      "searchStrings":[
+         "CybtcPool"
+      ]
+   },
+      {
+      "poolName":"dgb256.online",
+      "url":"https://dgb256.online/",
+      "searchStrings":[
+         "dgb256.online"
+      ]
+   },
+      {
+      "poolName":"HashWiz",
+      "url":"https://hashwiz.io/",
+      "searchStrings":[
+         "hashwiz.io"
+      ]
+   },
+      {
+      "poolName":"PersianMine",
+      "url":"https://persianmine.com/pool/en",
+      "searchStrings":[
+         "PersianMine.com"
+      ]
+   },
+      {
+      "poolName":"SwineMine",
+      "url":"https://www.swinemine.com/",
+      "searchStrings":[
+         "SwineMine.com"
+      ]
+   },
+      {
+      "poolName":"The Crypto Pools",
+      "url":"https://cryptopools.aod-tech.com/",
+      "searchStrings":[
+         "Crypto Pools by AoD Technologies"
+      ]
+   },
+      {
+      "poolName":"IceMining.ca",
+      "url":"https://icemining.ca/",
+      "searchStrings":[
+         "iceca"
       ]
    }
 ]
