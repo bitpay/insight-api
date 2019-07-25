@@ -59,10 +59,25 @@
     "poolName": "Medici Land",
     "url": "https://pool.mediciland.com",
     "searchStrings": [
+      "mlg",
       "MLG",
       "medici",
       "Medici",
       "https://pool.mediciland.com"
+    ]
+  },
+  {
+    "poolName": "hashing.com",
+    "url": "https://hashing.com",
+    "searchStrings": [
+      "hashing.com"
+    ]
+  },
+  {
+    "poolName": "coinminerz",
+    "url": "https://coinminerz.com",
+    "searchStrings": [
+      "https://coinminerz.com"
     ]
   }
 ]
