@@ -1,7 +1,7 @@
 {
   "name": "insight-bitcore-api",
   "description": "An open-source DigiByte blockchain API. The Insight API provides you with a convenient, powerful and simple way to query and broadcast data on the bitcoin network and build your own services with it.",
-  "version": "0.2.12",
+  "version": "0.2.13",
   "author": {
     "name": "DigiByte Team",
     "email": "info@digibyte.io"
@@ -55,7 +55,7 @@
     "start": "node node_modules/grunt-cli/bin/grunt"
   },
   "dependencies": {
-    "async": "*",
+    "async": "0.9.2",
     "base58-native": "0.1.2",
     "bignum": "*",
     "bitauth": "^0.1.1",
