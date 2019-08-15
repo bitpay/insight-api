@@ -1,7 +1,7 @@
 {
   "name": "flosight-api",
   "description": "A Florincoin blockchain REST and web socket API service for Flocore Node.",
-  "version": "5.0.0-beta.73",
+  "version": "5.0.0-beta.74",
   "repository": "git://github.com/bitpay/flosight-api.git",
   "bugs": {
     "url": "https://github.com/bitpay/flosight-api/issues"
